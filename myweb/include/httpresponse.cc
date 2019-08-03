@@ -6,7 +6,7 @@
 #include "string.h"
 #include <sys/types.h>
 #include <sys/socket.h>
-
+#include <errno.h>
 int HttpResponse::getfile(int fd)
 {
     struct stat st;
@@ -17,15 +17,31 @@ int HttpResponse::getfile(int fd)
         path_ = "picture/index.html";
     if(path_[path_.size() - 1] == '/')
         path_ = path_ + "index.html"; //默认
-    //文件已经存在
+    //文件不存在
     if(stat(path_.c_str(),&st) == -1) {
         setstate(NotFound);
-        std::cout << strerror(errno) <<std::endl;
+        appendToBuffer(&output,fd);
+        char buffer[1024];
+        bzero(buffer,sizeof(buffer));
+        strcpy(buffer,"<html>\n"
+                      "\n"
+                      "<body >\n"
+                      "\n"
+                      "    <p>Not Found  </p><br>\n"
+                      "    <p> The requested file was not found on this server</p><br>\n"
+                      "</body>\n"
+                      "\n"
+                      "</html>");
+        if(send(fd,buffer,strlen(buffer),0))
+        {
+            std::cout << strerror(errno) <<std::endl;
+        }
     }
     else {
 //        if ((st.st_mode & S_IXUSR) || (st.st_mode & S_IXGRP) || (st.st_mode & S_IXOTH))
 //            cgi = 1;
 //        if (cgi == 0) {
+            std::cout << "path_  " << path_ << std::endl;
             setstate(Ok);
             appendToBuffer(&output,fd);
             int fd_ = open(path_.c_str(), O_RDONLY);
@@ -36,10 +52,12 @@ int HttpResponse::getfile(int fd)
             int number = 0;
             char buf[1024];
             bzero(buf,sizeof(char) *1024);
+            std::cout << st.st_size<< std::endl;
             while(number < st.st_size)
             {
-                number += read(fd_,buf,1024);
-                if(send(fd,buf,strlen(buf),0) < 0 )
+                bzero(buf,sizeof(char) * 1024);
+                number += read(fd_,buf,sizeof(char )*1020);
+                if(send(fd,buf,sizeof(char) * 1020 ,0) < 0 )
                     perror("send");
             }
             close(fd_);
@@ -67,8 +85,15 @@ void HttpResponse::appendToBuffer(Buffer* output,int fd)
     snprintf(buffer, sizeof(char) * 32, "Content-Length: %d", st.st_size);
     output->append(buffer,strlen(buffer));
     output->append("\r\n",strlen("\r\n"));
-
-    setContentType();
+    if(path_.find("png") != path_.npos)
+        setContentType("image/png");
+    if(path_.find("img") != path_.npos)
+        setContentType("image/jpg");
+    if(path_.find("avi") != path_.npos)
+        setContentType("video/avi");
+    if(path_.find("mp4") != path_.npos)
+        setContentType("audio/mp4");
+    setContentType("Keep-alive");
 
     for (const auto& header : headers_)
     {

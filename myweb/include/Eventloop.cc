@@ -13,14 +13,14 @@ Eventloop::~Eventloop()
 }
 void Eventloop::loop()
 {
-    channellist.clear();
-    poll_->run(&channellist);
-    while(true) {
+    while(true)
+    {
+        channellist.clear();
+        poll_->run(&channellist);
         if (channellist.size() != 0) {
             for (auto &c : channellist) {
                 c->handleEvent();
             }
         }
-        channellist.clear(); // 清除
     }
 }

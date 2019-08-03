@@ -22,6 +22,8 @@ class poll
             typedef std::vector<channel*> channellist;
             typedef std::vector<struct epoll_event> EventList;
             poll(Socket *data_ ) :m_user_count(0),lt(false),epollfd(::epoll_create1(EPOLL_CLOEXEC)),tmp(data_),events_(50){
+                int listenfd = 0;
+                add_event(tmp->fd(&listenfd));
                 if(epollfd < 0)
                 {
                     std::cout << "create epoll error" << std::endl;

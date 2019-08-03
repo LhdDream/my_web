@@ -30,9 +30,9 @@ public:
     void setstate(state code){state_ = code;}
     void setMessage(const std::string& message){Message_ = message;}
 
-    void setContentType( )
+    void setContentType( const std::string & value)
     {
-        addHeader("Content-Type", "Keep-alive");
+        addHeader("Content-Type",value);
     }
 
     void addHeader(const std::string& key, const std::string& value)

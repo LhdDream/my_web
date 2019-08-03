@@ -29,9 +29,6 @@ void poll::del_events(int fd)
 };
 void poll::run(poll::channellist * activechannels) // 使用epoll 中的ptr 作为channlist
 {
-    int listenfd = 0;
-    add_event(tmp->fd(&listenfd));
-
     int num = epoll_wait(epollfd,events_.data(),events_.size(),-1);
     if(num > 0)
     {
@@ -58,7 +55,6 @@ void poll::fillActiveChannels(int num,
             add_event(sockfd);
             m_user_count++;
             channel_->set_fd(connfd);
-
         }
         if(events_[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR))
         {
