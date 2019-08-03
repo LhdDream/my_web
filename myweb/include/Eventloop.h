@@ -27,6 +27,6 @@ private:
 
     std::atomic<bool> looping_;
     std::vector<channel *> channellist;
-    poll* poll_;
+    poll * poll_;
 };
 #endif //MYWEB_EVENTLOOP_H

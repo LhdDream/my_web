@@ -1,0 +1,3 @@
+/home/kiosk/CLionProjects/myweb/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/kiosk/CLionProjects/myweb/cmake-build-debug/CMakeFiles/myweb.dir
+/home/kiosk/CLionProjects/myweb/cmake-build-debug/CMakeFiles/edit_cache.dir

@@ -8,6 +8,8 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+
+
 class Buffer
 {
  public:
@@ -17,7 +19,7 @@ class Buffer
         explicit  Buffer():readindex(beginsize),writeindex(beginsize),data_(beginsize + fillsize)
         {};
         ~Buffer(){};
-        inline const char *peek() const
+        const char *peek() const
         {  return begin() + readindex; }
         const char * begin() const
         {
@@ -25,7 +27,7 @@ class Buffer
         }
         size_t writeableByte()
         {
-            return data_.size()-writeindex;
+            return 1024 - writeindex;
         }
         size_t readaleByte()
         {
@@ -35,15 +37,6 @@ class Buffer
         {
             return readindex;
         }
-        std::string tostring()
-        {
-           std::string c ;
-           for(size_t  i = 0; i < data_.size() ;i++)
-           {
-               c += data_[i];
-           }
-           return c;
-        }
         const char * beginwrite()
         {
             return  begin()+writeindex;
@@ -52,8 +45,11 @@ class Buffer
         {
             if(preableByte() > writeableByte())
             {
+                int temp = writeindex-readindex;
                 std::copy(data_.begin()+readindex,data_.begin()+ writeindex,data_.begin());
                 //move data
+                readindex = 0;
+                writeindex = temp;
             }
             else
             {
@@ -67,6 +63,7 @@ class Buffer
             {
                 data_[writeindex + i] = tmp[i];
             }
+            writeindex += len ;
         };
         void apppend(std::string & temp)
         {
@@ -86,19 +83,7 @@ class Buffer
           data_.clear();
           data_.shrink_to_fit();
         }
-        size_t  find()
-        {
-            size_t  tmp = 0;
-            for(auto &c :data_)
-            {
-                if(c == interval[0] )
-                {
-                    return tmp;
-                }
-                tmp++;
-            }
 
-        }
         void retrieve(size_t len)
         {
             if(readaleByte() < len)
@@ -114,6 +99,10 @@ class Buffer
                 retrieveAll();
             }
         }
+        void retrievesetction(const char * tmp){
+           size_t  len = tmp - peek();
+           readindex += len;
+        }
         void retrieveAll() // 把剩下的读取完毕
         {
             readindex= 0;
@@ -122,37 +111,26 @@ class Buffer
         size_t readfd( char* vptr,size_t n); // 相当于一次read操作
         size_t writefd( char *buf, int n); // 相当于一次write操作
         size_t number(){return data_.size();}
-        void getnospace(char * method)
+        const char * find()
         {
-            int i = 0;
-            for(auto c : data_)
-            {
-                if(c == ' ')
-                {
-                    break;
-                }
-                else
-                {
-                    c = method[i];
-                    i++;
-                }
-            }
-            std::cout << "method" << method << std::endl;
-           // method[i] = '\0';
-           // data_.erase(data_.begin(),data_.begin()+i);
+            const char * test = std::search(peek(),beginwrite(),line,line+2);
+            return test == NULL ? NULL : test;
         }
-        void print()
+        std::string get()
         {
+            std::string d ;
             for(auto c :data_)
             {
-                std::cout << c ;
+
+               d += c;
             }
-            std::cout << "\n";
+            return d;
         }
+
   private:
         std::vector<char> data_;//读取http请求
         size_t readindex;
         size_t writeindex;
-        static const char interval[] ;//间隔符号标志
+        const char line[2] ={'\r','\n'};
 };
 #endif //MYWEB_BUFFER_H

@@ -1,3 +1,6 @@
+//
+// Created by kiosk on 19-8-2.
+//
 #include "Socket.h"
 #include <iostream>
 #include <string.h>
@@ -5,7 +8,7 @@ int  Socket::bindaddress()
 {
     return ::bind(sockfd_,(struct sockaddr *)&address,sizeof(struct sockaddr));
 }
- int  Socket::listen()
+int  Socket::listen()
 {
     return ::listen(sockfd_,5);//默认backlog
 }
@@ -13,12 +16,13 @@ void Socket::setresueport(bool on) {
     if (on == true) {
         int reuse = 1;
         ::setsockopt(sockfd_, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(int));
+        ::setsockopt(sockfd_,SOL_SOCKET,SO_REUSEADDR,&reuse,sizeof(int));
 
     }
 }
- int Socket::accpet()
+int Socket::accpet()
 {
-  //   ::accept()
+    //   ::accept()
 
     struct sockaddr_in client;
     socklen_t client_addrlength = sizeof(client);

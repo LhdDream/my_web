@@ -1,4 +1,4 @@
-#include <iostream>
+//#include <iostream>
 #include "Buffer.h"
 #include "channel.h"
 #include "Eventloop.h"
@@ -10,6 +10,7 @@
 int main()
 {
     signal(SIGPIPE,SIG_IGN);
+    chdir("/home/kiosk/picture/www");
     Socket * one = new Socket("127.0.0.1",8080);
     one->setresueport(true);
     one->bindaddress();

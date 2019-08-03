@@ -58,7 +58,7 @@ void poll::fillActiveChannels(int num,
             add_event(sockfd);
             m_user_count++;
             channel_->set_fd(connfd);
-            std::cout << "connfd   " << connfd << std::endl;
+
         }
         if(events_[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR))
         {
