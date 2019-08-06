@@ -7,31 +7,25 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <iostream>
-#include <sys/sendfile.h>
-#include "httpresponse.h"
-#include "httprequest.h"
-#include "HttpContext.h"
-const int kReadEvent = EPOLLIN | EPOLLPRI;
+
+const int kReadEvent = EPOLLIN | EPOLLPRI ;
 
 
 void channel::handleEvent() {
-
-    if( events_ |= kReadEvent)
-        channel::handleRead();
-}
-
-void channel::handleRead() {
-    char buffer[256];
-    bzero(buffer,sizeof(char) * 256);
-    int ret  = recv(fd_,buffer,sizeof(char) *256,0);
-    if(ret < 0)
-    {
-        perror("read recv error");
+   //通过weak_ptr 来进行判断，tcpconnection  有没有连接在上面
+    if( events_   &= kReadEvent ) {
+        if(readcallback_) // 必须判断
+        {
+            readcallback_();
+        }
     }
-    Buffer buf;
-    buf.append(buffer,sizeof(char) *256);
-    HttpContext context;
-    context.parseRequest(&buf);
-    HttpResponse resp(context.path());
-    resp.getfile(fd_);
 }
+void channel::handleRead(  Callback cb)
+{
+
+    readcallback_ =  cb;
+}
+void channel::enable_read() {
+    events_  = kReadEvent  ; ownloop_->update(this);
+}
+

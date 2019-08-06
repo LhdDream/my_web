@@ -54,7 +54,7 @@ public:
 
     const std::string& path() const //  路径
     { return path_; }
-
+    bool Methos() {return   method_ == KPost; }
     void setQuery(const char* start, const char* end)
     {
         query_.assign(start, end);
@@ -79,7 +79,10 @@ public:
         std::string value(conn,end);
         headers_.insert({first,value});
     }
-
+    size_t  bodysize()
+    {
+        return std::stoi(headers_["Content-Length"]);
+    }
 private:
     std::string path_;
     std::string query_;

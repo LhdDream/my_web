@@ -10,7 +10,6 @@
 int HttpResponse::getfile(int fd)
 {
     struct stat st;
-    int cgi = 0;
     Buffer output;
     path_ = "picture" + path_;
     if(path_ == "picture")
@@ -32,36 +31,40 @@ int HttpResponse::getfile(int fd)
                       "</body>\n"
                       "\n"
                       "</html>");
-        if(send(fd,buffer,strlen(buffer),0))
+        if(send(fd,buffer,strlen(buffer),0) < 0)
         {
             std::cout << strerror(errno) <<std::endl;
         }
     }
     else {
-//        if ((st.st_mode & S_IXUSR) || (st.st_mode & S_IXGRP) || (st.st_mode & S_IXOTH))
-//            cgi = 1;
-//        if (cgi == 0) {
+        if ((st.st_mode & S_IXUSR) || (st.st_mode & S_IXGRP) || (st.st_mode & S_IXOTH))
+            cgi = 1;
+        if (cgi == 0) {
             std::cout << "path_  " << path_ << std::endl;
             setstate(Ok);
-            appendToBuffer(&output,fd);
+            appendToBuffer(&output, fd);
             int fd_ = open(path_.c_str(), O_RDONLY);
-            if(fd < 0 )
-            {
+            if (fd < 0) {
                 perror("open error");
             }
             int number = 0;
             char buf[1024];
-            bzero(buf,sizeof(char) *1024);
-            std::cout << st.st_size<< std::endl;
-            while(number < st.st_size)
-            {
-                bzero(buf,sizeof(char) * 1024);
-                number += read(fd_,buf,sizeof(char )*1020);
-                if(send(fd,buf,sizeof(char) * 1020 ,0) < 0 )
+            bzero(buf, sizeof(char) * 1024);
+            std::cout << st.st_size << std::endl;
+            while (number < st.st_size) {
+                bzero(buf, sizeof(char) * 1024);
+                number += read(fd_, buf, sizeof(char) * 1020);
+                std::cout << fd << std::endl;
+                if (send(fd, buf, sizeof(char) * 1020, 0) < 0)
                     perror("send");
             }
             close(fd_);
+        } else {
+
+        }
+
     }
+    close(fd);
     return cgi;
 }
 void HttpResponse::appendToBuffer(Buffer* output,int fd)
@@ -85,16 +88,20 @@ void HttpResponse::appendToBuffer(Buffer* output,int fd)
     snprintf(buffer, sizeof(char) * 32, "Content-Length: %d", st.st_size);
     output->append(buffer,strlen(buffer));
     output->append("\r\n",strlen("\r\n"));
+    bzero(buffer, sizeof(char) *32);
+    strcpy(buffer,"Connection: Keep-Alive");
+    output->append(buffer,strlen(buffer));
+    output->append("\r\n",strlen("\r\n"));
     if(path_.find("png") != path_.npos)
         setContentType("image/png");
-    if(path_.find("img") != path_.npos)
+    else if(path_.find("img") != path_.npos)
         setContentType("image/jpg");
-    if(path_.find("avi") != path_.npos)
+    else if(path_.find("avi") != path_.npos)
         setContentType("video/avi");
-    if(path_.find("mp4") != path_.npos)
+    else if(path_.find("mp4") != path_.npos)
         setContentType("audio/mp4");
-    setContentType("Keep-alive");
-
+    else if(path_.find("pdf") !=path_.npos)
+        setContentType("application/pdf");
     for (const auto& header : headers_)
     {
         output->append(header.first.c_str(),header.first.size());

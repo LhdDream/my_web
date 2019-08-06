@@ -11,9 +11,10 @@ int poll::setnonblocking(int fd) {
 }
 void poll::add_event(int fd)
 {
+
     epoll_event event;
     event.data.fd = fd;
-    event.events = EPOLLIN  | EPOLLET | EPOLLRDHUP;
+    event.events = EPOLLIN  | EPOLLPRI ;
     if( lt )
     {
         event.events |= EPOLLONESHOT;
@@ -29,6 +30,8 @@ void poll::del_events(int fd)
 };
 void poll::run(poll::channellist * activechannels) // 使用epoll 中的ptr 作为channlist
 {
+    loop_->getSocket(loop_->get());
+    add_event(sockfd_);
     int num = epoll_wait(epollfd,events_.data(),events_.size(),-1);
     if(num > 0)
     {
@@ -42,29 +45,36 @@ void poll::run(poll::channellist * activechannels) // 使用epoll 中的ptr 作�
 void poll::fillActiveChannels(int num,
                                    channellist* activeChannels)
 {
-
+   // std::cout << "Chann " << std::endl;
     for(int i = 0 ; i < num ; i++)
     {
-        int sockfd = events_[i].data.fd;
-        int listenfd = 0;
-        channel * channel_ =  new channel(events_[i].data.fd);
-        //lib 反应堆
-        if(sockfd == tmp->fd(&listenfd))
-        {
-            int connfd = tmp->accpet();
-            add_event(sockfd);
-            m_user_count++;
-            channel_->set_fd(connfd);
-        }
-        if(events_[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR))
-        {
-            close(sockfd);
-            m_user_count--;
-            del_events(sockfd);
-        }
+        channel * channel_ = channelmap_[events_[i].data.fd];
         channel_->set_events(events_[i].events);
         activeChannels->push_back(channel_);
+        channelmap_[events_[i].data.fd] = channel_;
+    }
+}
+// 更新fd 操作，在epoll 之中 如果当前事件Io 分发没在poll 之中维护的话，添加到
+//事件之中，
+void poll::updateChannel(channel* channel_)
+{
+    // 判断channel_ 在不在维护的map 数组之中
+    //如果没在的话，添加并且添加进入epoll之中,在的话，可以进行修改或者删除
+    std::cout << "poll::updateChannel ";
+    std::cout << channel_->fd() << std::endl;
+    int fd = channel_->fd();
+    if(channelmap_.find(fd) == channelmap_.end())
+    {
+        add_event(fd);
+        channelmap_[channel_->fd()] = channel_;
+    }
+    else if(channelmap_.find(fd) != channelmap_.end())
+    {
+        if(channel_->hasnoevent()) {
+            del_events(channel_->fd());
+            channelmap_.erase(channel_->fd());
+        }
+        channelmap_[channel_->fd()] = channel_;
     }
 
 }
-

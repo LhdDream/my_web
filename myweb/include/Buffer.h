@@ -65,19 +65,7 @@ class Buffer
             }
             writeindex += len ;
         };
-        void apppend(std::string & temp)
-        {
-            resize();
-            for(size_t i = 0 ; i < temp.size()-1 ; i++)
-            {
-                data_[writeindex + i] = temp[i];
-            }
-        };
-        void append(const char tmp)
-        {
-            data_[writeindex] = tmp;
-            writeindex++;
-        }
+
         void clear() // 清空Buffer中的数据
         {
           data_.clear();
@@ -108,7 +96,7 @@ class Buffer
             readindex= 0;
             writeindex = 0;
         }
-        size_t readfd( char* vptr,size_t n); // 相当于一次read操作
+        ssize_t readfd(int fd); // 相当于一次read操作
         size_t writefd( char *buf, int n); // 相当于一次write操作
         size_t number(){return data_.size();}
         const char * find()

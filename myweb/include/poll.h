@@ -21,28 +21,33 @@ class poll
     public:
             typedef std::vector<channel*> channellist;
             typedef std::vector<struct epoll_event> EventList;
-            poll(Socket *data_ ) :m_user_count(0),lt(false),epollfd(::epoll_create1(EPOLL_CLOEXEC)),tmp(data_),events_(50){
-                int listenfd = 0;
-                add_event(tmp->fd(&listenfd));
+            poll(Eventloop * loop) : loop_(loop),lt(false),epollfd(::epoll_create1(EPOLL_CLOEXEC)),events_(50){
+
                 if(epollfd < 0)
                 {
                     std::cout << "create epoll error" << std::endl;
                 }
             };
             ~poll() {
-        close(epollfd);
+                close(epollfd);
            }
             void add_event(int fd);
             void del_events(int fd);
             int setnonblocking(int fd); // 设置到非阻塞
             void run(channellist * activechannels);
-    void fillActiveChannels(int num,
+            void fillActiveChannels(int num,
                             channellist* activeChannels) ;
+    //有事件添加到epoll,没有事件则在epoll中删除
+            void updateChannel(channel* channel_);
+            void getSocket(int connfd) { sockfd_ = connfd ;}
     private:
         int epollfd;
         bool  lt;
         int m_user_count;
-        Socket *tmp;
+        int sockfd_;
         EventList events_;
+        Eventloop * loop_;
+         // 设置一个map 绑定fa 和channel
+         std::map<int ,channel * > channelmap_; //
 };
 #endif //MYWEB_POLL_H

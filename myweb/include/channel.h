@@ -7,21 +7,30 @@
 //IO事件分发器，对于IO操作负责不同的回调
 #include <functional>
 #include "Eventloop.h"
+#include <iostream>
+#include <sys/epoll.h>
 class Eventloop;
 class channel
 {
     public:
-    channel(int fd):fd_(fd){
+    typedef std::function< void() > Callback;
+    channel(Eventloop * loop,int fd) : fd_(fd),ownloop_(loop),events_(-1){
     };
     ~channel(){};
         void handleEvent();
         int fd() const {return fd_;}
-        void  set_events(int events) {  events_ = events; }
-        void handleRead();
-        void  set_fd(int fd ) {fd_ =fd ;}
+        void  set_fd(int fd ) { fd_ = fd ;}
+        void enable_read() ;
+        void  set_events(int events) {   events_ = events; }
+        bool hasnoevent()
+        {
+            return events_ == -1;
+        }
+        void handleRead(const  Callback cb);
     private:
         int fd_;
         int events_;
-
+        Eventloop * ownloop_;
+        Callback readcallback_;
 };
 #endif //MYWEB_CHANNEL_H

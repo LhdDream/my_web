@@ -7,6 +7,10 @@ file(REMOVE_RECURSE
   "CMakeFiles/myweb.dir/include/HttpContext.cc.o"
   "CMakeFiles/myweb.dir/include/httpresponse.cc.o"
   "CMakeFiles/myweb.dir/include/Socket.cc.o"
+  "CMakeFiles/myweb.dir/include/Acceptor.cc.o"
+  "CMakeFiles/myweb.dir/include/Tcpconnection.cc.o"
+  "CMakeFiles/myweb.dir/include/httpserver.cc.o"
+  "CMakeFiles/myweb.dir/include/threadpoll.cc.o"
   "myweb.pdb"
   "myweb"
 )

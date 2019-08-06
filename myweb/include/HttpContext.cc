@@ -12,6 +12,8 @@ bool HttpContext::processRequestline(const char *begin, const char *end)
     const char * space =  std::find(start,end,' ');
     if(space != end && request_.setMethod(start,space))
     {
+        if(request_.Methos())
+            cgi = 1;
         start =  space + 1; //解析url
         space =  std::find(start,end,' ');
         if(space != end)
@@ -91,10 +93,18 @@ bool HttpContext::parseRequest(Buffer *buf)
                {
                    stat = false; // 退出循环
                }
+               if(request_.Methos())
+               {
+                   stat = true;
+                   state_ =Body;
+               }//说明为post继续读取body内容
                break;
            }
-          /* case Body:
-               break;*/
+//          case Body: {
+//                bodysize_ =request_.bodysize();//获取到长度
+//              const char * tmp = buf->find();
+//              break;
+//          }
           // post 请求
        }
    }

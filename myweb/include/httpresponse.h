@@ -22,7 +22,7 @@ public:
         BadRequest = 400,
         NotFound = 404,
     };
-    HttpResponse(std::string path) : state_(Unkown),path_(path)
+    HttpResponse(std::string path,int cgi_) : state_(Unkown),path_(path),cgi(cgi_)
     {
 
     }
@@ -48,6 +48,6 @@ private:
     state  state_;
     std::string Message_;
     std::string path_;
-    int cgi = 1;
+    int cgi = 0;
 };
 #endif //MYWEB_HTTPRESPONSE_H

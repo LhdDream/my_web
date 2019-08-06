@@ -17,7 +17,7 @@ public:
         Body,
         GotAll
     };
-    HttpContext() : state_(RequestLine)
+    HttpContext() : state_(RequestLine),bodysize_(0)
     {
 
     }
@@ -43,10 +43,13 @@ public:
     {
         return request_.path();
     };
+    int getcgi() { return cgi;}
 private:
     bool processRequestline(const char * begin, const char * end);
 //  解析请求
     state  state_;
     HttpRequest request_;
+    int cgi = 0;
+    size_t  bodysize_;
 };
 #endif //MYWEB_HTTPCONTEXT_H

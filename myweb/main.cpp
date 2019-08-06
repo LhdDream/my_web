@@ -5,19 +5,19 @@
 #include "poll.h"
 #include "Socket.h"
 #include <signal.h>
-#include "threadpool.hpp"
+#include "Tcpconnection.h"
+#include "httpserver.h"
+#include "httpresponse.h"
+#include "HttpContext.h"
 
 int main()
 {
     signal(SIGPIPE,SIG_IGN);
     chdir("/home/kiosk/picture/www");
-    Socket * one = new Socket("127.0.0.1",8080);
-    one->setresueport(true);
-    one->bindaddress();
-    one->listen();
-    poll poll_(one);
-    Eventloop loop_(&poll_);
-    loop_.loop();
-    one->shutdownWrite();
+    Eventloop loop;
+    httpserver server(&loop);
+
+    server.start();
+    loop.loop();
     return 0;
 }

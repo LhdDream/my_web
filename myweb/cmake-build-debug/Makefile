@@ -123,6 +123,33 @@ myweb/fast:
 	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/build
 .PHONY : myweb/fast
 
+include/Acceptor.o: include/Acceptor.cc.o
+
+.PHONY : include/Acceptor.o
+
+# target to build an object file
+include/Acceptor.cc.o:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Acceptor.cc.o
+.PHONY : include/Acceptor.cc.o
+
+include/Acceptor.i: include/Acceptor.cc.i
+
+.PHONY : include/Acceptor.i
+
+# target to preprocess a source file
+include/Acceptor.cc.i:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Acceptor.cc.i
+.PHONY : include/Acceptor.cc.i
+
+include/Acceptor.s: include/Acceptor.cc.s
+
+.PHONY : include/Acceptor.s
+
+# target to generate assembly for a file
+include/Acceptor.cc.s:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Acceptor.cc.s
+.PHONY : include/Acceptor.cc.s
+
 include/Buffer.o: include/Buffer.cc.o
 
 .PHONY : include/Buffer.o
@@ -231,6 +258,33 @@ include/Socket.cc.s:
 	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Socket.cc.s
 .PHONY : include/Socket.cc.s
 
+include/Tcpconnection.o: include/Tcpconnection.cc.o
+
+.PHONY : include/Tcpconnection.o
+
+# target to build an object file
+include/Tcpconnection.cc.o:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Tcpconnection.cc.o
+.PHONY : include/Tcpconnection.cc.o
+
+include/Tcpconnection.i: include/Tcpconnection.cc.i
+
+.PHONY : include/Tcpconnection.i
+
+# target to preprocess a source file
+include/Tcpconnection.cc.i:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Tcpconnection.cc.i
+.PHONY : include/Tcpconnection.cc.i
+
+include/Tcpconnection.s: include/Tcpconnection.cc.s
+
+.PHONY : include/Tcpconnection.s
+
+# target to generate assembly for a file
+include/Tcpconnection.cc.s:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Tcpconnection.cc.s
+.PHONY : include/Tcpconnection.cc.s
+
 include/channel.o: include/channel.cc.o
 
 .PHONY : include/channel.o
@@ -285,6 +339,33 @@ include/httpresponse.cc.s:
 	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/httpresponse.cc.s
 .PHONY : include/httpresponse.cc.s
 
+include/httpserver.o: include/httpserver.cc.o
+
+.PHONY : include/httpserver.o
+
+# target to build an object file
+include/httpserver.cc.o:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/httpserver.cc.o
+.PHONY : include/httpserver.cc.o
+
+include/httpserver.i: include/httpserver.cc.i
+
+.PHONY : include/httpserver.i
+
+# target to preprocess a source file
+include/httpserver.cc.i:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/httpserver.cc.i
+.PHONY : include/httpserver.cc.i
+
+include/httpserver.s: include/httpserver.cc.s
+
+.PHONY : include/httpserver.s
+
+# target to generate assembly for a file
+include/httpserver.cc.s:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/httpserver.cc.s
+.PHONY : include/httpserver.cc.s
+
 include/poll.o: include/poll.cc.o
 
 .PHONY : include/poll.o
@@ -311,6 +392,33 @@ include/poll.s: include/poll.cc.s
 include/poll.cc.s:
 	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/poll.cc.s
 .PHONY : include/poll.cc.s
+
+include/threadpoll.o: include/threadpoll.cc.o
+
+.PHONY : include/threadpoll.o
+
+# target to build an object file
+include/threadpoll.cc.o:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/threadpoll.cc.o
+.PHONY : include/threadpoll.cc.o
+
+include/threadpoll.i: include/threadpoll.cc.i
+
+.PHONY : include/threadpoll.i
+
+# target to preprocess a source file
+include/threadpoll.cc.i:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/threadpoll.cc.i
+.PHONY : include/threadpoll.cc.i
+
+include/threadpoll.s: include/threadpoll.cc.s
+
+.PHONY : include/threadpoll.s
+
+# target to generate assembly for a file
+include/threadpoll.cc.s:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/threadpoll.cc.s
+.PHONY : include/threadpoll.cc.s
 
 main.o: main.cpp.o
 
@@ -348,6 +456,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... myweb"
 	@echo "... edit_cache"
+	@echo "... include/Acceptor.o"
+	@echo "... include/Acceptor.i"
+	@echo "... include/Acceptor.s"
 	@echo "... include/Buffer.o"
 	@echo "... include/Buffer.i"
 	@echo "... include/Buffer.s"
@@ -360,15 +471,24 @@ help:
 	@echo "... include/Socket.o"
 	@echo "... include/Socket.i"
 	@echo "... include/Socket.s"
+	@echo "... include/Tcpconnection.o"
+	@echo "... include/Tcpconnection.i"
+	@echo "... include/Tcpconnection.s"
 	@echo "... include/channel.o"
 	@echo "... include/channel.i"
 	@echo "... include/channel.s"
 	@echo "... include/httpresponse.o"
 	@echo "... include/httpresponse.i"
 	@echo "... include/httpresponse.s"
+	@echo "... include/httpserver.o"
+	@echo "... include/httpserver.i"
+	@echo "... include/httpserver.s"
 	@echo "... include/poll.o"
 	@echo "... include/poll.i"
 	@echo "... include/poll.s"
+	@echo "... include/threadpoll.o"
+	@echo "... include/threadpoll.i"
+	@echo "... include/threadpoll.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

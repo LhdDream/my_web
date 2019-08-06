@@ -86,6 +86,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Acceptor.cc">
+			<Option target="myweb"/>
+		</Unit>
 		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Acceptor.h">
 			<Option target="myweb"/>
 		</Unit>
@@ -113,6 +116,12 @@
 		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Socket.h">
 			<Option target="myweb"/>
 		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Tcpconnection.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Tcpconnection.h">
+			<Option target="myweb"/>
+		</Unit>
 		<Unit filename="/home/kiosk/CLionProjects/myweb/include/channel.cc">
 			<Option target="myweb"/>
 		</Unit>
@@ -128,13 +137,22 @@
 		<Unit filename="/home/kiosk/CLionProjects/myweb/include/httpresponse.h">
 			<Option target="myweb"/>
 		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/httpserver.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/httpserver.h">
+			<Option target="myweb"/>
+		</Unit>
 		<Unit filename="/home/kiosk/CLionProjects/myweb/include/poll.cc">
 			<Option target="myweb"/>
 		</Unit>
 		<Unit filename="/home/kiosk/CLionProjects/myweb/include/poll.h">
 			<Option target="myweb"/>
 		</Unit>
-		<Unit filename="/home/kiosk/CLionProjects/myweb/include/threadpool.hpp">
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/threadpoll.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/threadpool.h">
 			<Option target="myweb"/>
 		</Unit>
 		<Unit filename="/home/kiosk/CLionProjects/myweb/main.cpp">

@@ -16,7 +16,7 @@ public:
         inet_pton(AF_INET,ip,&address.sin_addr);
         address.sin_port = htons(port);
     };
-    int fd(int *x) { *x = sockfd_; return *x;} // 返回已经绑定的socketfd
+    int fd() { return sockfd_;} // 返回已经绑定的socketfd
     int  bindaddress();
     //abort if bind in use
     int  listen();
