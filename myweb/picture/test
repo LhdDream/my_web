@@ -1,0 +1,5 @@
+Content-type:text/html;charset=utf-8
+
+<!DOCTYPE html>
+<title>CGI 程序接收复选框数据</title>
+你曾经使用过的语言有: C 
