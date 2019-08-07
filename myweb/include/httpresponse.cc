@@ -64,11 +64,11 @@ int HttpResponse::getfile(int fd)
                 perror("open error");
             }
             int number = 0;
-            char buf[1024];
+            char buf[4028];
             while (number < st.st_size) {
-                bzero(buf, sizeof(char) * 1024);
-                number += read(fd_, buf, sizeof(char) * 1020);
-                if (send(fd, buf, sizeof(char) * 1020, 0) < 0 && (strlen(buf) >0 ) && (fd > 0))
+                bzero(buf, sizeof(char) * 4028);
+                number += read(fd_, buf, sizeof(char) * 4000);
+                if (send(fd, buf, sizeof(char) * 4000, 0) < 0 && (strlen(buf) >0 ) && (fd > 0))
                     perror("send");
             }
             close(fd_);
