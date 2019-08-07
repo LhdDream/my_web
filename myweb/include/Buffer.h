@@ -25,6 +25,10 @@ class Buffer
         {
             return &*data_.begin();
         }
+        const char * end() const
+        {
+            return &*data_.end();
+        }
         size_t writeableByte()
         {
             return 1024 - writeindex;
@@ -102,7 +106,7 @@ class Buffer
         const char * find()
         {
             const char * test = std::search(peek(),beginwrite(),line,line+2);
-            return test == NULL ? NULL : test;
+            return test == beginwrite() ? NULL : test;
         }
         std::string get()
         {

@@ -69,42 +69,36 @@ bool HttpContext::parseRequest(Buffer *buf)
                {
                    stat = false; // 退出循环
                }
+               if(request_.Methos()) //method
+               {
+                   stat = true;
+                   state_ = Headers;
+               }//说明为post继续读取body内容
                break;
            }
            case Headers: {
                //一行一行读取
                const char * tmp = buf->find();
-               if(tmp) // 不是空的
-               {
-                 // 执行读取头部的函数
-                 // 以 : 来进行分割
-                 const char * conn = std::find(buf->peek(),tmp,':');
-                 if(conn)
-                 {
-                    request_.addHeaders(buf->peek(),conn,tmp);
-                     buf->retrievesetction(tmp + 2); // 缓冲区往后偏移
-                 }
-                 else
-                 {
-                     stat = false;
-                 }
+               while(tmp) {
+                       // 执行读取头部的函数
+                       // 以 : 来进行分割
+                       const char *conn = std::find(buf->peek(), tmp, ':');
+                       //返回end
+                       if (conn != tmp) {
+                           request_.addHeaders(buf->peek(), conn, tmp);
+                       }
+                       buf->retrievesetction(tmp + 2);
+                       tmp = buf->find();
                }
-               else
-               {
-                   stat = false; // 退出循环
-               }
-               if(request_.Methos())
-               {
-                   stat = true;
-                   state_ =Body;
-               }//说明为post继续读取body内容
+               state_ = Body;
                break;
            }
-//          case Body: {
-//                bodysize_ =request_.bodysize();//获取到长度
-//              const char * tmp = buf->find();
-//              break;
-//          }
+          case Body: {
+              bodysize_ = request_.bodysize();//获取到长度
+              request_.setbody(buf->peek(),buf->peek()+bodysize_);
+              stat = false;
+              break;
+          }
           // post 请求
        }
    }

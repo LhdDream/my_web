@@ -14,7 +14,7 @@ void Tcpconnection::handleread()
         buf.readfd(sockfd_);
         HttpContext context;
         context.parseRequest(&buf);
-        HttpResponse resp(context.path(),context.getcgi());
+        HttpResponse resp(context.path(),context.getcgi(),context.query(),context.body());
         resp.getfile(sockfd_);
     }
 }

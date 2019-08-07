@@ -25,8 +25,6 @@ void Acceptor::listen()
 
     acceptSockct_.listen();//让套接字可读
     acceptchannel_.enable_read();
-    std::cout << "channel_ " <<  acceptSockct_.fd() << std::endl;
-
 }
 
 void Acceptor::handleRead() //套接字可读的状态
@@ -51,5 +49,6 @@ void Acceptor::handleRead() //套接字可读的状态
             ::close(idlefd_);
             idlefd_ = ::open("/dev/null",O_RDONLY | O_CLOEXEC);
         }
+        close(connfd);
     }
 }

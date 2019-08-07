@@ -10,13 +10,8 @@
 #include "threadpool.h"
 httpserver::httpserver(Eventloop *loop) : loop_(loop) , acceptor_(new Acceptor(loop))
 {
-    en  = new threadpool(20);
+    en  = new threadpool(50);
     acceptor_->setCallback(std::bind(&httpserver::new_http,this,std::placeholders::_1));
-    for(size_t i = 0; i< 10;i++)
-    {
-        en->sumblit();
-    }
-
 }
 void httpserver::start()
 {
@@ -30,7 +25,7 @@ void httpserver::start()
 void httpserver::new_http(int sockfd)
 {
     Eventloop * io = en->getNextLoop();
-    io->setsockfd(sockfd);
+    io->setsockfd(std::move(sockfd));
     Tcpptr conn (new Tcpconnection(loop_,sockfd));
     connections_.push_back(conn);
     loop_->runthisthread(std::bind(&Tcpconnection::connectget,conn));

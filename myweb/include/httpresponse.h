@@ -22,9 +22,8 @@ public:
         BadRequest = 400,
         NotFound = 404,
     };
-    HttpResponse(std::string path,int cgi_) : state_(Unkown),path_(path),cgi(cgi_)
+    HttpResponse(std::string path,int cgi_,std::string query,std::string body) : state_(Unkown),path_(path),cgi(cgi_),method(cgi_),query_(query),body_(body)
     {
-
     }
     ~HttpResponse() = default;
     void setstate(state code){state_ = code;}
@@ -42,12 +41,16 @@ public:
 
     void appendToBuffer(Buffer* output,int fd) ;
     int getfile(int fd);
-
 private:
     std::map<std::string,std::string> headers_;
     state  state_;
     std::string Message_;
     std::string path_;
+    std::string query_;
+    std::string body_;
+    int method;
     int cgi = 0;
+    int cgi_number = 0;
+
 };
 #endif //MYWEB_HTTPRESPONSE_H

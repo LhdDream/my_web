@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "sys/stat.h"
+#include <cstring>
 class HttpRequest
 {
 public:
@@ -63,31 +64,42 @@ public:
     { return query_; }
     void addHeaders(const char * begin , const char * conn , const char * end)
     {
-        //每一行的读取，使用一个map 来进行存储
-        //
+        if(begin == conn || conn == end)
+        {
+            return ;
+        }
         std::string first(begin,conn);
-        //过滤掉空格
         conn++;
         while(*conn == ' ' && conn < end)
         {
             conn++;
         }
-        while(*end == ' ')
+        while(*end == ' ' && end > conn)
         {
             end--;
         }
         std::string value(conn,end);
-        headers_.insert({first,value});
+        headers_[first] = value;
     }
     size_t  bodysize()
     {
         return std::stoi(headers_["Content-Length"]);
+    }
+    void  setbody(const char * begin,const char * end)
+    {
+        std::string body(begin,end);
+        body_ = body;
+    }
+    std::string getbody()
+    {
+        return body_;
     }
 private:
     std::string path_;
     std::string query_;
     Method  method_;
     Version version_;
+    std::string body_;
     std::map<std::string,std::string> headers_;
 };
 #endif //MYWEB_HTTPREQUEST_H

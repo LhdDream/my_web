@@ -16,35 +16,24 @@
 #include "Eventloop.h"
     //执行函数
 
-void threadpool::sumblit() {
 
-    std::lock_guard<std::mutex> lk(data_->mutex_);
-    data_->task_.emplace(std::bind(&threadpool::starts, this));
-    data_->cond_.notify_one();
-}
 Eventloop * threadpool::getNextLoop()
 {
-    Eventloop* loops  = loop;
+    Eventloop* loops  = data_->loop;
 
     if (!loop_.empty())
     {
         // round-robin
-        loop = loop_[next_];
+        loops = loop_[next_];
         ++next_;
         if (static_cast<size_t>(next_) >= loop_.size())
         {
             next_ = 0;
         }
     }
-    return loop;
+    return loops;
 }
-void threadpool::starts() {
-        Eventloop loops;
-        loop = &loops;
 
-        loop_.push_back(loop);
-        loops.loop();
-};
 threadpool::~threadpool()
 {
     if(data_ != NULL)

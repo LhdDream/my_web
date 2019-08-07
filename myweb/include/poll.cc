@@ -60,8 +60,8 @@ void poll::updateChannel(channel* channel_)
 {
     // 判断channel_ 在不在维护的map 数组之中
     //如果没在的话，添加并且添加进入epoll之中,在的话，可以进行修改或者删除
-    std::cout << "poll::updateChannel ";
-    std::cout << channel_->fd() << std::endl;
+  //  std::cout << "poll::updateChannel ";
+   // std::cout << channel_->fd() << std::endl;
     int fd = channel_->fd();
     if(channelmap_.find(fd) == channelmap_.end())
     {

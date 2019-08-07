@@ -7,15 +7,28 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <errno.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
 int HttpResponse::getfile(int fd)
 {
+    if(fd < 0)
+    {
+        return 0;
+    }
     struct stat st;
+    int cgi_output[2];
+    int cgi_input [2];
+    bzero(cgi_input,sizeof(int) *2);
+    bzero(cgi_output,sizeof(int) *2);
+    pid_t  tmp;
     Buffer output;
-    path_ = "picture" + path_;
-    if(path_ == "picture")
+    if(path_.empty())
         path_ = "picture/index.html";
     if(path_[path_.size() - 1] == '/')
         path_ = path_ + "index.html"; //默认
+     if(path_ != "picture/index.html")
+         path_ =  "picture" + path_ ;
     //文件不存在
     if(stat(path_.c_str(),&st) == -1) {
         setstate(NotFound);
@@ -38,29 +51,107 @@ int HttpResponse::getfile(int fd)
     }
     else {
         if ((st.st_mode & S_IXUSR) || (st.st_mode & S_IXGRP) || (st.st_mode & S_IXOTH))
+        {
             cgi = 1;
-        if (cgi == 0) {
-            std::cout << "path_  " << path_ << std::endl;
-            setstate(Ok);
+        }
+       // std::cout << "path_  " << path_  << "  cgi  " << cgi << std::endl;
+        setstate(Ok);
+        if(cgi == 0)
+        {
             appendToBuffer(&output, fd);
             int fd_ = open(path_.c_str(), O_RDONLY);
-            if (fd < 0) {
+            if (fd_ < 0) {
                 perror("open error");
             }
             int number = 0;
             char buf[1024];
-            bzero(buf, sizeof(char) * 1024);
-            std::cout << st.st_size << std::endl;
             while (number < st.st_size) {
                 bzero(buf, sizeof(char) * 1024);
                 number += read(fd_, buf, sizeof(char) * 1020);
-                std::cout << fd << std::endl;
-                if (send(fd, buf, sizeof(char) * 1020, 0) < 0)
+                if (send(fd, buf, sizeof(char) * 1020, 0) < 0 && (strlen(buf) >0 ) && (fd > 0))
                     perror("send");
             }
             close(fd_);
-        } else {
+         } else {
+                if(pipe(cgi_output) < 0)
+                {
+                    perror("pipe cgi_out");
+                }
+                if(pipe(cgi_input) < 0)
+                {
+                    perror("pipe cgi_in");
+                }
+                if((tmp = fork()) < 0) //多线程本不该用fork
+                {
+                    perror("fork error");
+                }
+                if(tmp == 0)
+                {
+                    char meth_env[255];
+                    char query_env[255];
+                    char length_env[255];
+                    bzero(meth_env,sizeof(char) *254);
+                    bzero(query_env,sizeof(char) *254);
+                    bzero(length_env,sizeof(char) *254);
+                    //将子进程的输出由标准输出重定向到 cgi_ouput 的管道写端上
+                    dup2(cgi_output[1], STDOUT_FILENO);
+                    //将子进程的输出由标准输入重定向到 cgi_ouput 的管道读端上
+                    dup2(cgi_input[0], STDIN_FILENO);
+                    //关闭 cgi_ouput 管道的读端与cgi_input 管道的写端
+                    close(cgi_output[0]);
+                    close(cgi_input[1]);
+                    if(method == 0)
+                    {
+                        strcpy(meth_env,"REQUEST_METHOD=GET");
+                        sprintf(query_env, "QUERY_STRING=%s", query_.c_str());
+                        putenv(query_env);
+                    }
+                    else
+                    {
+                        strcpy(meth_env,"REQUEST_METHOD=POST");
+                        sprintf(length_env, "CONTENT_LENGTH=%d", body_.size());
+                        putenv(length_env);
+                    }
+                    putenv(meth_env);
+                    if(execl(path_.c_str(),path_.c_str(),NULL) <0)
+                    {
+                        perror("execle");
+                    }
+                    exit(0);
+                }
+                else
+                {
+                    close(cgi_output[1]);
+                    close(cgi_input[0]);
+                    if(write(cgi_input[1],body_.c_str(),body_.size()) <0 )
+                    {
+                        perror("write");
+                    }
 
+                    //然后从 cgi_output 管道中读子进程的输出，并发送到客户端去
+                    std::string cgi_temp;
+                    char c[1024];
+                    bzero(c,sizeof(c));
+                    int status = 1;
+                    while (int ret =read(cgi_output[0], c, sizeof(c)) > 0)
+                    {
+                        cgi_number += ret;
+                        cgi_temp += c;
+                        bzero(c,sizeof(c));
+                    }
+                    appendToBuffer(&output, fd);
+                    char cgi_tmp[65535];
+                    bzero(cgi_tmp,sizeof(char) *65535);
+                    strcpy(cgi_tmp,cgi_temp.c_str());
+                    if(send(fd, cgi_tmp,sizeof(char) *65535 , 0) < 0)
+                        perror("send  cgi ");
+                    //关闭管道
+                    close(cgi_output[0]);
+                    close(cgi_input[1]);
+                    //等待子进程的退出
+                    waitpid(tmp, &status, 0);
+                }
+                cgi = 0;
         }
 
     }
@@ -69,38 +160,40 @@ int HttpResponse::getfile(int fd)
 }
 void HttpResponse::appendToBuffer(Buffer* output,int fd)
 {
-
-    char buffer[32];
+    char buffer[64];
     struct stat st;
-    if(stat(path_.c_str(),&st) < 0)
+    if(stat(path_.c_str(),&st) < 0 )
     {
-        perror("stat error"  ) ;
     }
-    bzero(buffer,sizeof(char)*32);
-    snprintf(buffer, sizeof(char) * 32, "HTTP/1.1 %d ", state_);
+    if(path_.find(cgi) != -1 )
+    {
+        st.st_size = cgi_number;
 
+        std::cout << "cgi   " << cgi_number << std::endl;
+    }
+    bzero(buffer,sizeof(char)*64);
+    snprintf(buffer, sizeof(char) * 64, "HTTP/1.1 %d OK", state_);
     output->append(buffer,strlen(buffer));
-
     output->append("\r\n",strlen("\r\n"));
 
 //    // 消息长度
-    bzero(buffer, sizeof(char) *32);
-    snprintf(buffer, sizeof(char) * 32, "Content-Length: %d", st.st_size);
+    bzero(buffer, sizeof(char) *64);
+    snprintf(buffer, sizeof(char) * 64, "Content-Length: %d", st.st_size);
     output->append(buffer,strlen(buffer));
     output->append("\r\n",strlen("\r\n"));
-    bzero(buffer, sizeof(char) *32);
+    bzero(buffer, sizeof(char) *64);
     strcpy(buffer,"Connection: Keep-Alive");
     output->append(buffer,strlen(buffer));
     output->append("\r\n",strlen("\r\n"));
-    if(path_.find("png") != path_.npos)
+    if(path_.find("png") != -1 )
         setContentType("image/png");
-    else if(path_.find("img") != path_.npos)
+    else if(path_.find("img") != -1)
         setContentType("image/jpg");
-    else if(path_.find("avi") != path_.npos)
+    else if(path_.find("avi") != -1)
         setContentType("video/avi");
-    else if(path_.find("mp4") != path_.npos)
+    else if(path_.find("mp4") != -1)
         setContentType("audio/mp4");
-    else if(path_.find("pdf") !=path_.npos)
+    else if(path_.find("pdf") !=  -1)
         setContentType("application/pdf");
     for (const auto& header : headers_)
     {
@@ -108,16 +201,17 @@ void HttpResponse::appendToBuffer(Buffer* output,int fd)
         output->append(": ",strlen("\r\n"));
         output->append(header.second.c_str(),header.second.size());
         output->append("\r\n",strlen("\r\n"));
+        std::cout <<  header.first << std::endl;
     }
-
     output->append("\r\n",strlen("\r\n"));
     std::string c = output->get();
-    char buf[256];
-    bzero(buf,sizeof(char) *256);
+    char buf[512];
+    bzero(buf,sizeof(char) *512);
     strcpy(buf,c.c_str());
+    //std::cout <<"请求头："<<buf << std::endl ;
     if(send(fd,buf,strlen(buf),0) < 0 )
     {
         perror("send error");
     }
-
+ //   std::cout <<"结束"<<std::endl ;
 }

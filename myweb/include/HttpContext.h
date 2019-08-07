@@ -19,11 +19,9 @@ public:
     };
     HttpContext() : state_(RequestLine),bodysize_(0)
     {
-
     }
     ~HttpContext()
     {
-
     }
     bool gotall()
     {
@@ -36,14 +34,17 @@ public:
     bool parseRequest(Buffer* buf);
     void print()
     {
-        std::cout << request_.query() << std::endl;
-        std::cout << request_.path() << std::endl;
+        std::cout <<  "body " << request_.getbody() << std::endl;
+        std::cout << "bodysize " << request_.bodysize() << std::endl;
     }
     const std::string & path()
     {
         return request_.path();
     };
+    const std::string& query() const
+    { return request_.query(); }
     int getcgi() { return cgi;}
+    std::string body() {return request_.getbody();}
 private:
     bool processRequestline(const char * begin, const char * end);
 //  解析请求
