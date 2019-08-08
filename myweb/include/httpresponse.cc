@@ -66,7 +66,11 @@ int HttpResponse::getfile(int fd)
             int number = 0;
             char buf[4028];
             while (number < st.st_size) {
+<<<<<<< HEAD
                 bzero(buf, sizeof(char) * 4000);
+=======
+                bzero(buf, sizeof(char) * 4028);
+>>>>>>> f32684d77a537ce774fa89a7320ac557f50f1174
                 number += read(fd_, buf, sizeof(char) * 4000);
                 if (send(fd, buf, sizeof(char) * 4000, 0) < 0 && (strlen(buf) >0 ) && (fd > 0))
                     perror("send");
