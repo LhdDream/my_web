@@ -19,7 +19,7 @@
 
 Eventloop * threadpool::getNextLoop()
 {
-    Eventloop* loops  = data_->loop;
+    Eventloop* loops  =  data_->loop;
 
     if (!loop_.empty())
     {

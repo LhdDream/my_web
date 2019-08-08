@@ -26,12 +26,11 @@ class Tcpconnection : public boost::enable_shared_from_this<Tcpconnection>
     // 连接来临的回调函数
 
     //初始化各种回调函数
-    Tcpconnection(Eventloop * loop,int sockfd): loop_(loop),state_(Connecting),socket_(new Socket("127.0.0.1",8888)),channel_(new channel(loop,socket_->fd())),sockfd_(sockfd)
+    Tcpconnection(Eventloop * loop,int sockfd): loop_(loop),state_(Connecting),sockfd_(sockfd),channel_(new channel(loop,sockfd_))
     {
        channel_->handleRead(std::bind(&Tcpconnection::handleread,this));
     }
     void connectget();
-    int fd() { return socket_->fd();}
     void handleread();
 private:
     enum State {Connecting,Connected};
@@ -43,7 +42,6 @@ private:
    // 接受到http请求之后立马注册epollout 时间，如果可写就写入
     State  state_;
     Eventloop * loop_;
-    std::unique_ptr<Socket> socket_;
     std::unique_ptr<channel> channel_;
     int sockfd_;
 };

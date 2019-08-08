@@ -9,7 +9,7 @@
 #include "HttpContext.h"
 void Tcpconnection::handleread()
 {
-    if(fd() > 0) {
+    if(sockfd_ > 0) {
         Buffer buf;
         buf.readfd(sockfd_);
         HttpContext context;

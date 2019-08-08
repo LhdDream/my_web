@@ -37,6 +37,10 @@ void Acceptor::handleRead() //套接字可读的状态
             //在这里我们可以打开一个新的文件描述符号,如果连接过多，文件描述符
             //用来，准备一个空闲的描述符号，或者我们可以使用判断理不理想
         }
+        else
+        {
+            close(connfd);
+        }
     }
     if(connfd < 0 )
     {
@@ -49,6 +53,6 @@ void Acceptor::handleRead() //套接字可读的状态
             ::close(idlefd_);
             idlefd_ = ::open("/dev/null",O_RDONLY | O_CLOEXEC);
         }
-        close(connfd);
+
     }
 }

@@ -1,6 +1,4 @@
-//
-// Created by kiosk on 19-8-6.
-//
+
 
 #ifndef MYWEB_THREADPOOL_H
 #define MYWEB_THREADPOOL_H
@@ -35,15 +33,10 @@ public:
                                                  data->loop = &loops;
                                                  data->cond_.notify_one();
                                                  loop_.push_back(data->loop);
-
                                              }
                                              loops.loop();
                                          }
                                          beg.lock();
-                                         if(data->loop == NULL)
-                                         {
-                                            data->cond_.wait(beg);
-                                         }
                                          if(data->stop_)
                                          {
                                              break;
@@ -58,7 +51,6 @@ public:
     //执行函数
     Eventloop * getNextLoop();
     ~threadpool();
-
 private:
     struct data {
         std::atomic<bool> stop_;//等待线程是不是执行完毕
@@ -73,7 +65,6 @@ private:
     //指向自身的指针
     std::shared_ptr<data> data_ ; //管理线程的对应周期
     int next_;
-
-
 };
 #endif //MYWEB_THREADPOOL_H
+

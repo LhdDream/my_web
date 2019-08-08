@@ -38,7 +38,6 @@ public:
         }
         else
         {
-            //std::cout << "weak up " <<std::endl;
             {
                 std::lock_guard<std::mutex> te(mutex_);
                 funting.push_back(cb);

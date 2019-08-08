@@ -11,7 +11,7 @@ int  Socket::bindaddress()
 int  Socket::listen()
 {
    // std::cout << "listen " << std::endl;
-    return ::listen(sockfd_,5);//默认backlog
+    return ::listen(sockfd_,20);//默认backlog
 }
 void Socket::setresueport(bool on) {
     if (on == true) {

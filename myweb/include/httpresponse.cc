@@ -64,11 +64,11 @@ int HttpResponse::getfile(int fd)
                 perror("open error");
             }
             int number = 0;
-            char buf[1024];
+            char buf[4028];
             while (number < st.st_size) {
-                bzero(buf, sizeof(char) * 1024);
-                number += read(fd_, buf, sizeof(char) * 1020);
-                if (send(fd, buf, sizeof(char) * 1020, 0) < 0 && (strlen(buf) >0 ) && (fd > 0))
+                bzero(buf, sizeof(char) * 4000);
+                number += read(fd_, buf, sizeof(char) * 4000);
+                if (send(fd, buf, sizeof(char) * 4000, 0) < 0 && (strlen(buf) >0 ) && (fd > 0))
                     perror("send");
             }
             close(fd_);
@@ -182,7 +182,14 @@ void HttpResponse::appendToBuffer(Buffer* output,int fd)
     output->append(buffer,strlen(buffer));
     output->append("\r\n",strlen("\r\n"));
     bzero(buffer, sizeof(char) *64);
-    strcpy(buffer,"Connection: Keep-Alive");
+    if(headers_["Connection"] != "Keep-Alive")
+    {
+        strcpy(buffer,"Connection: Close");
+    }
+    else
+    {
+        strcpy(buffer,"Connection: Keep-Alive");
+    }
     output->append(buffer,strlen(buffer));
     output->append("\r\n",strlen("\r\n"));
     if(path_.find("png") != -1 )
@@ -195,13 +202,16 @@ void HttpResponse::appendToBuffer(Buffer* output,int fd)
         setContentType("audio/mp4");
     else if(path_.find("pdf") !=  -1)
         setContentType("application/pdf");
+    else if(path_.find("mp3") != -1)
+    {
+        setContentType("audio/mpeg");
+    }
     for (const auto& header : headers_)
     {
         output->append(header.first.c_str(),header.first.size());
         output->append(": ",strlen("\r\n"));
         output->append(header.second.c_str(),header.second.size());
         output->append("\r\n",strlen("\r\n"));
-        std::cout <<  header.first << std::endl;
     }
     output->append("\r\n",strlen("\r\n"));
     std::string c = output->get();

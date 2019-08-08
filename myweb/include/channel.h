@@ -19,7 +19,6 @@ class channel
     ~channel(){};
         void handleEvent();
         int fd() const {return fd_;}
-        void  set_fd(int fd ) { fd_ = fd ;}
         void enable_read() ;
         void  set_events(int events) {   events_ = events; }
         bool hasnoevent()

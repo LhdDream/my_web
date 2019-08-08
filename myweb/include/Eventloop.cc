@@ -26,7 +26,6 @@ Eventloop::~Eventloop()
 }
 void Eventloop::loop(void )
 {
-
     while(true)
     {
         channellist.clear();
