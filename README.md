@@ -16,4 +16,8 @@
 - 使用每一个线程一个事件循环，采用非阻塞的io,采用Reactor + 线程池的结构
 - 利用状态机器去解析http请求，提高效率
 - 性能并不好，需要继续修改完善
+
+Webbench
+---
+![image](https://github.com/LhdDream/my_web/blob/master/myweb/picture/web_test.png)
    
