@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="myweb"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/kiosk/CLionProjects/myweb/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/kiosk/CLionProjects/myweb/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="myweb">
+				<Option output="/home/kiosk/CLionProjects/myweb/cmake-build-debug/myweb" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/kiosk/CLionProjects/myweb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/kiosk/CLionProjects/myweb/include"/>
+					<Add directory="."/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.1.0/../../../../include/c++/9.1.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.1.0/../../../../include/c++/9.1.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.1.0/../../../../include/c++/9.1.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.1.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.1.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 myweb"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="myweb/fast">
+				<Option output="/home/kiosk/CLionProjects/myweb/cmake-build-debug/myweb" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/kiosk/CLionProjects/myweb/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/kiosk/CLionProjects/myweb/include"/>
+					<Add directory="."/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.1.0/../../../../include/c++/9.1.0"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.1.0/../../../../include/c++/9.1.0/x86_64-pc-linux-gnu"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.1.0/../../../../include/c++/9.1.0/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.1.0/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/9.1.0/include-fixed"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 myweb/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/kiosk/CLionProjects/myweb/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/kiosk/CLionProjects/myweb/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Acceptor.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Acceptor.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Buffer.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Buffer.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Eventloop.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Eventloop.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/HttpContext.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/HttpContext.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Socket.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Socket.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Tcpconnection.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Tcpconnection.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/channel.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/channel.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/httprequest.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/httpresponse.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/httpresponse.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/httpserver.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/httpserver.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/poll.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/poll.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/threadpoll.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/threadpool.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/main.cpp">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
