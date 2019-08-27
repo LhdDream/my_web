@@ -7,7 +7,7 @@
 
 void poll::run(poll::channellist * activechannels) // 使用epoll 中的ptr 作为channlist
 {
-    auto num = epoll_wait(epollfd,events_.data(),events_.size(),-1);
+    auto num = epoll_wait(epollfd,events_.data(),events_.size(),100);
     if(num > 0)
     {
         fillActiveChannels(num, activechannels); // 寻找活跃的连接
@@ -15,10 +15,6 @@ void poll::run(poll::channellist * activechannels) // 使用epoll 中的ptr 作�
         {
             events_.resize(events_.size() *2);
         }
-    }
-    else
-    {
-        printf("epoll_wait\n");
     }
 };
 void poll::fillActiveChannels(int num,
@@ -43,8 +39,6 @@ void poll::updateChannel(channel* channel_)
     {
         update(EPOLL_CTL_ADD,channel_);
         channelmap_[channel_->fd()] = channel_;
-       // printf("fd = %d add to channelMap \n ",channel_->fd());
-        //std::cout << "fd = " << channel_->fd() << " add to channelmap\n";
     }
     else if(channelmap_.find(fd) != channelmap_.end())
     {

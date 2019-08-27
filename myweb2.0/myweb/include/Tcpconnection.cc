@@ -2,10 +2,7 @@
 // Created by kiosk on 19-8-5.
 //
 #include "Tcpconnection.h"
-#include "channel.h"
 #include "httpresponse.h"
-#include "httprequest.h"
-#include "HttpContext.h"
 void Tcpconnection::handleread()
 {
         buf.readfd(sockfd_->fd());
@@ -14,7 +11,7 @@ void Tcpconnection::handleread()
 }
 void Tcpconnection::connectget()
 {
-    channel_->enable_read();
+    channel_->enable_ET();
 }
 void Tcpconnection::handlewrite()
 {

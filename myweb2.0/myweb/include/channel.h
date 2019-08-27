@@ -20,7 +20,6 @@ class channel
     ~channel() {};
     void handleEvent();
     int fd() const {return fd_;}
-    void enable_read() ;
     void enable_write();
     void enable_ET();
     void  set_events(int events) {   events_ = events; }

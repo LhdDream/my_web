@@ -18,7 +18,7 @@ ssize_t Buffer::readfd(int fd)
         n = readv(fd, vec, 2);
         n = (int) n;
         if (n < 0) {
-            if (errno == EAGAIN)
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
                 continue;
             else
                 return -1;
@@ -26,7 +26,6 @@ ssize_t Buffer::readfd(int fd)
         else
             break;
     }
- //.   printf("wirte ......  %d %d %zu\n",fd,n,writable);
     n = (ssize_t) n;
     if ( n <= writable) {
         writeindex += n;

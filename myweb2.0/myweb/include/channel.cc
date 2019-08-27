@@ -28,10 +28,7 @@ void channel::handleWrite(const Callback &cb)
 {
     writecallback_ = cb;
 }
-void channel::enable_read() {
-    events_ |= kReadEvent  ;
-    ownloop_->update(this);
-}
+
 void channel::enable_write()
 {
     events_ |= WriteEvent;

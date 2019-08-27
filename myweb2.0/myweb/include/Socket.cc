@@ -11,7 +11,7 @@ int  Socket::bindaddress()
 }
 int  Socket::listen()
 {
-    return ::listen(sockfd_,20);//默认backlog
+    return ::listen(sockfd_,10024);//默认backlog
 }
 void Socket::setresueport(bool on) {
     if (on == true) {
@@ -20,6 +20,13 @@ void Socket::setresueport(bool on) {
         ::setsockopt(sockfd_,SOL_SOCKET,SO_REUSEADDR,&reuse,sizeof(int));
         ::setsockopt(sockfd_,IPPROTO_TCP,TCP_NODELAY,&reuse,sizeof(int));
         ::setsockopt(sockfd_,SOL_SOCKET,SO_KEEPALIVE,&reuse,sizeof(int));
+        reuse = 12;
+        //每超过9秒进行一次发包
+        ::setsockopt(sockfd_,IPPROTO_TCP,TCP_KEEPIDLE,&reuse,sizeof(int));
+        reuse = 4;
+        ::setsockopt(sockfd_,IPPROTO_TCP,TCP_KEEPINTVL,&reuse, sizeof(int));
+        reuse = 3;
+        ::setsockopt(sockfd_,IPPROTO_TCP,TCP_KEEPCNT,&reuse,sizeof(int));
         //SO_REUSEADDR作用式对于多核cpu,允许在同一个 ip , port 上运行
         //内核会采用负载均衡的方式客户端的连接请求给某一个服务器
     }

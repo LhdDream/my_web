@@ -28,7 +28,7 @@ class Tcpconnection : public boost::enable_shared_from_this<Tcpconnection>
     public:
     // 连接来临的回调函数
     //初始化各种回调函数
-    Tcpconnection(Eventloop * loop,int sockfd): loop_(loop),sockfd_(new Socket(sockfd)),channel_(new channel(loop_,sockfd))
+    Tcpconnection(Eventloop * loop,int sockfd): loop_(loop),sockfd_(new Socket(sockfd)),channel_(new channel(loop_.get(),sockfd))
     {
         channel_->handleRead(std::bind(&Tcpconnection::handleread,this));
         channel_->handleWrite(std::bind(&Tcpconnection::handlewrite,this));
@@ -41,7 +41,7 @@ private:
     // 如果套接子可读触发相应的事件
      //  这里需要一个改变tcp 连接状态的函数
    // 接受到http请求之后立马注册epollout 时间，如果可写就写入
-    Eventloop * loop_;
+    std::unique_ptr<Eventloop> loop_ ;
     std::unique_ptr<Socket> sockfd_;
     channel * channel_;
     Buffer buf;
