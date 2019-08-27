@@ -15,14 +15,13 @@ class channel
     public:
     typedef std::function< void() > Callback;
     channel(Eventloop * loop,int fd) : fd_(fd),events_(0),ownloop_(loop){
-
     };
     ~channel() {};
     void handleEvent();
     int fd() const {return fd_;}
     void enable_write();
     void enable_ET();
-    void  set_events(int events) {   events_ = events; }
+    void  set_events(int events) { events_ = events;}
     bool hasnoevent()
     {
         return events_ == 0;

@@ -21,7 +21,6 @@ int HttpResponse::getfile(int fd)
     bzero(cgi_input,sizeof(int) *2);
     bzero(cgi_output,sizeof(int) *2);
     pid_t  tmp;
-    Buffer output;
     if(path_[path_.size() - 1] == '/')
         path_ = path_ + "index.html"; //默认
      if(path_ != "picture/index.html")
@@ -29,7 +28,8 @@ int HttpResponse::getfile(int fd)
     //文件不存在
     if(stat(path_.c_str(),&st) == -1) {
         setstate(NotFound);
-        appendToBuffer(&output,fd);
+      //  appendToBuffer(&output,fd);
+        appendToheader(fd);
         char buffer[1024];
         bzero(buffer,sizeof(buffer));
         strcpy(buffer,"<html>\n"
@@ -54,7 +54,7 @@ int HttpResponse::getfile(int fd)
         setstate(Ok);
         if(cgi == 0)
         {
-            appendToBuffer(&output, fd);
+            appendToheader(fd);
             int fd_ = open(path_.c_str(), O_RDONLY);
             if (fd_ < 0) {
                 perror("open error");
@@ -131,7 +131,7 @@ int HttpResponse::getfile(int fd)
                         cgi_temp += c;
                         bzero(c,sizeof(c));
                     }
-                    appendToBuffer(&output, fd);
+                   appendToheader(fd);
                     char cgi_tmp[65535];
                     bzero(cgi_tmp,sizeof(char) *65535);
                     strcpy(cgi_tmp,cgi_temp.c_str());
@@ -150,34 +150,30 @@ int HttpResponse::getfile(int fd)
     close(fd);
     return cgi;
 }
-void HttpResponse::appendToBuffer(Buffer* output,int fd)
+void HttpResponse::appendToheader(int fd)
 {
     std::string buffer;
     struct stat st;
-    if(stat(path_.c_str(),&st) < 0 )
+    if(stat(path_.c_str(),&st)  < 0)
     {
+        st.st_size = 0;
     }
     if(path_.find(cgi) != -1 )
     {
         st.st_size = cgi_number;
         std::cout << "cgi   " << cgi_number << std::endl;
     }
-    buffer = "HTTP/1.1 "+ std::to_string(state_) + " OK";
-    output->append(buffer,buffer.size());
-    output->append_("\r\n",strlen("\r\n"));
-    buffer = "Content-Length: " + std::to_string(st.st_size);
-    output->append(buffer,buffer.size());
-    output->append_("\r\n",strlen("\r\n"));
+    buffer = "HTTP/1.1 "+ std::to_string(state_) + " OK" + "\r\n";
+    buffer += "Content-Length: " + std::to_string(st.st_size) + "\r\n";
     if(headers_["Connection"] != "Keep-Alive")
     {
-        buffer = "Connection: Close";
+        buffer+= "Connection: Close";
     }
     else
     {
-        buffer = "Connection: Keep-Alive" ;
+        buffer+= "Connection: Keep-Alive" ;
     }
-    output->append(buffer,buffer.size());
-    output->append_("\r\n",strlen("\r\n"));
+    buffer += "\r\n";
     if(path_.find("png") != -1 )
         setContentType("image/png");
     else if(path_.find("img") != -1)
@@ -194,19 +190,17 @@ void HttpResponse::appendToBuffer(Buffer* output,int fd)
     }
     for (const auto& header : headers_)
     {
-        output->append(header.first,header.first.size());
-        output->append_(": ",strlen("\r\n"));
-        output->append(header.second,header.second.size());
-        output->append_("\r\n",strlen("\r\n"));
+        if(header.first != "Connection")
+            buffer += header.first + ": " + header.second + "\r\n";
     }
-    output->append_("\r\n",strlen("\r\n"));
-    std::string c = output->get();
-    char buf[2048];
-    bzero(buf,sizeof(char) *2048);
-    strcpy(buf,c.c_str());
-    if(send(fd,buf,strlen(buf),0) < 0 )
+    buffer += "\r\n";
+    char * sendbuff = new char [buffer.size() + 2];
+    strcpy(sendbuff,buffer.c_str());
+    strcat(sendbuff,"\0");
+    if(send(fd,sendbuff,strlen(sendbuff),0) < 0)
     {
-        perror("send error");
+        perror("send");
     }
- //   std::cout <<"结束"<<std::endl ;
+    delete [] sendbuff;
 }
+

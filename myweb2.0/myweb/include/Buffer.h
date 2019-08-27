@@ -9,7 +9,9 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
-
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <string.h>
 class Buffer
 {
  public:
@@ -61,17 +63,6 @@ class Buffer
                 writeindex = readindex + readable;
             }
         }
-        void append(std::string  tmp,size_t len)
-        {
-           // printf("len %zu wiret %zu\n",len,writeableByte());
-        //   printf("append\n");
-            if(len > writeableByte())
-            {
-                resize(len);
-            }
-            std::copy(tmp.begin(),tmp.end(),data_.begin() + writeindex);
-            writeindex += len ;
-        };
         void append_(const char * tmp,size_t len)
         {
 
@@ -82,12 +73,6 @@ class Buffer
             std::copy(tmp,tmp+len,data_.begin()+writeindex);
             writeindex += len ;
         };
-    void clear() // 清空Buffer中的数据
-        {
-          data_.clear();
-          data_.shrink_to_fit();
-        }
-
         void retrieve(size_t len)
         {
             if(readaleByte() < len)
@@ -118,16 +103,6 @@ class Buffer
             const char * test = std::search(peek(),beginwrite(),line,line+2);
             return test == beginwrite() ? NULL : test;
         }
-        std::string get()
-        {
-            std::string d ;
-            for(auto c :data_)
-            {
-               d += c;
-            }
-            return d;
-        }
-
   private:
         std::vector<char> data_;//读取http请求
         size_t readindex;

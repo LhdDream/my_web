@@ -7,7 +7,6 @@
 #include "functional"
 #include <fcntl.h>
 #include <errno.h>
-#include <memory>
 #include "channel.h"
 Acceptor::Acceptor(Eventloop * loop) :loop_(loop),acceptSockct_("127.0.0.1",8080),acceptchannel_(new channel(loop_.get(),acceptSockct_.fd())),listening_(false),idlefd_(::open("/dev/null",O_RDONLY | O_CLOEXEC))
 {
@@ -42,14 +41,13 @@ void Acceptor::handleRead() //套接字可读的状态
             printf("temp %d %d\n",++temp,connfd);
            //这里处理一下，服务器端如果文件描述符耗尽来进行的操作
             //来打开这里来进行处理
-           // perror("accept\n");
            if (errno == EMFILE) {
                 ::close(idlefd_);
                 idlefd_ = acceptSockct_.accpet();
                 ::close(idlefd_);
                 idlefd_ = ::open("/dev/null", O_WRONLY | O_CLOEXEC);
             } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                break;
+               break;
             }
         }
     }

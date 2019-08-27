@@ -20,7 +20,6 @@ class poll
 {
     public:
             typedef std::vector<channel*> channellist;
-            typedef std::vector<struct epoll_event> EventList;
             poll(Eventloop * loop) : epollfd(::epoll_create1(EPOLL_CLOEXEC)),lt(false),loop_(loop),events_(50){
                 if(epollfd < 0)
                 {
@@ -40,8 +39,7 @@ private:
         int epollfd;
         bool  lt;
         std::unique_ptr<Eventloop> loop_;
-        EventList events_;
+        std::vector<struct epoll_event> events_;
          // 设置一个map 绑定fa 和channel
-         std::map<int ,channel * > channelmap_; //
 };
 #endif //MYWEB_POLL_H

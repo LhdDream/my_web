@@ -37,8 +37,7 @@ public:
     {
         headers_[key] = value;
     }
-
-    void appendToBuffer(Buffer* output,int fd) ;
+    void appendToheader(int fd);
     int getfile(int fd);
 private:
     std::map<std::string,std::string> headers_;

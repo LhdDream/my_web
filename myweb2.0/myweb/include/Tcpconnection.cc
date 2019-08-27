@@ -7,6 +7,8 @@ void Tcpconnection::handleread()
 {
         buf.readfd(sockfd_->fd());
         context.parseRequest(&buf);
+        channel_->set_events(0);
+        loop_->update(channel_);
         channel_->enable_write();
 }
 void Tcpconnection::connectget()

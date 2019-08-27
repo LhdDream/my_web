@@ -29,15 +29,9 @@ public:
     Eventloop();
     ~Eventloop();
     void loop() ; //事件循环
-    void update(channel *) ;
+    void update(channel *channels) ;
     void runthisthread(Funct  cb)
     {
-        if(threadid_ == gettid())
-        {
-            cb();
-        }
-        else
-        {
             {
                 std::lock_guard<std::mutex> te(mutex_);
                 funting.push_back(cb);
@@ -46,7 +40,6 @@ public:
             if(looping_.load()   || !isthisthread()) {
                 weakup();
             }
-        }
     };
     void dofucting();
     bool isthisthread() { return threadid_ == gettid();}

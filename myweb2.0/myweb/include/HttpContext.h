@@ -23,10 +23,6 @@ public:
     ~HttpContext()
     {
     }
-    bool gotall()
-    {
-        return state_ == GotAll;
-    }
     HttpRequest& request()
     {
         return request_;
