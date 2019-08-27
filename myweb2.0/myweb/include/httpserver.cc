@@ -7,7 +7,7 @@
 #include "threadpool.h"
 httpserver::httpserver(Eventloop *loop) : loop_(loop) , acceptor_(new Acceptor(loop_.get()))
 {
-    en  = new threadpool(8);
+    en  = new threadpool(4);
     acceptor_->setCallback(std::bind(&httpserver::new_http,this,std::placeholders::_1));
 }
 void httpserver::start()
@@ -17,10 +17,9 @@ void httpserver::start()
         loop_->runthisthread(std::bind(&Acceptor::listen,boost::get_pointer(acceptor_)));
    }
 }
-//static int tmp = 0;
+
 void httpserver::new_http(int sockfd)
 {
-    //printf("tmp %d \n",++tmp);
     Eventloop * io = en->getNextLoop();
     if(io == nullptr)
     {

@@ -40,6 +40,7 @@ private:
         bool  lt;
         std::unique_ptr<Eventloop> loop_;
         std::vector<struct epoll_event> events_;
+        std::map<int,channel *> channelmap_;
          // 设置一个map 绑定fa 和channel
 };
 #endif //MYWEB_POLL_H

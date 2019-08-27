@@ -38,7 +38,6 @@ void Acceptor::handleRead() //套接字可读的状态
             }
         }
         if (connfd < 0) {
-            printf("temp %d %d\n",++temp,connfd);
            //这里处理一下，服务器端如果文件描述符耗尽来进行的操作
             //来打开这里来进行处理
            if (errno == EMFILE) {

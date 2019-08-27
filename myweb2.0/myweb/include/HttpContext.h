@@ -23,10 +23,6 @@ public:
     ~HttpContext()
     {
     }
-    HttpRequest& request()
-    {
-        return request_;
-    }
     bool parseRequest(Buffer* buf);
     const std::string & path()
     {

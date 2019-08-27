@@ -21,7 +21,7 @@ class channel
     int fd() const {return fd_;}
     void enable_write();
     void enable_ET();
-    void  set_events(int events) { events_ = events;}
+    void  set_events(int events) {   events_ = events;}
     bool hasnoevent()
     {
         return events_ == 0;
