@@ -36,14 +36,17 @@ void poll::updateChannel(channel* channel_)
     // 判断channel_ 在不在维护的map 数组之中
     //如果没在的话，添加并且添加进入epoll之中,在的话，可以进行修改或者删除
     int fd = channel_->fd();
-    if(channelmap_.find(fd) == channelmap_.end())
+    int flag = channel_->get_flag();
+    if(flag == 0 || flag == 2) // 0 表示new 2 表示删除过的
     {
+        channel_->set_flag(1);
         update(EPOLL_CTL_ADD,channel_);
         channelmap_[fd] = channel_;
     }
-    else
+    else if(flag == 1)
     {
         if(channel_->hasnoevent()) {
+            channel_->set_flag(2);
             update(EPOLL_CTL_DEL,channel_);
             channelmap_.erase(fd);
         }

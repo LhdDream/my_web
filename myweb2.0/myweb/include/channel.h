@@ -14,7 +14,7 @@ class channel
 {
     public:
     typedef std::function< void() > Callback;
-    channel(Eventloop * loop,int fd) : fd_(fd),events_(0),ownloop_(loop){
+    channel(Eventloop * loop,int fd) : fd_(fd),events_(0),flag(0),ownloop_(loop){
     };
     ~channel() {};
     void handleEvent();
@@ -22,16 +22,16 @@ class channel
     void enable_write();
     void enable_ET();
     void  set_events(int events) {   events_ = events;}
-    bool hasnoevent()
-    {
-        return events_ == 0;
-    }
+    void  set_flag(int flag_) { flag = flag_ ;}
+    int get_flag() {return flag;}
+    bool hasnoevent(){ return events_ == 0; }
     int get_events(){return events_;};
     void handleRead(const  Callback &cb);
     void handleWrite(const Callback &cb);
     private:
         int fd_;
         int events_;
+        int flag ;
         std::unique_ptr<Eventloop> ownloop_;
         Callback readcallback_;
         Callback writecallback_;

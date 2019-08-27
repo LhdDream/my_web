@@ -36,6 +36,8 @@ int Socket::accpet()
     struct sockaddr_in client;
     socklen_t client_addrlength = sizeof(client);
     int fd = ::accept4(sockfd_,(struct sockaddr *)&client,&client_addrlength,SOCK_NONBLOCK  | SOCK_CLOEXEC);
+    int reuse = 1;
+    ::setsockopt(fd,IPPROTO_TCP,TCP_NODELAY,&reuse,sizeof(int));
     return fd;
 }
 void Socket::shutdownWrite()

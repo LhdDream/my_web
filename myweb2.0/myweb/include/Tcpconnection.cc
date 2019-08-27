@@ -8,7 +8,7 @@ void Tcpconnection::handleread()
         buf.readfd(sockfd_->fd());
         context.parseRequest(&buf);
         channel_->set_events(0);
-        loop_->update(channel_);
+        loop_->update(channel_.get());
         channel_->enable_write();
 }
 void Tcpconnection::connectget()
@@ -18,7 +18,7 @@ void Tcpconnection::connectget()
 void Tcpconnection::handlewrite()
 {
     channel_->set_events(0);
-    loop_->update(channel_);
+    loop_->update(channel_.get());
     HttpResponse resp(context.path(), context.getcgi(), context.query(), context.body());
     resp.getfile(sockfd_->fd());
 }

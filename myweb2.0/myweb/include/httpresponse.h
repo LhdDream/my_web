@@ -18,8 +18,6 @@ public:
     {
         Unkown,
         Ok = 200,
-        MovedPermanently = 301,
-        BadRequest = 400,
         NotFound = 404,
     };
     HttpResponse(std::string path,int cgi_,std::string query,std::string body) : state_(Unkown),cgi(cgi_),method(cgi_),path_(path),query_(query),body_(body)

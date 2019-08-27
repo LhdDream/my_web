@@ -39,10 +39,6 @@ class Buffer
         {
             return writeindex-readindex;
         }
-        size_t  preableByte()
-        {
-            return readindex;
-        }
         const char * beginwrite()
         {
             return  begin()+writeindex;

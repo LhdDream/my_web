@@ -15,7 +15,6 @@ public:
         RequestLine,
         Headers,
         Body,
-        GotAll
     };
     HttpContext() : state_(RequestLine),bodysize_(0)
     {

@@ -43,7 +43,7 @@ private:
    // 接受到http请求之后立马注册epollout 时间，如果可写就写入
     std::unique_ptr<Eventloop> loop_ ;
     std::unique_ptr<Socket> sockfd_;
-    channel * channel_;
+    std::unique_ptr<channel> channel_;
     Buffer buf;
     HttpContext context;
 };
