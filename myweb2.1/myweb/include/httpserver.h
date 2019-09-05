@@ -23,7 +23,6 @@ private:
     std::unique_ptr<Eventloop> loop_; //事件循环 //主线程的循环
     void new_http(int sockfd);
     boost::scoped_ptr<Acceptor> acceptor_; // 独占式的
-    Buffer buf;
 
     //监听客户端的连接请求
     //每一个线程都运行一个事件循环　one peer one loop
