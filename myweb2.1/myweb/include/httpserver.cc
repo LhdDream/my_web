@@ -24,13 +24,14 @@ void httpserver::new_http(int sockfd)
     //随后再改
     //开始第二个项目
     
-    en->execute([&,sockfd](){
+    en->execute([sockfd](){
+        Buffer buf;
         HttpContext context;
         buf.readfd(sockfd);
         context.parseRequest(&buf);
         HttpResponse resp(context.path(), context.getcgi(), context.query(), context.body());
         resp.getfile(sockfd);
-        buf.clear();
+      
     });
 }
 
