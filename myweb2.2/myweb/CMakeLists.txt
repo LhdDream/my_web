@@ -10,4 +10,5 @@ add_executable(myweb main.cpp include/poll.h include/Eventloop.h include/newthre
          include/channel.h   include/Buffer.h
         include/Socket.h include/Socket.cc include/Acceptor.h include/httpserver.h  http/http_request.h
         http/memorypool.h http/currency.h http/http_response.h test/add.cc include/Epoll_event.h
-     )
+        util/Timer.h include/Buffer.cc include/channel.cc
+        )

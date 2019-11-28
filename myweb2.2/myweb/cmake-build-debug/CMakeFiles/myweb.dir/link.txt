@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/myweb.dir/main.cpp.o CMakeFiles/myweb.dir/include/Socket.cc.o CMakeFiles/myweb.dir/test/add.cc.o  -o myweb -lpthread --std=c++14 -g 
+/usr/bin/c++  -g   CMakeFiles/myweb.dir/main.cpp.o CMakeFiles/myweb.dir/include/Socket.cc.o CMakeFiles/myweb.dir/test/add.cc.o CMakeFiles/myweb.dir/include/Buffer.cc.o CMakeFiles/myweb.dir/include/channel.cc.o  -o myweb -lpthread --std=c++14 -g 

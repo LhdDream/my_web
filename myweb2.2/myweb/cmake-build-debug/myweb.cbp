@@ -101,6 +101,9 @@
 		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Acceptor.h">
 			<Option target="myweb"/>
 		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Buffer.cc">
+			<Option target="myweb"/>
+		</Unit>
 		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Buffer.h">
 			<Option target="myweb"/>
 		</Unit>
@@ -114,6 +117,9 @@
 			<Option target="myweb"/>
 		</Unit>
 		<Unit filename="/home/kiosk/CLionProjects/myweb/include/Socket.h">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/include/channel.cc">
 			<Option target="myweb"/>
 		</Unit>
 		<Unit filename="/home/kiosk/CLionProjects/myweb/include/channel.h">
@@ -132,6 +138,9 @@
 			<Option target="myweb"/>
 		</Unit>
 		<Unit filename="/home/kiosk/CLionProjects/myweb/test/add.cc">
+			<Option target="myweb"/>
+		</Unit>
+		<Unit filename="/home/kiosk/CLionProjects/myweb/util/Timer.h">
 			<Option target="myweb"/>
 		</Unit>
 		<Unit filename="/home/kiosk/CLionProjects/myweb/CMakeLists.txt">

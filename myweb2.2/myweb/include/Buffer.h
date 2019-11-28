@@ -7,39 +7,36 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <iostream>
-#include <string>
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <cstring>
+#include <iostream>
+#include <sys/socket.h>
+constexpr  const size_t beginsize = 0;
+constexpr  const size_t fillsize = 4096;
+
+//Buffer 进行输出和输入缓冲区的编写
 class Buffer
 {
  public:
         //初始大小和起始位置
-        static   const size_t beginsize = 0;
-        static   const size_t fillsize = 1024;
-        explicit  Buffer():readindex(beginsize),writeindex(beginsize),data_(beginsize + fillsize )
-        {};
-        ~Buffer()= default;;
-        const char *peek() const
-        {  return begin() + readindex; }
-        char * begin()
-        {
+        explicit  Buffer():readindex(beginsize),writeindex(beginsize),data_(fillsize,'\0'){};
+        const char *peek() const noexcept {
+            return begin() + readindex;
+        }
+        char * begin() {
             return &*data_.begin();
         }
-        const char * begin() const
-        {
+        const char * begin() const{
             return &*data_.begin();
         }
-         size_t writeableByte()
+        size_t writeableByte() const noexcept
         {
             return data_.size() - writeindex;
         }
-        size_t readaleByte()
+        size_t readaleByte() const noexcept
         {
             return writeindex-readindex;
         }
-        const char * beginwrite()
+        const char * beginwrite() noexcept
         {
             return  begin()+writeindex;
         }
@@ -49,7 +46,7 @@ class Buffer
             {
                 data_.resize((writeindex+len) *2);
             }
-            else
+            else if(readindex != 0) // 如果之前有空余那么将其移动
             {
                 size_t readable = readaleByte();
                 std::copy(begin()+readindex,
@@ -61,27 +58,23 @@ class Buffer
         }
         void append_(const char * tmp,size_t len)
         {
-            if(len > writeableByte())
-            {
-                resize(len);
-            }
+            resize(len);
             std::copy(tmp,tmp+len,data_.begin()+writeindex);
             writeindex += len ;
         };
-        void retrievesetction(const char * tmp){
-           size_t  len = tmp - peek();
-           readindex += len;
+        ssize_t readfd(int fd)  ; // 相当于一次read操作
+        void reset() noexcept {
+            data_.resize(fillsize);
+            readindex = beginsize;
+            writeindex = fillsize;
         }
-        ssize_t readfd(int fd); // 相当于一次read操作
-        const char * find()
-        {
-            const char * test = std::search(peek(),beginwrite(),line,line+2);
-            return test == beginwrite() ? nullptr : test;
+
+        std::vector<char>& Get() {
+            return data_;
         }
   private:
         std::vector<char> data_;//读取http请求
         size_t readindex;
         size_t writeindex;
-        const char line[2] ={'\r','\n'};
 };
 #endif //MYWEB_BUFFER_H

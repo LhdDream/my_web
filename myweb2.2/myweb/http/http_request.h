@@ -8,7 +8,7 @@
 class HTTPMessageParser
 {
 public:
-    void Parse(HTTPMessage * httpMessage,const std::string & buffer)
+    void Parse(HTTPMessage * httpMessage,const std::vector<char> & buffer)
     {
         ParserState  state = ParserState ::PARSING_START_LINE;
         //解析头一行

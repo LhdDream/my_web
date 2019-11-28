@@ -4,7 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/kiosk/CLionProjects/myweb/include/Buffer.cc" "/home/kiosk/CLionProjects/myweb/cmake-build-debug/CMakeFiles/myweb.dir/include/Buffer.cc.o"
   "/home/kiosk/CLionProjects/myweb/include/Socket.cc" "/home/kiosk/CLionProjects/myweb/cmake-build-debug/CMakeFiles/myweb.dir/include/Socket.cc.o"
+  "/home/kiosk/CLionProjects/myweb/include/channel.cc" "/home/kiosk/CLionProjects/myweb/cmake-build-debug/CMakeFiles/myweb.dir/include/channel.cc.o"
   "/home/kiosk/CLionProjects/myweb/main.cpp" "/home/kiosk/CLionProjects/myweb/cmake-build-debug/CMakeFiles/myweb.dir/main.cpp.o"
   "/home/kiosk/CLionProjects/myweb/test/add.cc" "/home/kiosk/CLionProjects/myweb/cmake-build-debug/CMakeFiles/myweb.dir/test/add.cc.o"
   )

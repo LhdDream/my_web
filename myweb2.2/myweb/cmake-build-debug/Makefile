@@ -123,6 +123,33 @@ myweb/fast:
 	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/build
 .PHONY : myweb/fast
 
+include/Buffer.o: include/Buffer.cc.o
+
+.PHONY : include/Buffer.o
+
+# target to build an object file
+include/Buffer.cc.o:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Buffer.cc.o
+.PHONY : include/Buffer.cc.o
+
+include/Buffer.i: include/Buffer.cc.i
+
+.PHONY : include/Buffer.i
+
+# target to preprocess a source file
+include/Buffer.cc.i:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Buffer.cc.i
+.PHONY : include/Buffer.cc.i
+
+include/Buffer.s: include/Buffer.cc.s
+
+.PHONY : include/Buffer.s
+
+# target to generate assembly for a file
+include/Buffer.cc.s:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Buffer.cc.s
+.PHONY : include/Buffer.cc.s
+
 include/Socket.o: include/Socket.cc.o
 
 .PHONY : include/Socket.o
@@ -149,6 +176,33 @@ include/Socket.s: include/Socket.cc.s
 include/Socket.cc.s:
 	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Socket.cc.s
 .PHONY : include/Socket.cc.s
+
+include/channel.o: include/channel.cc.o
+
+.PHONY : include/channel.o
+
+# target to build an object file
+include/channel.cc.o:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/channel.cc.o
+.PHONY : include/channel.cc.o
+
+include/channel.i: include/channel.cc.i
+
+.PHONY : include/channel.i
+
+# target to preprocess a source file
+include/channel.cc.i:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/channel.cc.i
+.PHONY : include/channel.cc.i
+
+include/channel.s: include/channel.cc.s
+
+.PHONY : include/channel.s
+
+# target to generate assembly for a file
+include/channel.cc.s:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/channel.cc.s
+.PHONY : include/channel.cc.s
 
 main.o: main.cpp.o
 
@@ -213,9 +267,15 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... myweb"
 	@echo "... edit_cache"
+	@echo "... include/Buffer.o"
+	@echo "... include/Buffer.i"
+	@echo "... include/Buffer.s"
 	@echo "... include/Socket.o"
 	@echo "... include/Socket.i"
 	@echo "... include/Socket.s"
+	@echo "... include/channel.o"
+	@echo "... include/channel.i"
+	@echo "... include/channel.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
