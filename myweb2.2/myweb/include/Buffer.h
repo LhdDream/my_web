@@ -5,11 +5,13 @@
 #define MYWEB_BUFFER_H
 //应用层必须使用 // http 请求
 #include <vector>
+#include <cstddef>
 #include <string>
 #include <algorithm>
 #include <cstring>
 #include <iostream>
 #include <sys/socket.h>
+#include "Epoll_event.h"
 constexpr  const size_t beginsize = 0;
 constexpr  const size_t fillsize = 4096;
 

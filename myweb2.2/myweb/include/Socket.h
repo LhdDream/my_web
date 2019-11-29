@@ -18,7 +18,7 @@ public:
     }; // 显示转换
     explicit  Socket(int sockfd) : sockfd_(sockfd){}
     ~Socket() {close(sockfd_);}
-    inline size_t fd() noexcept { return sockfd_;} // 返回已经绑定的socketfd
+    inline int fd() noexcept { return sockfd_;} // 返回已经绑定的socketfd
     size_t  bindaddress();
     size_t  listen() ;
     size_t accpet();

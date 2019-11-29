@@ -33,7 +33,7 @@ class poll
                 return epoll_ctl(epollfd_,EPOLL_CTL_ADD,ev.event_fd(),ev.pointer());
             }
             //左值和右值,但是所有函数的形参都是左值
-            int remove_channel(const Epoll_event & ev) const {
+            int remove_channel(const Epoll_event & ev) const  {
                 return epoll_ctl(epollfd_,EPOLL_CTL_DEL,ev.event_fd(),ev.pointer());
             }
             int remove_channel(Epoll_event && ev) const {

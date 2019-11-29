@@ -42,6 +42,8 @@ public:
     explicit Epoll_event(int fd) : event_(epoll_event{toType(Allof()),{.fd = fd}}){}
     Epoll_event() : event_{} {} //
     //
+    Epoll_event(int fd,EpollEventType type) : event_(epoll_event{toType(type),{.fd = fd};}) {}
+
     int event_fd() const {return event_.data.fd;}
     bool ck(EpollEventType &ev) const { return (event_.events & toType(ev) ) != 0 ;}
     //检查事件

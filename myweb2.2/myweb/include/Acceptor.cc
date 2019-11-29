@@ -2,26 +2,10 @@
 // Created by kiosk on 19-8-3.
 //
 #include "Acceptor.h"
-#include "Eventloop.h"
-#include "Socket.h"
-#include "functional"
-#include <fcntl.h>
-#include <cerrno>
-#include "channel.h"
-Acceptor::Acceptor(Eventloop * loop) :loop_(loop),acceptSockct_("127.0.0.1",8080),acceptchannel_(new channel(loop_.get(),acceptSockct_.fd())),listening_(false),idlefd_(::open("/dev/null",O_RDONLY | O_CLOEXEC))
-{
-    acceptSockct_.setresueport(true);
-    acceptSockct_.bindaddress();
-    //绑定一个构造函数
-    //如果监听套接字可读
-    acceptchannel_->handleRead(std::bind(&Acceptor::handleRead,this));
-}
-void Acceptor::listen()
-{
-    listening_.store(true);
-    acceptSockct_.listen();//让套接字可读
-    acceptchannel_->enable_ET();
-}
+
+
+
+
 
 void Acceptor::handleRead() //套接字可读的状态
 {

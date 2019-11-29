@@ -8,8 +8,7 @@
 #include "Socket.h"
 #include "channel.h"
 #include "Eventloop.h"
-#include <functional>
-#include <atomic>
+
 class Eventloop;
 class channel;
 class Socket;
@@ -17,24 +16,9 @@ class Acceptor // socket accpet 连接的接口
 {
 public:
      using ConnCallback =  std::function< void(int sockfd) >;
-     explicit Acceptor(Eventloop* loop); //显示构造
-     ~Acceptor()= default;;
-     void setCallback(const ConnCallback & new_) noexcept //新连接来临选择回调函数
-     {
-        NewCallback_ = new_;
-     }
-     void listen(); // 初始化注册listen
-     //之后把listen 套接字保存提交到epoll 中，然后通过channel 来进行可连接事件
-     inline bool listening() const { return listening_;}
-     void handleRead();//可写时间
+
+
 private:
-    std::unique_ptr<Eventloop> loop_; //event loop acceptor 必须在loop之中
-                        // 包括一些channel 循环, poll
-                        //单步依赖
-    Socket acceptSockct_;
-    std::unique_ptr<channel> acceptchannel_;
-    ConnCallback NewCallback_;
-    std::atomic<bool> listening_ ;
-    int idlefd_;
+
 };// TCP 如果连接上之后进行回调通知使用者，内部类
 #endif //MYWEB_ACCEPTOR_H
