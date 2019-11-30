@@ -38,11 +38,12 @@ constexpr EpollEventType Writeable() {return EpollEventType (EpollEventType::KWr
 constexpr EpollEventType Allof() { return EpollEventType (Readable() | Writeable());}
 //这个文件对于epoll的事件进行再次封装
 class Epoll_event{
+    friend  class poll;
 public:
     explicit Epoll_event(int fd) : event_(epoll_event{toType(Allof()),{.fd = fd}}){}
     Epoll_event() : event_{} {} //
     //
-    Epoll_event(int fd,EpollEventType type) : event_(epoll_event{toType(type),{.fd = fd};}) {}
+    Epoll_event(int fd,EpollEventType type) : event_(epoll_event{toType(type),{.fd = fd}}) {}
 
     int event_fd() const {return event_.data.fd;}
     bool ck(EpollEventType &ev) const { return (event_.events & toType(ev) ) != 0 ;}
@@ -66,14 +67,15 @@ private:
 
 //下面是对于整个epoll event 数组的一个简单封装
 class EpollEventResult {
+    friend  class poll;
 public:
     explicit EpollEventResult(int size) : store_(std::make_unique<std::vector<Epoll_event>>(size)){}
     explicit  EpollEventResult() : store_(std::make_unique<std::vector<Epoll_event>>(1024)){}
-    Epoll_event operator[] (int i) {return store_->at(i);}
+    Epoll_event operator[] (int i) const {return store_->at(i);}
     void resize() const {
         if(store_->size() >= store_->capacity() / 2)
         {
-            store_->reserve(store_->size() *2);
+            store_->resize(store_->size() *2);
         }
     }
     size_t  capacity() const   {

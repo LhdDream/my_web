@@ -20,10 +20,9 @@ class Buffer
 {
  public:
         //初始大小和起始位置
-        explicit  Buffer():readindex(beginsize),writeindex(beginsize),data_(fillsize,'\0'){};
-        const char *peek() const noexcept {
-            return begin() + readindex;
-        }
+        explicit  Buffer(int fd):readindex(beginsize),writeindex(beginsize),data_(fillsize),
+        fd_(fd)
+        {};
         char * begin() {
             return &*data_.begin();
         }
@@ -37,10 +36,6 @@ class Buffer
         size_t readaleByte() const noexcept
         {
             return writeindex-readindex;
-        }
-        const char * beginwrite() noexcept
-        {
-            return  begin()+writeindex;
         }
         void resize(size_t len)
         {
@@ -64,7 +59,7 @@ class Buffer
             std::copy(tmp,tmp+len,data_.begin()+writeindex);
             writeindex += len ;
         };
-        ssize_t readfd(int fd)  ; // 相当于一次read操作
+        ssize_t readfd()  ; // 相当于一次read操作
         void reset() noexcept {
             data_.resize(fillsize);
             readindex = beginsize;
@@ -74,9 +69,14 @@ class Buffer
         std::vector<char>& Get() {
             return data_;
         }
+        int get_Fd() const
+        {
+            return fd_;
+        }
   private:
         std::vector<char> data_;//读取http请求
         size_t readindex;
         size_t writeindex;
+        int fd_; // 每一个用户的fd
 };
 #endif //MYWEB_BUFFER_H

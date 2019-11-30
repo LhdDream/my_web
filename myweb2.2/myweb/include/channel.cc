@@ -36,39 +36,34 @@ void channel::onWrite_(Callback && wr) {
 int channel_set::add(channel * &user) { //copy
     table_.emplace(user->fd_(),user);
     epoll_.add_channel({user->fd_(),user->get_()});
-    Timer_->AddTimer({[this,&user](){
-        epoll_.remove_channel({user->fd_(),user->get_()});
-        table_.erase(user->fd_());
-    },time(nullptr),user->fd_()});
 
     //设置回调函数
-    user->onRead_([&user]() -> bool {
-        user->ReadBuffer_->readfd(user->fd_()); //读取东西
-        user->parse_->Parse(user->conn_.get(),user->ReadBuffer_->Get());
+    user->onRead_([&user]() {
+        user->handler_->RecvRequese(user->ReadBuffer_);
+        user->set_type_(Writeable());
         ;});
-    user->onWrite_( [&user] () -> bool {
-        user->respon_->response(user->conn_.get());
+    user->onWrite_( [&user] ()  {
+        user->handler_->SendResponse(user->ReadBuffer_);
+        user->set_type_(Readable());
         ;});
-    user->set_type_(EpollEventType::KReadble);
+    user->set_type_(Readable());
     return user->fd_();
 }
 int channel_set::add(channel *&&user) { // move
     table_.emplace(user->fd_(),user);
     epoll_.add_channel({user->fd_(),user->get_()});
-    Timer_->AddTimer({[this,&user](){
-        epoll_.remove_channel({user->fd_(),user->get_()});
-        table_.erase(user->fd_());
-    },time(nullptr),user->fd_()});
+
 
     //设置回调函数
-    user->onRead_([&user]() -> bool {
-        user->ReadBuffer_->readfd(user->fd_()); //读取东西
-        user->parse_->Parse(user->conn_.get(),user->ReadBuffer_->Get());
+    user->onRead_([&user]() {
+        user->handler_->RecvRequese(user->ReadBuffer_);
+        user->set_type_(Writeable());
         ;});
-    user->onWrite_( [&user] () -> bool {
-        user->respon_->response(user->conn_.get());
+    user->onWrite_( [&user] () {
+        user->handler_->SendResponse(user->ReadBuffer_);
+        user->set_type_(Readable());
         ;});
-    user->set_type_(EpollEventType::KReadble);
+    user->set_type_(Readable());
     return user->fd_();
 }
 
@@ -76,6 +71,7 @@ int channel_set::add(channel *&&user) { // move
 void channel_set::remove(channel *&user) {
     epoll_.remove_channel({user->fd_(),user->get_()});
     table_.erase(user->fd_());
+    close(user->fd_());
 }
 
 void channel_set::modify(channel *&user) {
@@ -86,9 +82,6 @@ void channel_set::modify(channel *&user) {
 }
 
 
-void channel_set::timelate() {
-    Timer_->tick();
-}
 
 void channel_set::doall(int id) {
     table_[id]->handleEvent_();

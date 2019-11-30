@@ -15,71 +15,48 @@ class Timer
 {
 public:
     using Callback = std::function<void()> ;
-    explicit  Timer(Callback &&cb ,uint64_t stamp,int fd) :callback_(std::move(cb)),
-    expiration_(stamp),
-    clientfd_(fd){
+    Timer(Callback &&cb ,time_t stamp,int fd) :callback_(std::move(cb)),
+    expiration_(stamp), fd_(fd){
     }
     void run() const {
         callback_();
     }
-    void restart(uint64_t now)  {
-        if( interval_ > 0 )
-        {
-            expiration_ = now + interval_;
-        }
-        else
-        {
-            expiration_ = 0 ;
-        }
-    }
-    uint64_t  time_()
-    {
+    time_t  time_() const {
         return expiration_;
     }
 private:
    Callback  callback_; // 每一个timerfd 的回调函数
-   uint64_t expiration_; //
-   uint64_t interval_  = 3600;   //间隔时间
-   int clientfd_ ; //客户端的fd
+   time_t expiration_; // 時間戳
+   int fd_; // 用户id
 };
 class TimerQueue {
 public:
-    using TimerPtr = std::shared_ptr<Timer>;
-    explicit TimerQueue() = default;
-    void AddTimer( TimerPtr &&timer_)
+    TimerQueue () = default;
+    void AddTimer( Timer &&timer_)
     {
-        if(!timer_)
-            return ; //防止nullptr指针
         Timerqueue_.emplace(std::move(timer_));
         //使用移动构造
-    }
-    void DelTimer()
-    {
-        if(!Timerqueue_.empty())
-            Timerqueue_.pop();
-        //删除优先队列中的第一个元素
     }
     void tick(){
         if(Timerqueue_.empty())
             return ;
         time_t curr = time(nullptr);
         // 公元1970到现在的秒数
-        while(!Timerqueue_.empty())
+        while(!Timerqueue_.empty() )
         {
-            auto tt = Timerqueue_.top();
-            if(curr < tt->time_())
+            auto cc = Timerqueue_.top().time_();
+            if( cc + 180 < curr)
             {
-                break; //  都没有过期
-            }
-            else
-            {
-                tt->run();
-                Timerqueue_.pop();
+                    auto p = Timerqueue_.top();
+                    p.run();
+                    Timerqueue_.pop();
+            }else{
+                break;
             }
         }
     }
 private:
-    std::priority_queue<TimerPtr> Timerqueue_;
+    std::priority_queue<Timer> Timerqueue_;
     //优先队列只能在队尾添加，队首删除元素
 };
 #endif //MY_REDIES_TIMER_H

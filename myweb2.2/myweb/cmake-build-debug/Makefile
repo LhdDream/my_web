@@ -123,6 +123,60 @@ myweb/fast:
 	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/build
 .PHONY : myweb/fast
 
+http/http_msg_handler.o: http/http_msg_handler.cc.o
+
+.PHONY : http/http_msg_handler.o
+
+# target to build an object file
+http/http_msg_handler.cc.o:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/http/http_msg_handler.cc.o
+.PHONY : http/http_msg_handler.cc.o
+
+http/http_msg_handler.i: http/http_msg_handler.cc.i
+
+.PHONY : http/http_msg_handler.i
+
+# target to preprocess a source file
+http/http_msg_handler.cc.i:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/http/http_msg_handler.cc.i
+.PHONY : http/http_msg_handler.cc.i
+
+http/http_msg_handler.s: http/http_msg_handler.cc.s
+
+.PHONY : http/http_msg_handler.s
+
+# target to generate assembly for a file
+http/http_msg_handler.cc.s:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/http/http_msg_handler.cc.s
+.PHONY : http/http_msg_handler.cc.s
+
+include/Acceptor.o: include/Acceptor.cc.o
+
+.PHONY : include/Acceptor.o
+
+# target to build an object file
+include/Acceptor.cc.o:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Acceptor.cc.o
+.PHONY : include/Acceptor.cc.o
+
+include/Acceptor.i: include/Acceptor.cc.i
+
+.PHONY : include/Acceptor.i
+
+# target to preprocess a source file
+include/Acceptor.cc.i:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Acceptor.cc.i
+.PHONY : include/Acceptor.cc.i
+
+include/Acceptor.s: include/Acceptor.cc.s
+
+.PHONY : include/Acceptor.s
+
+# target to generate assembly for a file
+include/Acceptor.cc.s:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/Acceptor.cc.s
+.PHONY : include/Acceptor.cc.s
+
 include/Buffer.o: include/Buffer.cc.o
 
 .PHONY : include/Buffer.o
@@ -204,6 +258,33 @@ include/channel.cc.s:
 	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/channel.cc.s
 .PHONY : include/channel.cc.s
 
+include/httpserver.o: include/httpserver.cc.o
+
+.PHONY : include/httpserver.o
+
+# target to build an object file
+include/httpserver.cc.o:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/httpserver.cc.o
+.PHONY : include/httpserver.cc.o
+
+include/httpserver.i: include/httpserver.cc.i
+
+.PHONY : include/httpserver.i
+
+# target to preprocess a source file
+include/httpserver.cc.i:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/httpserver.cc.i
+.PHONY : include/httpserver.cc.i
+
+include/httpserver.s: include/httpserver.cc.s
+
+.PHONY : include/httpserver.s
+
+# target to generate assembly for a file
+include/httpserver.cc.s:
+	$(MAKE) -f CMakeFiles/myweb.dir/build.make CMakeFiles/myweb.dir/include/httpserver.cc.s
+.PHONY : include/httpserver.cc.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -267,6 +348,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... myweb"
 	@echo "... edit_cache"
+	@echo "... http/http_msg_handler.o"
+	@echo "... http/http_msg_handler.i"
+	@echo "... http/http_msg_handler.s"
+	@echo "... include/Acceptor.o"
+	@echo "... include/Acceptor.i"
+	@echo "... include/Acceptor.s"
 	@echo "... include/Buffer.o"
 	@echo "... include/Buffer.i"
 	@echo "... include/Buffer.s"
@@ -276,6 +363,9 @@ help:
 	@echo "... include/channel.o"
 	@echo "... include/channel.i"
 	@echo "... include/channel.s"
+	@echo "... include/httpserver.o"
+	@echo "... include/httpserver.i"
+	@echo "... include/httpserver.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

@@ -2,29 +2,39 @@
 // Created by kiosk on 19-8-5.
 //
 #include "httpserver.h"
-#include "httpresponse.h"
-#include "HttpContext.h"
-#include "httprequest.h"
-httpserver::httpserver(Eventloop *loop) : loop_(loop) , acceptor_(new Acceptor(loop_.get()))
+
+httpserver::httpserver() :poll_(std::make_unique<fixed_thread_pool>(1)),
+acceptor_(std::make_unique<Acceptor>()),Epoll_(),users_(Epoll_)
 {
-    en  = new fixed_thread_pool(4);
-    acceptor_->setCallback(std::bind(&httpserver::new_http,this,std::placeholders::_1));
-}
-void httpserver::start()
-{
-   if(!acceptor_->listening()) // 没有建立监听
-   {
-        loop_->runthisthread(std::bind(&Acceptor::listen,boost::get_pointer(acceptor_)));
-   }
+    acceptor_->setCallback([&](int sockfd)  {
+           auto  p = new channel(sockfd);
+           users_.add(p);
+           poll_->execute([&] () {
+                users_.doall(sockfd);
+                users_.closechannel(sockfd);
+           });
+    });
 }
 
-void httpserver::new_http(int sockfd)
-{
-    //这里应该使用epollout 事件，不然tcp 发送缓冲区满了之后没有办法处理
-    //随后再改
-    //开始第二个项目
-    //在这里应该把解析的事件交给线程池来进行
-    //发送的事件交给epoll来进行可写时间的执行
-   
+void httpserver::start() {
+    signal(SIGPIPE,SIG_IGN);
+    if(!acceptor_->listening())
+    {
+        acceptor_->listen();
+    }
+    Epoll_.add_channel({acceptor_->fd_(),Readable()});
+    EpollEventResult event_(1024);
+
+    while (true){
+        auto user_number = Epoll_.Wait(event_);
+        for(int i = 0 ; i < user_number ; i++){
+                auto it  = event_[i];
+                if(it.event_fd() == acceptor_->fd_())
+                {
+                    acceptor_->acceptchannel_->handleEvent_();
+                }
+                //如果没有事件则去处理一下超时事件
+        }
+    }
 }
 

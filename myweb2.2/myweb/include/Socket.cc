@@ -3,11 +3,11 @@
 //
 #include "Socket.h"
 
-inline size_t Socket::bindaddress()
+ size_t Socket::bindaddress()
 {
     return ::bind(sockfd_,(struct sockaddr *)&address,sizeof(struct sockaddr));
 }
-inline size_t Socket::listen()
+ size_t Socket::listen()
 {
     return ::listen(sockfd_,1024);//默认backlog
 }

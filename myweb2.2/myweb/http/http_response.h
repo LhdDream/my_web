@@ -8,6 +8,8 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <functional>
+#include <sys/sendfile.h>
+#include <unistd.h>
 #include "Buffer.h"
 using hash_t = uint64_t ;
 constexpr hash_t prime = 0x100000001B3ull;
@@ -22,7 +24,7 @@ constexpr size_t hash_compile_time(const char * str, hash_t last_value = basis)
 class http_response
 {
 public:
-    std::string response(HTTPMessage * httpMessage)
+    void response(HTTPMessage * httpMessage, int fd)
     {
         httpMessage->clear(false); // 除了路径之外都进行清除
         struct stat st{};
@@ -36,6 +38,20 @@ public:
         std::string temp = httpMessage->Getpath().substr(it + 1,httpMessage->Getpath().size());
         Con_type(temp,httpMessage);
         //接下来文件的读取和fast-cgi的处理
+        //文件接口的处理
+        //
+
+        std::string pos= httpMessage->ToString();
+        if(send(fd,pos.c_str(),pos.size(),0))
+        {
+            std::cout << "send  .." << std::endl;
+        }
+        int fd_ = open(httpMessage->Getpath().c_str(),O_RDONLY);
+        if(sendfile64(fd,fd_,nullptr,st.st_size) != st.st_size)
+        {
+            std::cout << "error" << std::endl;
+        }
+        close(fd_);
     }
     void  Con_type( const std::string& path,HTTPMessage * httpMessage)
     {
@@ -73,8 +89,6 @@ public:
             }
         }
     }
-private:
-    std::unique_ptr<Buffer> Buffer_;
-    uint32_t  file_size;
+
 };
 #endif //MYWEB_HTTP_RESPONSE_H

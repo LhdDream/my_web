@@ -5,12 +5,16 @@
 
 
 
+void Acceptor::listen(){
+    listening_ = true;
+    acceptSocket_->listen();
+    acceptchannel_->set_type_(Readable());
+}
 
-
-void Acceptor::handleRead() //套接字可读的状态
+bool Acceptor::handleRead() //套接字可读的状态
 {
     while(true) {
-        int connfd = acceptSockct_.accpet();
+        int connfd = acceptSocket_->accpet();
         if (connfd >= 0) {
             if (NewCallback_) {
                 NewCallback_(connfd); // 这里新连接传递给tcp Server 之中
@@ -25,7 +29,7 @@ void Acceptor::handleRead() //套接字可读的状态
             //来打开这里来进行处理
            if (errno == EMFILE) {
                 ::close(idlefd_);
-                idlefd_ = acceptSockct_.accpet();
+                idlefd_ = acceptSocket_->accpet();
                 ::close(idlefd_);
                 idlefd_ = ::open("/dev/null", O_WRONLY | O_CLOEXEC);
             } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -33,4 +37,5 @@ void Acceptor::handleRead() //套接字可读的状态
             }
         }
     }
+    return false;
 }

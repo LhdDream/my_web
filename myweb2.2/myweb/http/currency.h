@@ -76,7 +76,7 @@ class HTTPMessage
 {
 public:
     explicit HTTPMessage() : m_method(Methond::NONE),m_statusCode(0),
-    m_path(),m_version("HTTP/1.1"),m_body()
+    m_path(),m_version("HTTP/1.1"),m_body(),m_long(0)
     {
     }
     void SetHeader(const std::string & name,const std::string &value)
@@ -116,7 +116,7 @@ public:
         this->m_body  = body ;
     }
 
-    std::string ToString() const
+    std::string ToString()
     {
         std::stringstream output;
         // begin by forming the start line of the message
@@ -138,6 +138,7 @@ public:
             output << "Content-Length: " << m_body.size() << "\r\n";
         output << "\r\n";
         output << m_body;
+        m_long = output.str().length();
         return output.str();
     }
     void clear(bool response)
@@ -149,6 +150,10 @@ public:
         m_headers.clear();
         m_version.clear();
         m_body.clear();
+        m_long = 0;
+    }
+    int len() const {
+        return m_long;
     }
 private:
     Methond m_method ;
@@ -160,6 +165,8 @@ private:
     std::unordered_map<std::string,std::string> m_headers;
     std::string m_body ; // 用于二进制安全
     // used to store message bodies
+
+    uint32_t  m_long ;
 };
 
 #endif //MYWEB_CURRENCY_H
