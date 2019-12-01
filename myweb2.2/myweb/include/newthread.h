@@ -36,7 +36,8 @@ public:
     }
 
     fixed_thread_pool() = default;
-    fixed_thread_pool(fixed_thread_pool&&) = default;
+
+    fixed_thread_pool(fixed_thread_pool &&) = default;
 
     ~fixed_thread_pool() {
         if (static_cast<bool> (data_)) {
@@ -48,8 +49,8 @@ public:
         }
     }
 
-    template <class F>
-    void execute(F&& task) {
+    template<class F>
+    void execute(F &&task) {
         {
             std::lock_guard<std::mutex> lk(data_->mtx_);
             data_->tasks_.emplace(std::forward<F>(task));
@@ -66,4 +67,5 @@ private:
     };
     std::shared_ptr<data> data_;
 };
+
 #endif //MYWEB_NEWTHREAD_H

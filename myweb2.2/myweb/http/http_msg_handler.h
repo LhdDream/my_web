@@ -10,21 +10,25 @@
 #include "../include/Buffer.h"
 
 class Buffer;
+
 class HTTPMessageParser;
+
 class http_response;
 
 class HttpMessageHandler {
 public:
-    explicit  HttpMessageHandler() : conn_(nullptr),respon_(std::make_unique<http_response>()),
-    parse_(std::make_unique<HTTPMessageParser>()){
+    explicit HttpMessageHandler() : conn_(std::make_unique<HTTPMessage>()), respon_(std::make_unique<http_response>()),
+                                    parse_(std::make_unique<HTTPMessageParser>()) {
     }
-    void  RecvRequese(std::unique_ptr<Buffer> &Socket) ;
-    void  SendResponse(std::unique_ptr<Buffer> &Socket);
+
+    void RecvRequese(std::unique_ptr<Buffer> &Socket);
+
+    void SendResponse(std::unique_ptr<Buffer> &Socket);
 
 private:
-    std::unique_ptr<HTTPMessage> conn_ ; //共同部分
-    std::unique_ptr<http_response> respon_ ; // 回应
-    std::unique_ptr<HTTPMessageParser> parse_ ; //解析
+    std::unique_ptr<HTTPMessage> conn_; //共同部分
+    std::unique_ptr<http_response> respon_; // 回应
+    std::unique_ptr<HTTPMessageParser> parse_; //解析
 };
 
 #endif //MYWEB_HTTP_MSG_HANDLER_H

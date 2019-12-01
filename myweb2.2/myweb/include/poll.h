@@ -4,6 +4,7 @@
 
 #ifndef MYWEB_POLL_H
 #define MYWEB_POLL_H//IO 多路复用
+
 #include <sys/epoll.h>
 #include <fcntl.h>
 #include <map>
@@ -15,42 +16,52 @@
 //epoll 反应堆模型
 //epoll 中的事件可读将IO事件分发出去进行事件处理
 class Eventloop;
+
 class channel;
+
 class Socket;
-class poll
-{
-    public:
-            explicit poll() : epollfd_(::epoll_create1(EPOLL_CLOEXEC)){
-            };
-            int fd() const { return epollfd_;}
-            int add_channel(Epoll_event & ev) const {
-                return epoll_ctl(epollfd_,EPOLL_CTL_ADD,ev.event_fd(),ev.pointer());
-            }
-            int add_channel(Epoll_event && ev) const {
-                return epoll_ctl(epollfd_,EPOLL_CTL_ADD,ev.event_fd(),ev.pointer());
-            }
-            //左值和右值,但是所有函数的形参都是左值
-            int remove_channel( Epoll_event & ev)   const {
-                return epoll_ctl(epollfd_,EPOLL_CTL_DEL,ev.event_fd(),ev.pointer());
-            }
-            int remove_channel(Epoll_event && ev) const {
-                return epoll_ctl(epollfd_,EPOLL_CTL_DEL,ev.event_fd(),ev.pointer());
-            }
-            int update_channel( Epoll_event & ev) const {
-                return epoll_ctl(epollfd_,EPOLL_CTL_MOD,ev.event_fd(),ev.pointer());
-            }
-            int update_channel(Epoll_event && ev) const{
-                return epoll_ctl(epollfd_,EPOLL_CTL_MOD,ev.event_fd(),ev.pointer());
-            }
-            //尽可能的使用右值移动构造
-            //设置一个epoll_wait
-            size_t Wait(EpollEventResult & result , int timeout = 100){
-                //设置epoll_Wait超时
-                result.resize();
-                size_t  user_number = epoll_wait(epollfd_,result.get(),result.capacity(), timeout );
-                return user_number;
-            }
+
+class poll {
+public:
+    explicit poll() : epollfd_(::epoll_create1(EPOLL_CLOEXEC)) {
+    };
+
+    int fd() const { return epollfd_; }
+
+    int add_channel(Epoll_event &ev) const {
+        return epoll_ctl(epollfd_, EPOLL_CTL_ADD, ev.event_fd(), ev.pointer());
+    }
+
+    int add_channel(Epoll_event &&ev) const {
+        return epoll_ctl(epollfd_, EPOLL_CTL_ADD, ev.event_fd(), ev.pointer());
+    }
+
+    //左值和右值,但是所有函数的形参都是左值
+    int remove_channel(Epoll_event &ev) const {
+        return epoll_ctl(epollfd_, EPOLL_CTL_DEL, ev.event_fd(), ev.pointer());
+    }
+
+    int remove_channel(Epoll_event &&ev) const {
+        return epoll_ctl(epollfd_, EPOLL_CTL_DEL, ev.event_fd(), ev.pointer());
+    }
+
+    int update_channel(Epoll_event &ev) const {
+        return epoll_ctl(epollfd_, EPOLL_CTL_MOD, ev.event_fd(), ev.pointer());
+    }
+
+    int update_channel(Epoll_event &&ev) const {
+        return epoll_ctl(epollfd_, EPOLL_CTL_MOD, ev.event_fd(), ev.pointer());
+    }
+
+    //尽可能的使用右值移动构造
+    //设置一个epoll_wait
+    void Wait(EpollEventResult &result, size_t *user_number) {
+        //设置epoll_Wait超时
+        *user_number = epoll_wait(epollfd_, result.get(), result.fillsize_(), 100);
+    }
+
 private:
-        int epollfd_;
+    int epollfd_;
 };
+
 #endif //MYWEB_POLL_H

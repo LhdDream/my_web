@@ -10,15 +10,18 @@
 #include "Acceptor.h"
 #include "newthread.h"
 #include <csignal>
-class httpserver
-{
+
+class httpserver {
 public:
-    httpserver() ;
+    httpserver();
+
     void start();
+
 private:
     std::unique_ptr<fixed_thread_pool> poll_; //线程池
     std::unique_ptr<Acceptor> acceptor_; // 独占式的
-    poll Epoll_ ; // epoll
+    poll Epoll_; // epoll
     channel_set users_; // 所有用户
 };
+
 #endif //MYWEB_HTTPSERVER_H
