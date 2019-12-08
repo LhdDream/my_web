@@ -1,0 +1,3 @@
+/home/kiosk/my_web/myweb2.2/myweb/build/CMakeFiles/rebuild_cache.dir
+/home/kiosk/my_web/myweb2.2/myweb/build/CMakeFiles/myweb.dir
+/home/kiosk/my_web/myweb2.2/myweb/build/CMakeFiles/edit_cache.dir

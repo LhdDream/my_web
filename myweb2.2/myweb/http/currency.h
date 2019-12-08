@@ -10,8 +10,8 @@
 #include <cstdint>
 #include <vector>
 #include <sstream>
-#include "memorypool.h"
-
+#include "../util/sparsepp/spp.h"
+using spp::sparse_hash_map;
 // 限定范围的methond
 enum class Methond : uint8_t {
     NONE,
@@ -71,13 +71,14 @@ inline std::string StatusFromStatusCode(const uint16_t statusCode) {
 class HTTPMessage {
 public:
     explicit HTTPMessage() : m_method(Methond::NONE), m_statusCode(0),
-                             m_path(), m_version("HTTP/1.1"), m_body() {
+                             m_path(), m_version("HTTP/1.1"), m_body(),
+                             keep_alive(false){
     }
 
     void SetHeader(const std::string &name, const std::string &value) {
        if(name == "Connection")
-           connection_ = value;
-        m_headers[name] = value;
+           keep_alive = true;
+       m_headers.emplace(name,value);
     }
 
     void SetMethond(const Methond &methond) {
@@ -101,11 +102,15 @@ public:
     }
 
     std::string Getpath() noexcept {
+        if(m_path.size() <= 1)
+        {
+            return "";
+        }
         return std::string(m_path.begin() + 1, m_path.end());
     }
 
-    void SetMessageBody(const std::string &body) {
-        this->m_body = body;
+    void SetMessageBody( std::string &&body) {
+        this->m_body = std::move(body);
     }
 
     std::string ToString() {
@@ -120,8 +125,8 @@ public:
             output << "HTTP/1.1";
         }
         output << "\r\n";
-        for (auto &header : m_headers)
-            output << header.first << ": " << header.second << "\r\n";
+        for(auto &c  :m_headers)
+            output << c.first << ": " << c.second << "\r\n";
         if (!m_body.empty())
             output << "Content-Length: " << m_body.size() << "\r\n";
         output << "\r\n";
@@ -135,12 +140,15 @@ public:
         m_method = Methond::NONE;
         m_statusCode = 0;
         m_headers.clear();
-        m_version.clear();
-        m_body.clear();
-        m_headers["Connection"] = connection_;
-        connection_.clear();
+        if(keep_alive)
+             m_headers.emplace("Connection","Keep-alive");
+        else
+            m_headers.emplace("Connection","Close");
     }
-
+    bool empty()
+    {
+        return m_path.empty()  && m_headers.empty();
+    }
 private:
     Methond m_method;
     // a status code for this Message
@@ -148,10 +156,10 @@ private:
     uint16_t m_statusCode;
     std::string m_path; // Only used for a request
     std::string m_version;
-    std::unordered_map<std::string, std::string> m_headers;
+    sparse_hash_map<std::string,std::string> m_headers;
     std::string m_body; // 用于二进制安全
 
-    std::string connection_; // 连接
+    bool keep_alive ;
     // used to store message bodies
 };
 

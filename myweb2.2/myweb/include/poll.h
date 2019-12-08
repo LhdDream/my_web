@@ -11,7 +11,7 @@
 #include "Epoll_event.h"
 #include "channel.h"
 #include "Socket.h"
-
+#include <memory>
 
 //epoll 反应堆模型
 //epoll 中的事件可读将IO事件分发出去进行事件处理
@@ -26,27 +26,12 @@ public:
     explicit poll() : epollfd_(::epoll_create1(EPOLL_CLOEXEC)) {
     };
 
-    int fd() const { return epollfd_; }
-
-    int add_channel(Epoll_event &ev) const {
-        return epoll_ctl(epollfd_, EPOLL_CTL_ADD, ev.event_fd(), ev.pointer());
-    }
-
     int add_channel(Epoll_event &&ev) const {
         return epoll_ctl(epollfd_, EPOLL_CTL_ADD, ev.event_fd(), ev.pointer());
     }
 
-    //左值和右值,但是所有函数的形参都是左值
-    int remove_channel(Epoll_event &ev) const {
-        return epoll_ctl(epollfd_, EPOLL_CTL_DEL, ev.event_fd(), ev.pointer());
-    }
-
     int remove_channel(Epoll_event &&ev) const {
         return epoll_ctl(epollfd_, EPOLL_CTL_DEL, ev.event_fd(), ev.pointer());
-    }
-
-    int update_channel(Epoll_event &ev) const {
-        return epoll_ctl(epollfd_, EPOLL_CTL_MOD, ev.event_fd(), ev.pointer());
     }
 
     int update_channel(Epoll_event &&ev) const {
@@ -57,7 +42,7 @@ public:
     //设置一个epoll_wait
     void Wait(EpollEventResult &result, size_t *user_number) {
         //设置epoll_Wait超时
-        *user_number = epoll_wait(epollfd_, result.get(), result.fillsize_(), 100);
+        *user_number = epoll_wait(epollfd_, result.get(), result.fillsize_(), -1);
     }
 
 private:

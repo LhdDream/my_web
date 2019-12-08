@@ -13,77 +13,50 @@
 #include <sys/socket.h>
 #include "Epoll_event.h"
 
-constexpr const size_t beginsize = 0;
-constexpr const size_t fillsize = 4096;
+constexpr  const size_t  beginsize = 0;
+constexpr  const size_t  filesize = 1024;
 
-//Buffer 进行输出和输入缓冲区的编写
 class Buffer {
 public:
-    //初始大小和起始位置
-    explicit Buffer(int fd) : readindex(beginsize), writeindex(beginsize), data_(beginsize + fillsize),
-                              fd_(fd) {
-        printf("Buffer %zu\n", data_.size());
-    };
+    explicit  Buffer():data_(beginsize + filesize )
+    {};
 
-    ~Buffer() = default;
-
-    char *begin() {
-        return &*data_.begin();
+    size_t writeable() const {return data_.size() - write_pos_;}
+    void resize(size_t len)
+    {
+       if(len > writeable())
+       {
+           data_.resize(len + data_.size());
+       }else{
+           std::copy(data_.begin() + read_pos_,data_.begin() + write_pos_,data_.begin());
+           read_pos_ = 0;
+           write_pos_ = data_.size();
+       }
     }
 
-    const char *begin() const {
-        return &*data_.begin();
+
+
+    void  * beginwrite() {
+        return &*data_.begin() +write_pos_;
     }
 
-    size_t writeableByte() {
-        printf("size  %zu %zu \n", data_.size(), writeindex);
-        return data_.size() - writeindex;
+    void writeoffest_move(int len){
+        write_pos_ += len;
     }
 
-    size_t readaleByte() {
-        return writeindex - readindex;
-    }
-
-    void resize(size_t len) {
-        if (writeableByte() < len) {
-            data_.resize((writeindex + len) * 2);
-        } else if (readindex != 0) // 如果之前有空余那么将其移动
-        {
-            size_t readable = readaleByte();
-            std::copy(begin() + readindex,
-                      begin() + writeindex,
-                      begin());
-            readindex = 0;
-            writeindex = readindex + readable;
-        }
-    }
-
-    void append_(const char *tmp, size_t len) {
-        resize(len);
-        std::copy(tmp, tmp + len, data_.begin() + writeindex);
-        writeindex += len;
-    };
-
-    ssize_t readfd(); // 相当于一次read操作
-    void reset() noexcept {
-        data_.resize(fillsize);
-        readindex = beginsize;
-        writeindex = fillsize;
-    }
-
-    std::vector<char> &Get() {
+    std::vector<char> &data() {
         return data_;
     }
-
-    int get_Fd() const {
-        return fd_;
+    void reset() {
+        data_.clear();
+        write_pos_ = 0;
+        read_pos_ = 0;
     }
 
 private:
-    std::vector<char> data_;//读取http请求
-    size_t readindex;
-    size_t writeindex;
-    int fd_; // 每一个用户的fd
+    std::vector<char> data_;
+    size_t write_pos_ = 0; // 写指针
+    size_t read_pos_ = 0; // 读指针
 };
 
 #endif //MYWEB_BUFFER_H

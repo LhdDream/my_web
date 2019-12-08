@@ -8,7 +8,7 @@ size_t Socket::bindaddress() {
 }
 
 size_t Socket::listen() {
-    return ::listen(sockfd_, 1024);//默认backlog
+    return ::listen(sockfd_, SOMAXCONN);//默认backlog
 }
 
 void Socket::setresueport(bool on) {
@@ -36,4 +36,22 @@ void Socket::shutdownWrite() {
     if (::shutdown(sockfd_, SHUT_WR) < 0) {
         return;
     }
+}
+
+int Socket::read(const std::shared_ptr<Buffer>& buffer, int length, int flags) const {
+    if(length > buffer->writeable())
+    {
+        length = buffer->writeable();
+    }
+
+    int read_bytes = ::recv(sockfd_, buffer->beginwrite() ,length,flags) ;
+    if(read_bytes > 0 )
+    {
+        buffer->writeoffest_move(read_bytes);
+    }
+    return read_bytes;
+}
+
+int Socket::write(const void *buffer, int length, int flags) const {
+    return ::send(sockfd_,buffer,length,flags);
 }

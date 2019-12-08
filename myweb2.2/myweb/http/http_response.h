@@ -4,15 +4,18 @@
 
 #ifndef MYWEB_HTTP_RESPONSE_H
 #define MYWEB_HTTP_RESPONSE_H
-
+#include <cstdint>
 #include "currency.h"
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <functional>
 #include <sys/sendfile.h>
 #include <unistd.h>
-#include "Buffer.h"
+#include "../include/Buffer.h"
+#include <climits>
+#include "../include/Socket.h"
 
+class Socket;
 using hash_t = uint64_t;
 constexpr hash_t prime = 0x100000001B3ull;
 constexpr hash_t basis = 0xCBF29CE484222325ull;
@@ -24,11 +27,11 @@ constexpr size_t hash_compile_time(const char *str, hash_t last_value = basis) {
 
 class http_response {
 public:
-    void response(HTTPMessage *httpMessage, int fd) {
-
+    //组装response
+    int  response(HTTPMessage *httpMessage,std::shared_ptr<Socket> &fd) {
         httpMessage->clear(false); // 除了路径之外都进行清除
-        struct stat st{};
-        if (stat(httpMessage->Getpath().c_str(), &st) < 0) {
+        struct stat64 st{};
+        if (stat64(httpMessage->Getpath().c_str(), &st) < 0) {
             httpMessage->SetStatusCode(404);
         }
         httpMessage->SetStatusCode(200);
@@ -36,22 +39,47 @@ public:
         auto it = httpMessage->Getpath().find('.');
         std::string temp = httpMessage->Getpath().substr(it + 1, httpMessage->Getpath().size());
         Con_type(temp, httpMessage);
+        filesize = st.st_size;
         //接下来文件的读取和fast-cgi的处理
         //文件接口的处理
         //
-        std::string pos = httpMessage->ToString();
-        if (send(fd, pos.c_str(), pos.size(), 0) < 0) {
-            std::cout << "send  .." << std::endl;
+        std::string p = httpMessage->ToString();
+        if(fd->write( p.c_str(),p.size(),0 ) < 0 )
+        {
+            if(errno != EAGAIN && errno != EINTR){
+                return -1;
+            }else{
+                return -2;
+            }
         }
-        std::cout << st.st_size << std::endl;
-        int fd_ = open(httpMessage->Getpath().c_str(), O_RDONLY);
-        if (sendfile64(fd, fd_, nullptr, st.st_size) != st.st_size) {
-            std::cout << "error" << std::endl;
+        return 0;
+    }
+    //发送文件使用sendfile 循环
+    void actsendfile(const std::string & path , int fd)
+    {
+        //发送文件的处理
+        //必须先组成在发送文件
+        int fd_ = open64(path.c_str(), O_RDONLY);
+        off64_t offest = 0LL;
+        while(offest < filesize){
+            size_t  count;
+            off64_t  remain = filesize - offest;
+            if(remain > SSIZE_MAX)
+            {
+                count = SSIZE_MAX;
+            }else{
+                count = remain;
+            }
+            if(sendfile64(fd,fd_, &offest,count) == 0 )
+            {
+                break;
+            }
         }
+        filesize = 0;
         close(fd_);
-        close(fd);
     }
 
+private:
     void Con_type(const std::string &path, HTTPMessage *httpMessage) {
         switch (hash_compile_time(path.data())) {
             case hash_compile_time("png"): {
@@ -86,6 +114,8 @@ public:
         }
     }
 
+private:
+    size_t  filesize = 0;
 };
 
 #endif //MYWEB_HTTP_RESPONSE_H

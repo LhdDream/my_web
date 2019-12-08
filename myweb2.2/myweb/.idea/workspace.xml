@@ -29,12 +29,17 @@
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
-      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug">
+        <ADDITIONAL_GENERATION_ENVIRONMENT>
+          <envs>
+            <env name="Bundled GDB" value="/usr/bin/gdb" />
+          </envs>
+        </ADDITIONAL_GENERATION_ENVIRONMENT>
+      </configuration>
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d485f9db-4e9a-45ed-bbcb-32ae0be1a20c" name="Default Changelist" comment="" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -42,6 +47,20 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileTemplateManagerImpl">
@@ -57,10 +76,15 @@
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectId" id="1PKFKbjPpVtSO8SF5o3jfIcWyHL" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/my_web/myweb2.1/myweb" />
+    <property name="last_opened_file_path" value="$USER_HOME$/my_web/myweb2.2/myweb" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -70,19 +94,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.C/C++" />
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
+    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
   </component>
   <component name="RunManager">
     <configuration name="myweb" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="myweb" TARGET_NAME="myweb" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="myweb" RUN_TARGET_NAME="myweb">
@@ -90,6 +102,18 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -162,21 +186,79 @@
       <workItem from="1575108614530" duration="13974000" />
       <workItem from="1575124548174" duration="2528000" />
       <workItem from="1575180340610" duration="20679000" />
+      <workItem from="1575287982967" duration="11789000" />
+      <workItem from="1575351180266" duration="20149000" />
+      <workItem from="1575728448354" duration="26593000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/httpserver.cc</url>
-          <line>18</line>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="WindowStateProjectService">
+    <state x="418" y="177" width="1084" height="773" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1575808529359">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state x="418" y="177" width="1084" height="773" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575808529359" />
+    <state x="568" y="176" width="774" height="738" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1575788976867">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state x="568" y="176" width="774" height="738" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575788976867" />
+    <state x="340" y="240" width="761" height="692" key="EnvironmentVariablesDialog" timestamp="1575809028736">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state x="340" y="240" width="761" height="692" key="EnvironmentVariablesDialog/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575809028736" />
+    <state x="643" y="188" width="624" height="714" key="FileChooserDialogImpl" timestamp="1575809823099">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state x="643" y="188" width="624" height="714" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575809823099" />
+    <state width="1852" height="3" key="GridCell.Tab.0.bottom" timestamp="1575817029109">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state width="1852" height="3" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575817029109" />
+    <state width="1852" height="3" key="GridCell.Tab.0.center" timestamp="1575817029108">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state width="1852" height="3" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575817029108" />
+    <state width="1852" height="3" key="GridCell.Tab.0.left" timestamp="1575817029107">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state width="1852" height="3" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575817029107" />
+    <state width="1852" height="3" key="GridCell.Tab.0.right" timestamp="1575817029108">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state width="1852" height="3" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575817029108" />
+    <state width="1852" height="3" key="GridCell.Tab.1.bottom" timestamp="1575810670390">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state width="1852" height="3" key="GridCell.Tab.1.bottom/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575810670390" />
+    <state width="1852" height="3" key="GridCell.Tab.1.center" timestamp="1575810670389">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state width="1852" height="3" key="GridCell.Tab.1.center/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575810670389" />
+    <state width="1852" height="3" key="GridCell.Tab.1.left" timestamp="1575810670389">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state width="1852" height="3" key="GridCell.Tab.1.left/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575810670389" />
+    <state width="1852" height="3" key="GridCell.Tab.1.right" timestamp="1575810670389">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state width="1852" height="3" key="GridCell.Tab.1.right/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575810670389" />
+    <state x="224" y="0" width="1461" height="1037" key="SettingsEditor" timestamp="1575809090700">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state x="224" y="0" width="1461" height="1037" key="SettingsEditor/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575809090700" />
+    <state x="504" y="290" key="com.intellij.ide.util.TipDialog" timestamp="1575728452723">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state x="504" y="290" key="com.intellij.ide.util.TipDialog/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575728452723" />
+    <state x="455" y="236" key="run.anything.popup" timestamp="1575791054802">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state x="455" y="236" key="run.anything.popup/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575791054802" />
+    <state x="453" y="-2" key="search.everywhere.popup" timestamp="1575797529310">
+      <screen x="0" y="0" width="1920" height="1037" />
+    </state>
+    <state x="453" y="-2" key="search.everywhere.popup/1920.0.1920.1080/0.0.1920.1037@0.0.1920.1037" timestamp="1575797529310" />
   </component>
 </project>

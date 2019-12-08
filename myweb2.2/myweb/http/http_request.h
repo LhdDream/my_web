@@ -83,8 +83,7 @@ public:
         }
         // 如果有请求的话携带进去
         if (hasMessageBody) {
-            std::string buf(buffer.begin() + bodyStartIndex, buffer.begin() + readsize);
-            httpMessage->SetMessageBody(buf);
+            httpMessage->SetMessageBody({buffer.begin() + bodyStartIndex, buffer.begin() + readsize});
         }
     }
 };

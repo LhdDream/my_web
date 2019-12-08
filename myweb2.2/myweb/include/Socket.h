@@ -7,7 +7,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <netinet/tcp.h>
-
+#include "Buffer.h"
 class Socket // 使用RAII 重新封装Socket 对象
 {
 public:
@@ -18,11 +18,11 @@ public:
         inet_pton(AF_INET, ip, &address.sin_addr);
         address.sin_port = htons(port);
     }; // 显示转换
-    explicit Socket(int sockfd) : sockfd_(sockfd) {}
+    Socket(int sockfd) : sockfd_(sockfd) {}
 
     ~Socket() { close(sockfd_); }
 
-    int fd() { return sockfd_; } // 返回已经绑定的socketfd
+    int fd() const { return sockfd_; } // 返回已经绑定的socketfd
     size_t bindaddress();
 
     size_t listen();
@@ -32,6 +32,9 @@ public:
     //if listen error to return
     void setresueport(bool on); // 开启端口复用
     void shutdownWrite();
+
+    int read(const std::shared_ptr<Buffer>& buffer , int length  , int flags = 0) const ;
+    int write(const void * buffer , int length , int flags = 0) const ;
 
 private:
     size_t sockfd_; //套接字

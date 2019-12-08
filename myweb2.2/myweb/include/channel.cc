@@ -4,22 +4,20 @@ int channel::fd_() const {
     return Socket_->fd();
 }
 
-void channel::handleRead() {
-    Read_ = false;
-    if (toType(type_) & toType(Readable())) {
+void  channel::handleRead() {
+
+    if (type_ & Readable()) {
         Readcallback_();
-        Read_ = true;
-        set_type_(Writeable());
     }
     //写完发送完才可以关闭
+
 }
 
-void channel::handleWrite() {
-    Write_ = false;
-    if (toType(type_) & toType(Writeable())) {
-        Writecallback_();
-        Write_ = true;
+void  channel::handleWrite() {
+    if (type_ & Writeable()) {
+       Writecallback_();
     }
+
 }
 
 void channel::onRead_(Callback &&re) {
@@ -36,43 +34,74 @@ void channel::onWrite_(Callback &&wr) {
 // copy
 // user  == rigth
 // move
-int channel_set::add(channel *&user) { //copy
-    table_.emplace(user->fd_(), user);
-    epoll_.add_channel({user->fd_(), user->get_()});
+void  channel_set::add(const std::shared_ptr < channel >& user) { //copy
+    table_.emplace(user->fd_(), user.get());
+    epoll_.add_channel(user->get_event());
+    user->onRead_(
+            [this,user = user]() {
 
-    //设置回调函数
-    user->onRead_([&user]() {
-        user->handler_->RecvRequese(user->ReadBuffer_);;
-    });
-    user->onWrite_([&user]() {
-        user->handler_->SendResponse(user->ReadBuffer_);;
-    });
-    return user->fd_();
+                 auto it = user->handler_->RecvRequese(user->Socket_,parse_,respon_) ;
+                 if(it  == -1)
+                 {
+                     user->type_ = EpollEventType::KClose;
+                 }else if(it == 2)
+                 {
+                     user->type_ = Allof();
+                 }
+            }
+            );
+    user->onWrite_(
+            [this,user = user]() {
+                 auto it = user->handler_->SendResponse(user->Socket_,respon_);
+                if(it == 2){
+                    user->type_ = Allof();
+                }else if(it == -1){
+                    user->type_ = EpollEventType::KClose;
+                }
+            }
+            );
 }
 
 
 void channel_set::remove(channel *&user) {
-    epoll_.remove_channel({user->fd_(), user->get_()});
+    epoll_.remove_channel(user->get_event());
     table_.erase(user->fd_());
-    close(user->fd_());
 }
 
 void channel_set::doRead(int id) {
-    table_[id]->handleRead();
-    closechannel(id);
+        table_[id]->handleRead();
+        closechannel(id);
 }
 
 void channel_set::doWrite(int id) {
-    table_[id]->handleWrite();
-    closechannel(id);
+        table_[id]->handleWrite();
+        closechannel(id);
 }
 
 
 void channel_set::closechannel(int id) {
+
     if (table_[id]->closeable()) {
         remove(table_[id]);
     } else {
         //从epoll中修改状态
-        epoll_.update_channel({table_[id]->fd_(), table_[id]->get_()});
+        epoll_.update_channel(table_[id]->get_event());
+    }
+}
+
+void channel_set::remove(int id) {
+    epoll_.remove_channel(table_[id]->get_event());
+    table_.erase(id);
+}
+
+void channel_set::run(EpollEventResult &result, size_t *user_number) {
+    epoll_.Wait(result, user_number);
+    if(*user_number > 0)
+    {
+        //寻找活跃的连接
+        if(static_cast<size_t > (*user_number) == result.fillsize_() - 1)
+        {
+            result.resize(*user_number);
+        }
     }
 }

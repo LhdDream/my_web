@@ -1,7 +1,6 @@
 //
 // Created by kiosk on 19-11-26.
 //
-
 #ifndef MYWEB_EPOLL_EVENT_H
 #define MYWEB_EPOLL_EVENT_H
 //对于epoll的事件的类
@@ -12,27 +11,20 @@
 #include <memory>
 
 //对于epoll的事件处理的类
-enum class EpollEventType : uint32_t {
+enum  EpollEventType  {
     KReadble = ::EPOLLIN,
     KWriteable = ::EPOLLOUT,
     KOneShot = ::EPOLLONESHOT,
-    KET = ::EPOLLET
+    KET = ::EPOLLET,
+    KClose = EPOLLRDHUP
 }; // 使用enum class 来防止命名污染
 //如果使用enum class 不会隐式int /float 类型，禁止
 //底层使用long
 //
-template<typename E>
-constexpr typename std::underlying_type<E>::type
-toType(E enumerator) noexcept {
-    return static_cast<typename std::underlying_type<E>::type >(enumerator);
-}
 
-constexpr EpollEventType operator|(EpollEventType f1, EpollEventType f2) {
-    return static_cast<EpollEventType >(toType(f1) | toType(f2));
-}
 
 //对于强类型进行位操作,需要重载 |
-constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET); }
+constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET ); }
 
 constexpr EpollEventType Readable() { return EpollEventType(EpollEventType::KReadble | Basic()); }
 
@@ -45,11 +37,11 @@ class Epoll_event {
     friend class poll;
 
 public:
-    explicit Epoll_event(int fd) : event_(epoll_event{toType(Allof()), {.fd = fd}}) {}
+    explicit Epoll_event(int fd) : event_(epoll_event{Allof(), {.fd = fd}}) {}
 
     Epoll_event() : event_{} {} //
     //
-    Epoll_event(int fd, EpollEventType type) : event_(epoll_event{toType(type), {.fd = fd}}) {}
+    Epoll_event(int fd, EpollEventType type) : event_(epoll_event{type, {.fd = fd}}) {}
 
     int event_fd() const { return event_.data.fd; }
 
@@ -57,7 +49,7 @@ public:
         return &event_;
     }
 
-    bool ck(EpollEventType ev) const { return (toType(ev) & event_.events) != 0; }
+    bool ck(EpollEventType ev) const { return (ev & event_.events) != 0; }
 
 private:
     epoll_event event_;
@@ -83,7 +75,9 @@ public:
     size_t fillsize_() const {
         return store_->size();
     }
-
+    void resize(size_t file) const{
+        store_->resize(store_->size() + file);
+    }
 private:
     epoll_event *get() {
         return store_->begin()->pointer();
@@ -91,5 +85,6 @@ private:
 
     std::unique_ptr<std::vector<Epoll_event>> store_;
 };
+
 
 #endif //MYWEB_EPOLL_EVENT_H
