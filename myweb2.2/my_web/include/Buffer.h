@@ -27,7 +27,7 @@ public:
        if(len > writeable())
        {
            data_.resize(len + data_.size());
-       }else{
+       }else if(read_pos_ >  0){
            std::copy(data_.begin() + read_pos_,data_.begin() + write_pos_,data_.begin());
            read_pos_ = 0;
            write_pos_ = data_.size();
@@ -48,11 +48,10 @@ public:
         return data_;
     }
     void reset() {
-        data_.clear();
+        data_.resize(data_.size());
         write_pos_ = 0;
         read_pos_ = 0;
     }
-
 private:
     std::vector<char> data_;
     size_t write_pos_ = 0; // 写指针

@@ -49,8 +49,6 @@ public:
         return &event_;
     }
 
-    bool ck(EpollEventType ev) const { return (ev & event_.events) != 0; }
-
 private:
     epoll_event event_;
 };
@@ -68,7 +66,7 @@ public:
         store_->resize(1024);
     }
 
-    Epoll_event operator[](size_t i) {
+    Epoll_event operator[] (size_t i) {
         return store_->at(i);
     }
 

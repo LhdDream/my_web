@@ -8,34 +8,38 @@
 #include "poll.h"
 #include "Buffer.h"
 #include "../http/http_msg_handler.h"
-#include <memory>
 #include "../util/sparsepp/spp.h"
 #include <queue>
+#include <memory>
+#include <utility>
 using spp::sparse_hash_map;
-//每一个用户一个channel
-//设置每一个用户的回调函数
-//其中还有主线程也用到了channel 所以在这里设置一个回调
+
 
 class channel_set;
-
-
-class channel {
+class poll;
+//相当于user 和channel
+class User {
     friend class channel_set;
-
+    enum  Connect{
+        KConneting,
+        KConneted,
+        KDisConnected
+    };//状态是不是已经连接上?三种标志
 public:
-    using Callback = std::function<void  ()>;
+    using Callback = std::function<void()>;
 
-    explicit channel(int sock_)
+    explicit User(int sock_)
             : Socket_(sock_),
-              handler_(std::make_unique<HttpMessageHandler>()),
-              type_(Readable()){}
+              handler_(std::make_unique<HttpMessageHandler>(sock_)),
+              type_(Readable()),
+              Readcallback_(),
+              Writecallback_() {}
 
     //如果声明析够函数,那么编译器不会主动声明移动构造函数
-    int fd_() const;
 
-   void handleRead();
+    void handleRead();
 
-    void  handleWrite();
+    void handleWrite();
 
     void onRead_(Callback &&re);
 
@@ -47,8 +51,8 @@ public:
         return handler_->closeable();
     }
 
-    Epoll_event  get_event(){
-        return Epoll_event{Socket_,type_};
+    Epoll_event get_event() {
+        return Epoll_event{Socket_, type_};
     };
 
 
@@ -56,41 +60,76 @@ private:
     int Socket_; //对于每一个用户的fd进行保存
     //我们可以把Socket和Buffer进行一个绑定
     //之后进行收发就可以直接
-    std::unique_ptr<HttpMessageHandler> handler_; //对于http事件处理
+    std::shared_ptr<HttpMessageHandler> handler_; //对于http事件处理
     //由read -> write 权限
     EpollEventType type_; //epoll 的事件
-    Callback Readcallback_ = nullptr;
-    Callback Writecallback_ = nullptr;
+    Callback Readcallback_;
+    Callback Writecallback_;
 };
 
 
 //整个channel的集合
 class channel_set {
 public:
-    explicit channel_set(const std::shared_ptr<poll> &epoll) : epoll_(epoll),respon_(std::make_unique<http_response>()),
-                                        parse_(std::make_unique<HTTPMessageParser>()){}
+    using   User_ = std::vector<int>;
+public:
+    explicit channel_set(std::shared_ptr<poll> epoll) : epoll_(std::move(epoll)),
+                                                               respon_(std::make_unique<http_response>()),
+                                                               parse_(std::make_unique<HTTPMessageParser>()){}
 
-    void  add(const std::shared_ptr < channel >& user);
+    void add(int fd);
 
-    void remove(channel *&user);
 
     void doRead(int id);
 
     void doWrite(int id);
 
-    void closechannel(int id);
-
-    void remove(int id);
-
-    void run(EpollEventResult &result, size_t *user_number);
+    void loop(const std::vector<int> & namelist);
 private:
     std::shared_ptr<poll> epoll_;
-    sparse_hash_map<int, channel *> table_;
+    sparse_hash_map<int, std::shared_ptr<User>> table_;
     std::unique_ptr<http_response> respon_; // 回应
     std::unique_ptr<HTTPMessageParser> parse_; //解析
+    //唯一的
+    //所有的fd和http_msg_handler 作为一个对象池
     //将所有的channel连接起来
     //定時器操作放在epoll之中，處理socket事件，同時也可以把定時器輪尋時間
     //一起執行
+private:
+    decltype(auto) Getoper(int fd) {
+        if(table_.find(fd) == table_.end()){
+            //if http_msg_handler  to create it
+            //只要让她在执行过程中找到相应的完整类别则可以
+            //设置标志位,解析问题
+            auto user = std::make_shared<User>(fd);
+            table_.emplace(std::make_pair(fd, user));
+            user->onRead_(
+                    [this, user = user]() {
+                        auto it = user->handler_->RecvRequese( parse_, respon_);
+                         if (it == 2) {
+                            user->type_ = Writeable();
+                             epoll_->update_channel(user->get_event());
+                        }else if(it == 0){
+                            user->type_ = Readable();
+                        }
+                    }
+            );
+            user->onWrite_(
+                    [this,user = user]() {
+                        auto it = user->handler_->SendResponse( respon_);
+                        if(it  == 0){
+                            user->type_ = Readable();
+                            epoll_->update_channel(user->get_event());
+                        }
+                    }
+            );
+        }else {
+            table_[fd]->handler_->clear();
+        }
+        epoll_->add_channel(table_[fd]->get_event());
+    }
 };
+
+
 
 #endif //MYWEB_CHANNEL_H

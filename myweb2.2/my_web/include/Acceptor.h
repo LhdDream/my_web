@@ -8,16 +8,11 @@
 #include "Socket.h"
 #include "channel.h"
 #include <atomic>
+#include <functional>
 
-
-class channel;
-
-class Socket;
 
 class Acceptor // socket accpet 连接的接口
 {
-    friend class httpserver;
-
 public:
     using ConnCallback =  std::function<void(int sockfd)>;
 
