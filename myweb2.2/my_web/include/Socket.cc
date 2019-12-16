@@ -38,7 +38,7 @@ void Socket::shutdownWrite() {
     }
 }
 
-int Socket::read(const std::shared_ptr<Buffer>& buffer, int length, int flags) const {
+int Socket::read(const std::unique_ptr<Buffer>& buffer, int length, int flags) const {
     if(length > buffer->writeable())
     {
         buffer->resize(length);

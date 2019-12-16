@@ -44,7 +44,7 @@ public:
         write_pos_ += len;
     }
 
-    std::vector<char> &data() {
+    std::vector<unsigned char> &data() {
         return data_;
     }
     void reset() {
@@ -53,7 +53,7 @@ public:
         read_pos_ = 0;
     }
 private:
-    std::vector<char> data_;
+    std::vector<unsigned char> data_;
     size_t write_pos_ = 0; // 写指针
     size_t read_pos_ = 0; // 读指针
 };

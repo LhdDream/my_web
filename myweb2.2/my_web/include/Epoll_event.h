@@ -24,9 +24,10 @@ enum  EpollEventType  {
 
 
 //对于强类型进行位操作,需要重载 |
-constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET ); }
+constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET | EpollEventType::KReadble   ); }
+constexpr  EpollEventType Oneshot() {return EpollEventType(EpollEventType::KOneShot);}
 
-constexpr EpollEventType Readable() { return EpollEventType(EpollEventType::KReadble | Basic()); }
+constexpr EpollEventType Readable() { return EpollEventType(Basic() | Oneshot()); }
 
 constexpr EpollEventType Writeable() { return EpollEventType(EpollEventType::KWriteable | Basic()); }
 
@@ -66,7 +67,7 @@ public:
         store_->resize(1024);
     }
 
-    Epoll_event operator[] (size_t i) {
+    Epoll_event &operator[] (size_t i) {
         return store_->at(i);
     }
 

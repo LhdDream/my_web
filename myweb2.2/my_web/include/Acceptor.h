@@ -19,12 +19,12 @@ public:
     explicit Acceptor() : acceptSocket_(nullptr), listening_{false},
                           idlefd_(::open("/dev/null", O_RDONLY | O_CLOEXEC)) {
         createSocket_();
-        acceptSocket_->setresueport(true);
-        acceptSocket_->bindaddress();
     }
     void createSocket_(const char * ip = "127.0.0.1",uint16_t port =8080)
     {
         acceptSocket_ = std::make_unique<Socket>(ip,port);
+        acceptSocket_->setresueport(true);
+        acceptSocket_->bindaddress();
     }
     void listen();//初始化listen
     bool listening() const { return listening_; }

@@ -14,8 +14,8 @@ void httpserver::start() {
     acceptor_->setCallback( [&] (int fd) {
         users_->add(fd);
     });
-    Epoll_->add_channel({acceptor_->fd_(), Readable()});
     EpollEventResult event_(1024);
+    Epoll_->add_channel({acceptor_->fd_(), Basic()});
     size_t user_number;
     while(true){
         activeFd.clear();
@@ -23,7 +23,7 @@ void httpserver::start() {
         Epoll_->Wait(event_,&user_number);
         for(int i = 0 ; i < user_number; i++)
         {
-            auto it = event_[i];
+            auto &&it = event_[i];
             if(it.event_fd() == acceptor_->fd_()){
                 acceptor_->handleRead();
             }else {

@@ -33,7 +33,7 @@ public:
     void setresueport(bool on); // 开启端口复用
     void shutdownWrite();
 
-    int read(const std::shared_ptr<Buffer>& buffer , int length  , int flags = 0) const ;
+    int read(const std::unique_ptr<Buffer>& buffer , int length  , int flags = 0) const ;
     int write(const void * buffer , int length , int flags = 0) const ;
 
 private:

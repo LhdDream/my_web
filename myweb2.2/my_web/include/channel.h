@@ -8,23 +8,19 @@
 #include "poll.h"
 #include "Buffer.h"
 #include "../http/http_msg_handler.h"
-#include "../util/sparsepp/spp.h"
+#include <unordered_map>
 #include <queue>
 #include <memory>
 #include <utility>
+#include "../util/sparsepp/spp.h"
 using spp::sparse_hash_map;
-
 
 class channel_set;
 class poll;
 //相当于user 和channel
 class User {
     friend class channel_set;
-    enum  Connect{
-        KConneting,
-        KConneted,
-        KDisConnected
-    };//状态是不是已经连接上?三种标志
+
 public:
     using Callback = std::function<void()>;
 
@@ -44,12 +40,6 @@ public:
     void onRead_(Callback &&re);
 
     void onWrite_(Callback &&wr);
-
-
-    bool closeable() {
-        std::cout << handler_.get() << std::endl;
-        return handler_->closeable();
-    }
 
     Epoll_event get_event() {
         return Epoll_event{Socket_, type_};
@@ -107,24 +97,20 @@ private:
                     [this, user = user]() {
                         auto it = user->handler_->RecvRequese( parse_, respon_);
                          if (it == 2) {
-                            user->type_ = Writeable();
-                             epoll_->update_channel(user->get_event());
-                        }else if(it == 0){
-                            user->type_ = Readable();
+                            user->type_ = Allof();
+                            epoll_->add_channel(user->get_event());
                         }
                     }
             );
             user->onWrite_(
                     [this,user = user]() {
                         auto it = user->handler_->SendResponse( respon_);
-                        if(it  == 0){
+                        if(it  >= 0) {
                             user->type_ = Readable();
-                            epoll_->update_channel(user->get_event());
+                            epoll_->add_channel(user->get_event());
                         }
                     }
             );
-        }else {
-            table_[fd]->handler_->clear();
         }
         epoll_->add_channel(table_[fd]->get_event());
     }

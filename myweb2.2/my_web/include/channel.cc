@@ -42,7 +42,7 @@ void channel_set::doWrite(int id) {
 }
 
 void channel_set::loop(const std::vector<int> & namelist) {
-    for(auto &c : namelist){
+    for(auto &&c : namelist){
         if (table_[c]->type_ == Readable()) {
                 doRead(c);
             } else if (table_[c]->type_ == Writeable()) {
