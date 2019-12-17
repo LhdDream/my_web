@@ -8,12 +8,12 @@ void Acceptor::listen() {
     acceptSocket_->listen();
 }
 
-int Acceptor::handleRead() //套接字可读的状态
+void  Acceptor::handleRead() //套接字可读的状态
 {
     //ET使用accept来进行
     while (true) {
         int connfd = acceptSocket_->accpet();
-        if (connfd > 0) {
+        if (connfd >= 0) {
             p(connfd);
         }
         if (connfd < 0) {
@@ -24,9 +24,9 @@ int Acceptor::handleRead() //套接字可读的状态
                 idlefd_ = acceptSocket_->accpet();
                 ::close(idlefd_);
                 idlefd_ = ::open("/dev/null", O_WRONLY | O_CLOEXEC);
-            } else
+            }  else if (errno != EAGAIN && errno != EWOULDBLOCK) {
                 break;
+            }
         }
     }
-    return false;
 }

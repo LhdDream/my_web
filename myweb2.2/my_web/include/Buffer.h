@@ -12,10 +12,10 @@
 #include <iostream>
 #include <sys/socket.h>
 #include "Epoll_event.h"
-
+#include <algorithm>
 constexpr  const size_t  beginsize = 0;
-constexpr  const size_t  filesize = 1024;
-
+constexpr  const size_t  filesize =  4096;
+constexpr  unsigned char  line[2] ={'\r','\n'};
 class Buffer {
 public:
     explicit  Buffer():data_(beginsize + filesize )
@@ -33,8 +33,9 @@ public:
            write_pos_ = data_.size();
        }
     }
-
-
+    const unsigned char  * begin() const {
+        return data_.data();
+    }
 
     void  * beginwrite() {
         return &*data_.begin() +write_pos_;
@@ -52,6 +53,8 @@ public:
         write_pos_ = 0;
         read_pos_ = 0;
     }
+
+
 private:
     std::vector<unsigned char> data_;
     size_t write_pos_ = 0; // 写指针

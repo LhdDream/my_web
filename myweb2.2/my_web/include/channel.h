@@ -41,11 +41,6 @@ public:
 
     void onWrite_(Callback &&wr);
 
-    Epoll_event get_event() {
-        return Epoll_event{Socket_, type_};
-    };
-
-
 private:
     int Socket_; //对于每一个用户的fd进行保存
     //我们可以把Socket和Buffer进行一个绑定
@@ -68,7 +63,7 @@ public:
                                                                parse_(std::make_unique<HTTPMessageParser>()){}
 
     void add(int fd);
-
+    void add(int fd, const std::shared_ptr<User> &c);
 
     void doRead(int id);
 
@@ -98,21 +93,23 @@ private:
                         auto it = user->handler_->RecvRequese( parse_, respon_);
                          if (it == 2) {
                             user->type_ = Allof();
-                            epoll_->add_channel(user->get_event());
+                            epoll_->add_channel({user->Socket_,user->type_});
                         }
                     }
             );
             user->onWrite_(
                     [this,user = user]() {
                         auto it = user->handler_->SendResponse( respon_);
-                        if(it  >= 0) {
+                        if(it  == 0) {
                             user->type_ = Readable();
-                            epoll_->add_channel(user->get_event());
+                            epoll_->add_channel({user->Socket_,user->type_});
                         }
                     }
             );
+        }else {
+            table_[fd]->handler_->clear();
         }
-        epoll_->add_channel(table_[fd]->get_event());
+        epoll_->add_channel({table_[fd]->Socket_,table_[fd]->type_});
     }
 };
 

@@ -11,7 +11,7 @@
 #include <memory>
 
 //对于epoll的事件处理的类
-enum  EpollEventType  {
+enum  EpollEventType   {
     KReadble = ::EPOLLIN,
     KWriteable = ::EPOLLOUT,
     KOneShot = ::EPOLLONESHOT,
@@ -21,7 +21,6 @@ enum  EpollEventType  {
 //如果使用enum class 不会隐式int /float 类型，禁止
 //底层使用long
 //
-
 
 //对于强类型进行位操作,需要重载 |
 constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET | EpollEventType::KReadble   ); }
@@ -79,7 +78,7 @@ public:
     }
 private:
     epoll_event *get() {
-        return store_->begin()->pointer();
+        return store_->data()->pointer();
     }
 
     std::unique_ptr<std::vector<Epoll_event>> store_;

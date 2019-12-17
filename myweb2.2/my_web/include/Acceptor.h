@@ -13,12 +13,16 @@
 
 class Acceptor // socket accpet 连接的接口
 {
+    friend  class httpserver;
 public:
     using ConnCallback =  std::function<void(int sockfd)>;
 
     explicit Acceptor() : acceptSocket_(nullptr), listening_{false},
+    acceptChannel_(nullptr),
                           idlefd_(::open("/dev/null", O_RDONLY | O_CLOEXEC)) {
         createSocket_();
+        acceptChannel_ = std::make_shared<User>(acceptSocket_->fd());
+        acceptChannel_->onRead_([this] () {handleRead();});
     }
     void createSocket_(const char * ip = "127.0.0.1",uint16_t port =8080)
     {
@@ -29,7 +33,7 @@ public:
     void listen();//初始化listen
     bool listening() const { return listening_; }
 
-    int handleRead();
+    void handleRead();
 
     int fd_() const {
         return acceptSocket_->fd();
@@ -41,6 +45,7 @@ private:
     //C++ 中根据对象顺序进行初始化
     std::unique_ptr<Socket> acceptSocket_;
     std::atomic<bool> listening_;
+    std::shared_ptr<User> acceptChannel_;
     int idlefd_; // 处理套接字的
     ConnCallback  p;
 };// TCP 如果连接上之后进行回调通知使用者，内部类
