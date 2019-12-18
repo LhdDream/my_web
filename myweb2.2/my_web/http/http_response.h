@@ -15,7 +15,7 @@
 #include <climits>
 #include "../include/Socket.h"
 
-class Socket;
+
 using hash_t = uint64_t;
 constexpr hash_t prime = 0x100000001B3ull;
 constexpr hash_t basis = 0xCBF29CE484222325ull;
@@ -24,12 +24,17 @@ constexpr size_t hash_compile_time(const char *str, hash_t last_value = basis) {
     return *str ? hash_compile_time(str + 1, (static_cast<hash_t >(*str) ^ last_value) * prime) : last_value;
 }
 
-
+constexpr size_t png = hash_compile_time("png");
+constexpr size_t img = hash_compile_time("img");
+constexpr size_t  avi = hash_compile_time("avi");
+constexpr size_t  mp4 = hash_compile_time("mp4");
+constexpr  size_t  pdf =hash_compile_time("pdf");
+constexpr  size_t  mp3 =hash_compile_time("mp3");
 class http_response {
 public:
     //组装response
-    int  response(HTTPMessage *httpMessage,std::unique_ptr<Socket> &fd) {
-        httpMessage->clear(false); // 除了路径之外都进行清除
+    int  response(const std::unique_ptr <HTTPMessage > &httpMessage,std::unique_ptr<Socket> &fd) {
+        httpMessage->clear(false);
         struct stat64 st{};
         if (stat64(httpMessage->Getpath().c_str(), &st) < 0) {
             httpMessage->SetStatusCode(404);
@@ -70,7 +75,8 @@ public:
             }else{
                 count = remain;
             }
-            if(sendfile64(fd,fd_, &offest,count) == 0 )
+            auto it = sendfile64(fd,fd_, &offest,count) ;
+            if(it  <= 0)
             {
                 break;
             }
@@ -80,29 +86,29 @@ public:
     }
 
 private:
-    void Con_type(const std::string &path, HTTPMessage *httpMessage) {
+    void Con_type(const std::string &path, const std::unique_ptr <HTTPMessage > &httpMessage) {
         switch (hash_compile_time(path.data())) {
-            case hash_compile_time("png"): {
+            case png: {
                 httpMessage->SetHeader("Content-Type", "image/png");
                 break;
             }
-            case hash_compile_time("img"): {
+            case img :{
                 httpMessage->SetHeader("Content-Type", "image/jpg");
                 break;
             }
-            case hash_compile_time("avi"): {
+            case avi: {
                 httpMessage->SetHeader("Content-Type", "video/avi");
                 break;
             }
-            case hash_compile_time("mp4"): {
+            case mp4: {
                 httpMessage->SetHeader("Content-Type", "audio/mp4");
                 break;
             }
-            case hash_compile_time("pdf"): {
+            case pdf: {
                 httpMessage->SetHeader("Content-Type", "application/pdf");
                 break;
             }
-            case hash_compile_time("mp3"): {
+            case mp3: {
                 httpMessage->SetHeader("Content-Type", "audio/mpeg");
                 break;
             }

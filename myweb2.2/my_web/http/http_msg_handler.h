@@ -11,9 +11,9 @@
 #include "http_request.h"
 #include "../include/Buffer.h"
 #include "../include/Socket.h"
-#include "http_all.h"
+
 #include <queue>
-class Socket;
+
 
 class Buffer;
 
@@ -21,30 +21,34 @@ class HTTPMessageParser;
 
 class http_response;
 
-class HttpMessageHandler  : public  oper{
+class HttpMessageHandler {
 public:
     explicit HttpMessageHandler(int fd) :
     sock_(std::make_unique<Socket>(fd)),
     conn_(std::make_unique<HTTPMessage>()),
-                                    Buffer_(std::make_shared<Buffer>())
+                                    Buffer_(std::make_unique<Buffer>())
                                     {
     }
+    int RecvRequese(std::unique_ptr<HTTPMessageParser>& parse_,std::unique_ptr<http_response> &respon_);
 
-    int RecvRequese(std::unique_ptr<HTTPMessageParser>& parse_,std::unique_ptr<http_response> &respon_) override;
+    int SendResponse(std::unique_ptr<http_response> &respon_)   ;
 
-    int SendResponse(std::unique_ptr<http_response> &respon_)   override;
-
-        bool closeable()  override {
-              return write & read;
-       }
-       virtual ~HttpMessageHandler() = default;
+        void clear(){
+            Buffer_->reset();
+            conn_->clear(true);
+        }
 private:
     std::unique_ptr<Socket>  sock_; // 每一个用户的指向
     std::unique_ptr<HTTPMessage> conn_; //共同部分
-    std::shared_ptr<Buffer> Buffer_; // 缓冲区 // ReadBuffer
-    bool read = false;
-    bool write = false;
+    std::unique_ptr<Buffer> Buffer_; // 缓冲区 // ReadBuffer
 
 };
+
+
+
+
+
+
+
 
 #endif //MYWEB_HTTP_MSG_HANDLER_H

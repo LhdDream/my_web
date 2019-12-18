@@ -9,81 +9,79 @@
 
 class HTTPMessageParser {
 public:
-    void Parse(HTTPMessage *httpMessage, const std::vector<char> &buffer, int readsize) {
+    void Parse(const std::unique_ptr <HTTPMessage > &httpMessage, const std::vector<unsigned char> &buffer, int readsize) {
         ParserState state = ParserState::PARSING_START_LINE;
         //解析头一行
-        std::string temp;
+        size_t  begin = 0;
+        size_t  end  = 0 ;
         bool skipNext = false;
-        std::string headerkey;
-        bool hasMessageBody = false;
-
-        size_t bodyStartIndex = 0;
-
-        for (std::string::size_type i = 0; i < buffer.size(); ++i) {
-
+        size_t headerkeybegin = 0;
+        size_t  headerkeyend = 0;
+        size_t bodyStartIndex = -1;
+        for (auto &c :buffer) {
+            bodyStartIndex++;
             if (skipNext) // 跳过下一行
             {
                 skipNext = false;
                 continue;
             }
             if (state == ParserState::PARSING_BODY) {
-                hasMessageBody = true;
-                bodyStartIndex = i;
+                httpMessage->SetMessageBody({buffer.begin() + bodyStartIndex, buffer.begin() + readsize});
                 break;
             }
             if (state == ParserState::PARSING_START_LINE) {
-                if (buffer[i] == ' ') {
-                    httpMessage->SetMethond(StringtoMethod(temp));
+                if (c == ' ') {
+                    httpMessage->SetMethond({buffer.data()+begin,buffer.data()+end});
                     state = ParserState::START_LINE_REQUEST;
                     //开始解析请求
-                    temp.clear();
+                    end = end + 1;
+                    begin  = end ;
                     continue;
                 }
             } else if (state == ParserState::START_LINE_REQUEST)
                 //解析行请求
             {
-                if (buffer[i] == ' ') {
-                    httpMessage->Setpath(temp);
-                    temp.clear();
+                if (c == ' ') {
+                    httpMessage->Setpath({buffer.data()+begin + 1,buffer.data()+end});
+                    end = end + 1;
+                    begin  = end ;
                     continue;
-                } else if (buffer[i] == '\r') {
-                    httpMessage->SetVersion(temp);
-                    temp.clear();
+                } else if (c == '\r') {
+                    httpMessage->SetVersion({buffer.data()+begin,buffer.data()+end});
+                    end = end +2;
+                    begin = end;
                     state = ParserState::HEADER_KEY;
                     skipNext = true; // 跳过行数
                     continue;
                 }
-            } else if (state == ParserState::HEADER_KEY && buffer[i] == ':') {
-                headerkey = temp;
-                temp.clear();
+            } else if (state == ParserState::HEADER_KEY && c == ':') {
+                headerkeybegin = begin;
+                headerkeyend = end;
+                end = end + 2;
+                begin = end;
                 state = ParserState::HEADER_VALUE;
                 skipNext = true;
                 continue;
                 // : 之后会是一个空格
-            } else if (state == ParserState::HEADER_VALUE && buffer[i] == '\r') {
-
-                httpMessage->SetHeader(headerkey, temp);
-                headerkey.clear();
-                temp.clear();
+            } else if (state == ParserState::HEADER_VALUE && c == '\r') {
+                httpMessage->SetHeader({buffer.data()+headerkeybegin,buffer.data()+headerkeyend},{buffer.data()+begin,buffer.data()+end});
+                end = end + 2;
+                begin = end;
                 state = ParserState::HEADER_KEY;
                 //跳过下一个字符\n
                 skipNext = true;
                 continue;
             }
                 //判断结束条件
-            else if (state == ParserState::HEADER_KEY && buffer[i] == '\r') // 标志已经解析完成
+            else if (state == ParserState::HEADER_KEY && c == '\r') // 标志已经解析完成
             {
-                temp.clear();
+                end = end + 2;
+                begin = end;
                 state = ParserState::PARSING_BODY;
-
                 skipNext = true;
                 continue;
             }
-            temp += buffer[i];
-        }
-        // 如果有请求的话携带进去
-        if (hasMessageBody) {
-            httpMessage->SetMessageBody({buffer.begin() + bodyStartIndex, buffer.begin() + readsize});
+            end++;
         }
     }
 };
