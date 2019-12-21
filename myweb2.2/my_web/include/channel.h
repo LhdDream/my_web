@@ -13,10 +13,13 @@
 #include <memory>
 #include <utility>
 #include "../util/sparsepp/spp.h"
+
 using spp::sparse_hash_map;
 
 class channel_set;
+
 class poll;
+
 //相当于user 和channel
 class User {
     friend class channel_set;
@@ -56,20 +59,20 @@ private:
 //整个channel的集合
 class channel_set {
 public:
-    using   User_ = std::vector<int>;
-public:
     explicit channel_set(std::shared_ptr<poll> epoll) : epoll_(std::move(epoll)),
-                                                               respon_(std::make_unique<http_response>()),
-                                                               parse_(std::make_unique<HTTPMessageParser>()){}
+                                                        respon_(std::make_unique<http_response>()),
+                                                        parse_(std::make_unique<HTTPMessageParser>()) {}
 
     void add(int fd);
+
     void add(int fd, const std::shared_ptr<User> &c);
 
     void doRead(int id);
 
     void doWrite(int id);
 
-    void loop(const std::vector<int> & namelist);
+    void loop(const std::vector<int> &namelist);
+
 private:
     std::shared_ptr<poll> epoll_;
     sparse_hash_map<int, std::shared_ptr<User>> table_;
@@ -82,7 +85,7 @@ private:
     //一起執行
 private:
     decltype(auto) Getoper(int fd) {
-        if(table_.find(fd) == table_.end()){
+        if (table_.find(fd) == table_.end()) {
             //if http_msg_handler  to create it
             //只要让她在执行过程中找到相应的完整类别则可以
             //设置标志位,解析问题
@@ -90,29 +93,28 @@ private:
             table_.emplace(std::make_pair(fd, user));
             user->onRead_(
                     [this, user = user]() {
-                        auto it = user->handler_->RecvRequese( parse_, respon_);
-                         if (it == 2) {
+                        auto it = user->handler_->RecvRequese(parse_, respon_);
+                        if (it == 2) {
                             user->type_ = Allof();
-                            epoll_->add_channel({user->Socket_,user->type_});
+                            epoll_->add_channel({user->Socket_, user->type_});
                         }
                     }
             );
             user->onWrite_(
-                    [this,user = user]() {
-                        auto it = user->handler_->SendResponse( respon_);
-                        if(it  == 0) {
+                    [this, user = user]() {
+                        auto it = user->handler_->SendResponse(respon_);
+                        if (it == 0) {
                             user->type_ = Readable();
-                            epoll_->add_channel({user->Socket_,user->type_});
+                            epoll_->add_channel({user->Socket_, user->type_});
                         }
                     }
             );
-        }else {
+        } else {
             table_[fd]->handler_->clear();
         }
-        epoll_->add_channel({table_[fd]->Socket_,table_[fd]->type_});
+        epoll_->add_channel({table_[fd]->Socket_, table_[fd]->type_});
     }
 };
-
 
 
 #endif //MYWEB_CHANNEL_H

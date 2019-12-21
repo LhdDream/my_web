@@ -49,9 +49,9 @@ void channel_set::doWrite(int id) {
 
 void channel_set::loop(const std::vector<int> & namelist) {
     for(auto &&c : namelist){
-        if ( table_[c]->type_ | EpollEventType::KReadble) {
+        if ( table_[c]->type_ & EpollEventType::KReadble) {
                 doRead(c);
-            } else if (table_[c]->type_ | EpollEventType::KWriteable) {
+            } else if (table_[c]->type_ & EpollEventType::KWriteable) {
                 doWrite(c);
             }
         //这里无须检测EPOLLRDHUP事件,close之后会直接从epoll中删除

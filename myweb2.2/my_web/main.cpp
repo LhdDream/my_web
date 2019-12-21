@@ -4,7 +4,8 @@ int main()
 {
     chdir("/home/kiosk/picture/www/picture");
     signal(SIGPIPE,SIG_IGN);
-    httpserver p;
-    p.start();
+
+        httpserver p;
+        p.start();
     return 0;
 }

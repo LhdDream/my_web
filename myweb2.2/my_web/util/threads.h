@@ -11,9 +11,9 @@ class ConcurrencyProxy {
 public:
     template <typename Callable, typename ...Args>
     explicit ConcurrencyProxy(Callable func, Args ...args) {
-        thcont_.reserve(2);
+        thcont_.reserve(1);
 
-        for (int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 1 ; ++i) {
             thcont_.emplace_back(std::forward<Callable>(func), std::forward<Args>(args)...);
         }
     }
