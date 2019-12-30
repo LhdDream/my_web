@@ -9,7 +9,7 @@
 
 class HTTPMessageParser {
 public:
-    void Parse(const std::unique_ptr <HTTPMessage > &httpMessage, const std::vector<unsigned char> &buffer, int readsize) {
+    void Parse(const std::unique_ptr <HTTPMessage > &httpMessage, const std::vector< char> &buffer, int readsize) {
         ParserState state = ParserState::PARSING_START_LINE;
         //解析头一行
         size_t  begin = 0;
@@ -26,12 +26,12 @@ public:
                 continue;
             }
             if (state == ParserState::PARSING_BODY) {
-                httpMessage->SetMessageBody({buffer.begin() + bodyStartIndex, buffer.begin() + readsize});
+                httpMessage->SetMessageBody({buffer.data() + bodyStartIndex,  readsize - bodyStartIndex});
                 break;
             }
             if (state == ParserState::PARSING_START_LINE) {
                 if (c == ' ') {
-                    httpMessage->SetMethond({buffer.data()+begin,buffer.data()+end});
+                    httpMessage->SetMethond( {buffer.data()+begin,end-begin});
                     state = ParserState::START_LINE_REQUEST;
                     //开始解析请求
                     end = end + 1;
@@ -42,12 +42,12 @@ public:
                 //解析行请求
             {
                 if (c == ' ') {
-                    httpMessage->Setpath({buffer.data()+begin + 1,buffer.data()+end});
+                    httpMessage->Setpath({buffer.data()+begin + 1,end- begin - 1});
                     end = end + 1;
                     begin  = end ;
                     continue;
                 } else if (c == '\r') {
-                    httpMessage->SetVersion({buffer.data()+begin,buffer.data()+end});
+                    httpMessage->SetVersion({buffer.data()+begin,end-begin});
                     end = end +2;
                     begin = end;
                     state = ParserState::HEADER_KEY;
@@ -64,7 +64,7 @@ public:
                 continue;
                 // : 之后会是一个空格
             } else if (state == ParserState::HEADER_VALUE && c == '\r') {
-                httpMessage->SetHeader({buffer.data()+headerkeybegin,buffer.data()+headerkeyend},{buffer.data()+begin,buffer.data()+end});
+                httpMessage->SetHeader({buffer.data() + headerkeybegin,headerkeyend - headerkeybegin}, {buffer.data()+begin,end - begin});
                 end = end + 2;
                 begin = end;
                 state = ParserState::HEADER_KEY;

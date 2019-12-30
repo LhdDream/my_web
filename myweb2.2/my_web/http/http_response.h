@@ -7,6 +7,7 @@
 #include <cstdint>
 #include "currency.h"
 #include <fcntl.h>
+#include <unordered_map>
 #include <sys/stat.h>
 #include <functional>
 #include <sys/sendfile.h>
@@ -15,41 +16,62 @@
 #include <climits>
 #include "../include/Socket.h"
 
+//static std::unordered_map< std::string_view,std::string> mime = {
+//        {".html","text/html"},
+//        {".avi","video/x-msvideo"},
+//        {".bmp","image/bmp"},
+//        {".png","image/png"},
+//        {".txt","text/plain"},
+//        {".mp3","audio/mp3"},
+//        {".pdf","application/pdf"}
+//};
 
-using hash_t = uint64_t;
-constexpr hash_t prime = 0x100000001B3ull;
-constexpr hash_t basis = 0xCBF29CE484222325ull;
+constexpr  std::string_view  html = "text/html";
+constexpr  std::string_view  avi = "video/x-msvideo";
+constexpr  std::string_view  png = "image/png";
+constexpr  std::string_view  txt = "text/plain";
+constexpr  std::string_view  mp3 = "audio/mp3";
+constexpr  std::string_view pdf  = "application/pdf";
 
-constexpr size_t hash_compile_time(const char *str, hash_t last_value = basis) {
-    return *str ? hash_compile_time(str + 1, (static_cast<hash_t >(*str) ^ last_value) * prime) : last_value;
+inline std::string_view type(std::string_view p){
+        if(p == html){
+            return html;
+        }else if(p == avi){
+            return avi;
+        }else if(p == png){
+            return png;
+        }else if(p == mp3){
+            return mp3;
+        }else if(p == pdf){
+            return pdf;
+        }else if(p == txt){
+            return txt;
+        }
+        return html;
 }
 
-constexpr size_t png = hash_compile_time("png");
-constexpr size_t img = hash_compile_time("img");
-constexpr size_t  avi = hash_compile_time("avi");
-constexpr size_t  mp4 = hash_compile_time("mp4");
-constexpr  size_t  pdf =hash_compile_time("pdf");
-constexpr  size_t  mp3 =hash_compile_time("mp3");
 class http_response {
 public:
     //组装response
-    int  response(const std::unique_ptr <HTTPMessage > &httpMessage,std::unique_ptr<Socket> &fd) {
+    int  response(const std::unique_ptr <HTTPMessage > &httpMessage,const std::unique_ptr<Socket> &fd) {
         httpMessage->clear(false);
         struct stat64 st{};
-        if (stat64(httpMessage->Getpath().c_str(), &st) < 0) {
+        if (stat64(httpMessage->Getpath().data(), &st) < 0) {
             httpMessage->SetStatusCode(404);
         }
         httpMessage->SetStatusCode(200);
-        httpMessage->SetHeader("Content-Length", std::to_string(st.st_size));
-        auto it = httpMessage->Getpath().find('.');
-        std::string temp = httpMessage->Getpath().substr(it + 1, httpMessage->Getpath().size());
-        Con_type(temp, httpMessage);
+        std::string size = std::to_string(st.st_size);
+        httpMessage->SetHeader("Content-Length", size);
+        std::string_view temp =  httpMessage->Getpath();
+        auto it = temp.find('.');
+        httpMessage->SetHeader("Content-Type",type(temp.data()+ it +1));
         filesize = st.st_size;
         //接下来文件的读取和fast-cgi的处理
         //文件接口的处理
         //
-        std::string p = httpMessage->ToString();
-        if(fd->write( p.c_str(),p.size(),0 ) < 0 )
+         std::string_view  p ;
+         httpMessage->ToString(&p);
+        if(fd->write( p.data(),p.size(),0 ) < 0 )
         {
             if(errno != EAGAIN && errno != EINTR){
                 return -1;
@@ -60,11 +82,11 @@ public:
         return 0;
     }
     //发送文件使用sendfile 循环
-    void actsendfile(const std::string & path , int fd)
+    void actsendfile(std::string_view path , int fd)
     {
         //发送文件的处理
         //必须先组成在发送文件
-        int fd_ = open64(path.c_str(), O_RDONLY);
+        int fd_ = open64(path.data(), O_RDONLY);
         off64_t offest = 0LL;
         while(offest < filesize){
             size_t  count;
@@ -76,52 +98,20 @@ public:
                 count = remain;
             }
             auto it = sendfile64(fd,fd_, &offest,count) ;
-            if(it  <= 0)
+            if(it == - 1)
             {
-                break;
+                if(errno != EAGAIN && errno != EWOULDBLOCK)
+                {
+                    break;
+                }
             }
         }
-        filesize = 0;
         close(fd_);
     }
 
 private:
-    void Con_type(const std::string &path, const std::unique_ptr <HTTPMessage > &httpMessage) {
-        switch (hash_compile_time(path.data())) {
-            case png: {
-                httpMessage->SetHeader("Content-Type", "image/png");
-                break;
-            }
-            case img :{
-                httpMessage->SetHeader("Content-Type", "image/jpg");
-                break;
-            }
-            case avi: {
-                httpMessage->SetHeader("Content-Type", "video/avi");
-                break;
-            }
-            case mp4: {
-                httpMessage->SetHeader("Content-Type", "audio/mp4");
-                break;
-            }
-            case pdf: {
-                httpMessage->SetHeader("Content-Type", "application/pdf");
-                break;
-            }
-            case mp3: {
-                httpMessage->SetHeader("Content-Type", "audio/mpeg");
-                break;
-            }
-            default:
-            {
-                httpMessage->SetHeader("Content-Type","text/html");
-                break;
-            }
-        }
-    }
-
-private:
     size_t  filesize = 0;
+
 };
 
 #endif //MYWEB_HTTP_RESPONSE_H

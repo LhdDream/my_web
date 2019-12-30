@@ -6,13 +6,14 @@
 #define MYWEB_CURRENCY_H
 
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <cstdint>
 #include <vector>
 #include <sstream>
-#include "../util/sparsepp/spp.h"
+
 #include <iostream>
-using spp::sparse_hash_map;
+
 // 限定范围的methond
 
 enum class ParserState : uint8_t {
@@ -24,16 +25,19 @@ enum class ParserState : uint8_t {
     PARSING_BODY,
 };
 
-static std::string  HTTP_STATUS_MAP (int code){
+constexpr  std::string_view OK = "OK";
+constexpr  std::string_view Not_Found = "Not Found";
+constexpr  std::string_view No = " ";
+static std::string_view  HTTP_STATUS_MAP (int code){
        switch (code) {
            case 200:{
-               return "OK";
+               return OK;
            }
            case 404:{
-               return "Not Found";
+               return Not_Found;
            }
            default:
-               return " ";
+               return No;
        }
 
 };
@@ -44,24 +48,25 @@ static std::string  HTTP_STATUS_MAP (int code){
 class HTTPMessage {
 public:
     explicit HTTPMessage() : m_method("NONE"), m_statusCode(0),
-                             m_path(), m_version("HTTP/1.1"), m_body(){
+                             m_path(), m_version("HTTP/1.1"){
     }
     //std::string & or std::string &&
-    void SetHeader( std::string  && name, std::string && value) {
-            m_headers_[name] = std::move(value);
+    void SetHeader( std::string_view &&name, std::string_view &&value) {
+           m_headers_name.emplace_back(name);
+           m_headers_value.emplace_back(value);
         //emplace 使用完美转发
     }
 
-    void SetMethond(std::string &&methond) {
-        this->m_method = std::move(methond);
+    void SetMethond(std::string_view methond) {
+        this->m_method = methond;
     }
 
-    void Setpath( std::string &&path) {
-        this->m_path = std::move(path);
+    void Setpath( std::string_view path) {
+        this->m_path = path;
     }
 
-    void SetVersion(std::string &&version) {
-        this->m_version = std::move(version);
+    void SetVersion(std::string_view version) {
+        this->m_version = version;
     }
 
     void SetStatusCode(uint16_t Code) {
@@ -69,52 +74,66 @@ public:
     }
 
 
-    std::string &Getpath()  noexcept {
-        return m_path;
+    std::string Getpath()  noexcept {
+        return std::string {m_path.substr(0,m_path.size())};
     }
 
-    void SetMessageBody( std::string &&body) {
-        this->m_body = std::move(body);
+    void SetMessageBody(std::string_view body) {
+        m_body = body;
     }
 
-    std::string ToString() {
-        std::stringstream output;
+    void ToString(std::string_view *p) {
+
         // begin by forming the start line of the message
         if (m_method == "NONE") {
-            output << "HTTP/1.1" << " " << m_statusCode << " ";
-            output << HTTP_STATUS_MAP(m_statusCode);
+            output += "HTTP/1.1" ;
+            output += " ";
+            output  += std::to_string (m_statusCode);
+            output += " ";
+            output += HTTP_STATUS_MAP(m_statusCode);
         } else {
-            output << m_method << " ";
-            output << m_path << " ";
-            output << "HTTP/1.1";
+              output += m_method ;
+              output += " ";
+              output += m_path;
+              output += " ";
+              output += "HTTP/1.1";
         }
-        output << "\r\n";
-        for(auto && c :m_headers_){
-              output << c.first << ": " <<c.second<< "\r\n";
+          output += "\r\n";
+        for(int i = 0 ; i <m_headers_name.size() ; i++){
+              output += m_headers_name[i] ;
+              output += ": ";
+              output += m_headers_value[i];
+              output += "\r\n";
           }
         if (!m_body.empty())
-            output << "Content-Length: " << m_body.size() << "\r\n";
-        output << "\r\n";
-        output << m_body;
-        return output.str();
+            output += "Content-Length: " + std::to_string(m_body.size())+ "\r\n";
+        output += "\r\n";
+        output += m_body;
+        *p = output;
     }
 
     void clear(bool response) {
         m_method = "NONE";
         m_statusCode = 0;
+        if(response) {
+            m_headers_name.clear();
+            m_headers_value.clear();
+            output.clear();
+        }
     }
 
 
 private:
-    std::string m_method;
+    std::string_view m_method;
     // a status code for this Message
     //if this is a request ,you can ignored this
     uint16_t m_statusCode;
-    std::string m_path; // Only used for a request
-    std::string m_version;
-    sparse_hash_map<std::string,std::string> m_headers_;
-    std::string m_body; // 用于二进制安全
-
+    std::string_view m_path; // Only used for a request
+    std::string_view m_version;
+    std::vector<std::string_view> m_headers_name;
+    std::vector<std::string_view> m_headers_value;
+    std::string_view m_body; // 用于二进制安全
+    std::string output;
     // used to store message bodies
 };
 
