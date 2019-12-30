@@ -14,18 +14,26 @@ void httpserver::start() {
     if (!acceptor_->listening()) {
         acceptor_->listen();
     }
-    EpollEventResult event_(1024);
-    users_->add(acceptor_->fd_(),acceptor_->acceptChannel_);
+    Epoll_->add_channel({acceptor_->fd_(),Basic()});
+    EpollEventResult event_(4096);
     size_t user_number;
     while(true){
-        activeFd.clear();
         user_number = 0;
         Epoll_->Wait(event_,&user_number);
         for(int i = 0 ; i < user_number; i++)
         {
-            activeFd.emplace_back(event_[i].event_fd());
+            auto && it = event_[i];
+            if(it.event_fd() == acceptor_->fd_()){
+                acceptor_->handleRead();
+            }else if ( it.pointer()->events & EpollEventType::KReadble) {
+                users_->doRead(it.pointer()->data.fd);
+            } else if (it.pointer()->events & EpollEventType::KWriteable) {
+                users_->doWrite(it.pointer()->data.fd);
+            }else if(it.pointer()->events & EpollEventType::KClose){
+                users_->remove(it.pointer()->data.fd, reinterpret_cast<EpollEventType &>(it.pointer()->events));
+            }
+            //这里无须检测EPOLLRDHUP事件,close之后会直接从epoll中删除
         }
-        users_->loop(activeFd);
     }
     //如果没有事件则去处理一下超时事件
 }

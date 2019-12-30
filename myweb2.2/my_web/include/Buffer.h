@@ -14,8 +14,7 @@
 #include "Epoll_event.h"
 #include <algorithm>
 constexpr  const size_t  beginsize = 0;
-constexpr  const size_t  filesize =  4096;
-constexpr  unsigned char  line[2] ={'\r','\n'};
+constexpr  const size_t  filesize =  8192;
 class Buffer {
 public:
     explicit  Buffer():data_(beginsize + filesize )
@@ -33,7 +32,7 @@ public:
            write_pos_ = data_.size();
        }
     }
-    const unsigned char  * begin() const {
+    const  char  * begin() const {
         return data_.data();
     }
 
@@ -45,7 +44,7 @@ public:
         write_pos_ += len;
     }
 
-    std::vector<unsigned char> &data() {
+    std::vector< char> &data() {
         return data_;
     }
     void reset() {
@@ -56,7 +55,7 @@ public:
 
 
 private:
-    std::vector<unsigned char> data_;
+    std::vector<char> data_;
     size_t write_pos_ = 0; // 写指针
     size_t read_pos_ = 0; // 读指针
 };

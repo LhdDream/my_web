@@ -63,7 +63,7 @@ public:
     }
 
     explicit EpollEventResult() : store_(std::make_unique<std::vector<Epoll_event>>()) {
-        store_->resize(1024);
+        store_->resize(4096);
     }
 
     Epoll_event &operator[] (size_t i) {
@@ -71,7 +71,7 @@ public:
     }
 
     size_t fillsize_() const {
-        return store_->size();
+        return store_->size()   / 2;
     }
     void resize(size_t file) const{
         store_->resize(store_->size() + file);

@@ -24,9 +24,8 @@ void  Acceptor::handleRead() //套接字可读的状态
                 idlefd_ = acceptSocket_->accpet();
                 ::close(idlefd_);
                 idlefd_ = ::open("/dev/null", O_WRONLY | O_CLOEXEC);
-            }  else if (errno != EAGAIN && errno != EWOULDBLOCK) {
+            }  else
                 break;
-            }
         }
     }
 }
