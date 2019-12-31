@@ -4,7 +4,6 @@
 #include "Acceptor.h"
 
 void Acceptor::listen() {
-    listening_.store(true);
     acceptSocket_->listen();
 }
 

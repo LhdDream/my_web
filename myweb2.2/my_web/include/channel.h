@@ -49,7 +49,7 @@ public:
                                                         respon_(std::make_unique<http_response>()),
                                                         parse_(std::make_unique<HTTPMessageParser>()) {
         m_Readable_ = [this] (int fd) {
-                auto user = getUser(fd);
+                auto &&user = getUser(fd);
                 auto type_ = user->type_;
                 auto it = user->handler_->RecvRequese( parse_, respon_);
                 if (it == 2) {
@@ -87,8 +87,7 @@ public:
 
      std::shared_ptr<User>  getUser(int id) {
         if(table_.find(id) == table_.end()){
-            auto &&user = std::make_shared<User>(id);
-            table_.emplace(id,user);
+            table_.emplace(std::make_pair(id,std::make_shared<User>(id)));
         }
         return table_[id];
     }

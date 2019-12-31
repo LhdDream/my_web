@@ -10,27 +10,25 @@ httpserver::httpserver() :acceptor_(std::make_unique<Acceptor>()), Epoll_(std::m
 }
 
 void httpserver::start() {
-
-    if (!acceptor_->listening()) {
-        acceptor_->listen();
-    }
+    acceptor_->acceptSocket_->setresueport(true);
+    acceptor_->acceptSocket_->bindaddress();
+    acceptor_->listen();
     Epoll_->add_channel({acceptor_->fd_(),Basic()});
     EpollEventResult event_(4096);
-    size_t user_number;
+
     while(true){
-        user_number = 0;
-        Epoll_->Wait(event_,&user_number);
+        auto user_number = Epoll_->Wait(event_);
         for(int i = 0 ; i < user_number; i++)
         {
             auto && it = event_[i];
             if(it.event_fd() == acceptor_->fd_()){
                 acceptor_->handleRead();
             }else if ( it.pointer()->events & EpollEventType::KReadble) {
-                users_->doRead(it.pointer()->data.fd);
+                users_->doRead(it.event_fd());
             } else if (it.pointer()->events & EpollEventType::KWriteable) {
-                users_->doWrite(it.pointer()->data.fd);
+                users_->doWrite(it.event_fd());
             }else if(it.pointer()->events & EpollEventType::KClose){
-                users_->remove(it.pointer()->data.fd, reinterpret_cast<EpollEventType &>(it.pointer()->events));
+                users_->remove(it.event_fd(), reinterpret_cast<EpollEventType &>(it.pointer()->events));
             }
             //这里无须检测EPOLLRDHUP事件,close之后会直接从epoll中删除
         }

@@ -58,30 +58,27 @@ class EpollEventResult {
     friend class poll;
 
 public:
-    explicit EpollEventResult(int size) : store_(std::make_unique<std::vector<Epoll_event>>()) {
-        store_->resize(size);
+    explicit EpollEventResult(int size) : store_(size) {
     }
 
-    explicit EpollEventResult() : store_(std::make_unique<std::vector<Epoll_event>>()) {
-        store_->resize(4096);
+    explicit EpollEventResult() : store_(4096) {
     }
 
     Epoll_event &operator[] (size_t i) {
-        return store_->at(i);
+        return store_.at(i);
     }
 
-    size_t fillsize_() const {
-        return store_->size()   / 2;
+    inline size_t fillsize_() const {
+        return store_.size()  ;
     }
-    void resize(size_t file) const{
-        store_->resize(store_->size() + file);
+    void resize(size_t file) {
+        store_.resize(file +store_.size());
     }
 private:
     epoll_event *get() {
-        return store_->data()->pointer();
+        return store_.data()->pointer();
     }
-
-    std::unique_ptr<std::vector<Epoll_event>> store_;
+    std::vector<Epoll_event> store_;
 };
 
 

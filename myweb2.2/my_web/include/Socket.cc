@@ -8,7 +8,7 @@ size_t Socket::bindaddress() {
 }
 
 size_t Socket::listen() {
-    return ::listen(sockfd_, SOMAXCONN);//默认backlog
+    return ::listen(sockfd_, 4096);//默认backlog
 }
 
 void Socket::setresueport(bool on) {

@@ -17,18 +17,17 @@ class Acceptor // socket accpet 连接的接口
 public:
     using ConnCallback =  std::function<void(int sockfd)>;
 
-    explicit Acceptor() : acceptSocket_(nullptr), listening_{false},
+    explicit Acceptor() : acceptSocket_(nullptr),
                           idlefd_(::open("/dev/null", O_RDONLY | O_CLOEXEC)) {
         createSocket_();
     }
     void createSocket_(const char * ip = "127.0.0.1",uint16_t port =8080)
     {
         acceptSocket_ = std::make_unique<Socket>(ip,port);
-        acceptSocket_->setresueport(true);
-        acceptSocket_->bindaddress();
+
     }
     void listen();//初始化listen
-    bool listening() const { return listening_; }
+
 
     void handleRead();
 
@@ -41,8 +40,6 @@ public:
 private:
     //C++ 中根据对象顺序进行初始化
     std::unique_ptr<Socket> acceptSocket_;
-    std::atomic<bool> listening_;
-
     int idlefd_; // 处理套接字的
     ConnCallback  p;
 };// TCP 如果连接上之后进行回调通知使用者，内部类
