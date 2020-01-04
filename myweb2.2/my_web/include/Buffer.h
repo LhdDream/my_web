@@ -17,47 +17,38 @@ constexpr  const size_t  beginsize = 0;
 constexpr  const size_t  filesize =  8192;
 class Buffer {
 public:
-    explicit  Buffer():data_(beginsize + filesize )
+    explicit  Buffer():m_data(beginsize + filesize )
     {};
 
-    size_t writeable() const {return data_.size() - write_pos_;}
-    void resize(size_t len)
+    size_t WriteAble() const {return m_data.capacity() - m_write_pos;}
+    void ReSize(size_t len)
     {
-       if(len > writeable())
+       if(len > WriteAble())
        {
-           data_.resize(len + data_.size());
-       }else if(read_pos_ >  0){
-           std::copy(data_.begin() + read_pos_,data_.begin() + write_pos_,data_.begin());
-           read_pos_ = 0;
-           write_pos_ = data_.size();
+           m_data.resize(len + m_data.size());
        }
     }
-    const  char  * begin() const {
-        return data_.data();
+
+    void  * BeginWrite() {
+        return m_data.data() +m_write_pos;
     }
 
-    void  * beginwrite() {
-        return &*data_.begin() +write_pos_;
+    void WriteOffest_Move(int len){
+        m_write_pos += len;
     }
 
-    void writeoffest_move(int len){
-        write_pos_ += len;
+    std::vector< char> &Data() {
+        return m_data;
     }
-
-    std::vector< char> &data() {
-        return data_;
-    }
-    void reset() {
-        data_.resize(data_.size());
-        write_pos_ = 0;
-        read_pos_ = 0;
+    void Reset() {
+        m_data.clear();
+        m_write_pos = 0;
     }
 
 
 private:
-    std::vector<char> data_;
-    size_t write_pos_ = 0; // 写指针
-    size_t read_pos_ = 0; // 读指针
+    std::vector<char> m_data;
+    size_t m_write_pos = 0; // 写指针
 };
 
 #endif //MYWEB_BUFFER_H

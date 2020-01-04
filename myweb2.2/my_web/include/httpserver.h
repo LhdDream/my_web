@@ -9,17 +9,18 @@
 #include "poll.h"
 #include "Acceptor.h"
 #include <csignal>
+#include <thread>
 
-class httpserver {
+class httpserver  {
 public:
     httpserver();
 
-    void start();
+    void Start();
 
 private:
-    std::unique_ptr<Acceptor> acceptor_; // 独占式的
-    std::shared_ptr<poll> Epoll_;
-    std::unique_ptr<channel_set> users_; // 所有用户
+    Acceptor m_acceptor; // 独占式的
+    std::shared_ptr<poll> m_Epoll;
+    User_set m_users; // 所有用户
 };
 
 #endif //MYWEB_HTTPSERVER_H

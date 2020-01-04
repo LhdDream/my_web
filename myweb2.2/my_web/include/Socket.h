@@ -11,34 +11,38 @@
 class Socket // 使用RAII 重新封装Socket 对象
 {
 public:
-    explicit Socket(const char *ip, const uint16_t port) {
-        sockfd_ = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
-        bzero(&address, sizeof(struct sockaddr_in));
-        address.sin_family = AF_INET;
-        inet_pton(AF_INET, ip, &address.sin_addr);
-        address.sin_port = htons(port);
+    explicit Socket() {
+
     }; // 显示转换
-    Socket(int sockfd) : sockfd_(sockfd) {}
+    Socket(int sockfd) : m_sockfd(sockfd) {}
 
-    ~Socket() { close(sockfd_); }
+    ~Socket() { close(m_sockfd); }
 
-    int fd() const { return sockfd_; } // 返回已经绑定的socketfd
-    size_t bindaddress();
+    void CreateFd(const char *ip = "127.0.0.1", const uint16_t port = 8080) {
+        m_sockfd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
+        bzero(&m_address, sizeof(struct sockaddr_in));
+        m_address.sin_family = AF_INET;
+        m_address.sin_addr.s_addr = INADDR_ANY;
+        m_address.sin_port = htons(port);
+    }
 
-    size_t listen();
+    int Fd() const { return m_sockfd; } // 返回已经绑定的socketfd
+    size_t BindAddress();
 
-    size_t accpet();
+    size_t Listen();
+
+    size_t Accpet();
 
     //if listen error to return
-    void setresueport(bool on); // 开启端口复用
+    void SetResueport(bool on); // 开启端口复用
     void shutdownWrite();
 
-    int read(const std::unique_ptr<Buffer>& buffer , int length  , int flags = 0) const ;
-    int write(const void * buffer , int length , int flags = 0) const ;
+    int Read(const std::unique_ptr<Buffer>& buffer , int length  , int flags = 0) const ;
+    int Write(const void * buffer , int length , int flags = 0) const ;
 
 private:
-    size_t sockfd_; //套接字
-    struct sockaddr_in address;
+    size_t m_sockfd; //套接字
+    struct sockaddr_in m_address;
 };
 
 #endif //MYWEB_SOCKET_H

@@ -14,96 +14,61 @@
 #include <utility>
 #include <unordered_map>
 
-class channel_set;
 
 class poll;
 
 //相当于user 和channel
 class User {
-    friend class channel_set;
+    friend class User_set;
 
 public:
 
     explicit User(int sock_)
-            : Socket_(sock_),
-              handler_(std::make_unique<HttpMessageHandler>(sock_)),
-              type_(Readable()){}
+            : m_Socket(sock_),
+              m_Handler(std::make_unique<HttpMessageHandler>(sock_)),
+              m_Type(Readable()){}
 
     //如果声明析够函数,那么编译器不会主动声明移动构造函数
 private:
-    int Socket_; //对于每一个用户的fd进行保存
+    int m_Socket; //对于每一个用户的fd进行保存
     //我们可以把Socket和Buffer进行一个绑定
     //之后进行收发就可以直接
-    std::unique_ptr<HttpMessageHandler> handler_; //对于http事件处理
+    std::unique_ptr<HttpMessageHandler> m_Handler; //对于http事件处理
     //由read -> write 权限
-    EpollEventType type_; //epoll 的事件
+    EpollEventType m_Type; //epoll 的事件
 };
 
-
+static thread_local  std::unordered_map<int, std::unique_ptr<User>> m_table;
 //整个channel的集合
-class channel_set {
-    using Callback = std::function<void(int fd)>;
-    using CloseCallback = std::function<void(int fd,EpollEventType & type)>;
+class User_set {
+
 public:
-    explicit channel_set(std::shared_ptr<poll> epoll) : epoll_(std::move(epoll)),
-                                                        respon_(std::make_unique<http_response>()),
-                                                        parse_(std::make_unique<HTTPMessageParser>()) {
-        m_Readable_ = [this] (int fd) {
-                auto &&user = getUser(fd);
-                auto type_ = user->type_;
-                auto it = user->handler_->RecvRequese( parse_, respon_);
-                if (it == 2) {
-                       user->type_ = Allof();
-                     //这里设置为EPOLLIN | EPOLLOUT
-                        //处理之前的事件并且处理EPOLLIN事件
-                        epoll_->update_channel({user->Socket_,user->type_});
-                }else if(it <= 0){
-                    m_Closeable_(fd,type_);
-                    // man 7 epoll 中 read
-                    // if no fork
-                    //close == epoll _ remove
-                }
-        };
-        m_Writeable_ = [this](int fd){
-            auto it = table_[fd]->handler_->SendResponse(respon_);
-            if(it <= 0){
-                //如果长连接则改变状态,不然直接关闭
-                m_Closeable_(fd,table_[fd]->type_);
-            }
-        };
-        m_Closeable_ = [this](int fd,EpollEventType & type) {
-            remove(fd,type);
-            close(fd);
-        };
+    explicit User_set(std::shared_ptr<poll> epoll) : m_epoll(std::move(epoll)),
+                                                        m_respon{},
+                                                        m_parse{} {
     }
 
-    void add(int fd);
+     void Remove(int fd,EpollEventType type);
 
-    void remove(int fd,EpollEventType type);
+    void DoRead(int id);
 
-    void doRead(int id);
-
-    void doWrite(int id);
-
-     std::shared_ptr<User>  getUser(int id) {
-        if(table_.find(id) == table_.end()){
-            table_.emplace(std::make_pair(id,std::make_shared<User>(id)));
+    void DoWrite(int id);
+     static std::unique_ptr<User> & getUser(int id) {
+        if(m_table.find(id) == m_table.end()){
+            m_table.emplace(std::make_pair(id,std::make_unique<User>(id)));
         }
-        return table_[id];
+        return m_table[id];
     }
 private:
-    std::shared_ptr<poll> epoll_;
-    std::unordered_map<int, std::shared_ptr<User>> table_;
-    std::unique_ptr<http_response> respon_; // 回应
-    std::unique_ptr<HTTPMessageParser> parse_; //解析
+    std::shared_ptr<poll> m_epoll;
+    Http_Response m_respon; // 回应
+    HTTPMessageParser m_parse; //解析
     //唯一的
     //所有的fd和http_msg_handler 作为一个对象池
     //将所有的channel连接起来
     //定時器操作放在epoll之中，處理socket事件，同時也可以把定時器輪尋時間
     //一起執行
-    Callback  m_Readable_;
-    Callback  m_Writeable_;
-    CloseCallback m_Closeable_;
+    //std::unordered_map<int, std::unique_ptr<User>> m_table;
 };
 
 

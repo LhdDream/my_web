@@ -3,26 +3,26 @@
 //
 #include "Acceptor.h"
 
-void Acceptor::listen() {
-    acceptSocket_->listen();
+void Acceptor::Listen() {
+    m_acceptSocket.Listen();
 }
 
-void  Acceptor::handleRead() //套接字可读的状态
+void  Acceptor::HandleRead() //套接字可读的状态
 {
     //ET使用accept来进行
     while (true) {
-        int connfd = acceptSocket_->accpet();
-        if (connfd >= 0) {
+        int connfd = m_acceptSocket.Accpet();
+        if (connfd > 0) {
             p(connfd);
         }
         if (connfd < 0) {
             //这里处理一下，服务器端如果文件描述符耗尽来进行的操作
             //来打开这里来进行处理
             if (errno == EMFILE) {
-                ::close(idlefd_);
-                idlefd_ = acceptSocket_->accpet();
-                ::close(idlefd_);
-                idlefd_ = ::open("/dev/null", O_WRONLY | O_CLOEXEC);
+                ::close(m_idlefd);
+                m_idlefd = m_acceptSocket.Accpet();
+                ::close(m_idlefd);
+                m_idlefd = ::open("/dev/null", O_RDONLY | O_CLOEXEC);
             }  else
                 break;
         }

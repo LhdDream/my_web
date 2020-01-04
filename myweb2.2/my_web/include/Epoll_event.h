@@ -7,7 +7,7 @@
 #include <sys/epoll.h>
 #include <list>
 #include <type_traits>
-#include <vector>
+#include <array>
 #include <memory>
 
 //对于epoll的事件处理的类
@@ -23,34 +23,31 @@ enum  EpollEventType   {
 //
 
 //对于强类型进行位操作,需要重载 |
-constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET | EpollEventType::KReadble   ); }
+constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET | EpollEventType::KReadble  | EpollEventType::KClose  ); }
 constexpr  EpollEventType Oneshot() {return EpollEventType(EpollEventType::KOneShot);}
 
-constexpr EpollEventType Readable() { return EpollEventType(Basic() | Oneshot()); }
+constexpr EpollEventType Readable() { return EpollEventType(Basic() | Oneshot()  ); }
 
 constexpr EpollEventType Writeable() { return EpollEventType(EpollEventType::KWriteable | Basic()); }
 
-constexpr EpollEventType Allof() { return EpollEventType(Readable() | Writeable()); }
 
 //这个文件对于epoll的事件进行再次封装
 class Epoll_event {
-    friend class poll;
-
 public:
-    explicit Epoll_event(int fd) : event_(epoll_event{Allof(), {.fd = fd}}) {}
+    explicit Epoll_event(int fd) : m_event(epoll_event{Readable(), {.fd = fd}}) {}
 
-    Epoll_event() : event_{} {} //
+    Epoll_event() : m_event{} {} //
     //
-    Epoll_event(int fd, EpollEventType type) : event_(epoll_event{type, {.fd = fd}}) {}
+    Epoll_event(int fd, EpollEventType type) : m_event(epoll_event{type, {.fd = fd}}) {}
 
-    int event_fd() const { return event_.data.fd; }
-
-    epoll_event *pointer() noexcept {
-        return &event_;
+    epoll_event *Pointer() noexcept {
+        return &m_event;
     }
-
+    int EventFd() const {
+        return m_event.data.fd;
+    }
 private:
-    epoll_event event_;
+    epoll_event m_event;
 };
 
 //下面是对于整个epoll event 数组的一个简单封装
@@ -58,27 +55,16 @@ class EpollEventResult {
     friend class poll;
 
 public:
-    explicit EpollEventResult(int size) : store_(size) {
-    }
-
-    explicit EpollEventResult() : store_(4096) {
-    }
-
+   EpollEventResult() = default;
     Epoll_event &operator[] (size_t i) {
-        return store_.at(i);
-    }
-
-    inline size_t fillsize_() const {
-        return store_.size()  ;
-    }
-    void resize(size_t file) {
-        store_.resize(file +store_.size());
+        return m_store[i];
     }
 private:
     epoll_event *get() {
-        return store_.data()->pointer();
+        return m_store.data()->Pointer();
     }
-    std::vector<Epoll_event> store_;
+
+    std::array<Epoll_event,10240> m_store;
 };
 
 

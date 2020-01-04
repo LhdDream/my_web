@@ -17,30 +17,24 @@ class Acceptor // socket accpet 连接的接口
 public:
     using ConnCallback =  std::function<void(int sockfd)>;
 
-    explicit Acceptor() : acceptSocket_(nullptr),
-                          idlefd_(::open("/dev/null", O_RDONLY | O_CLOEXEC)) {
-        createSocket_();
-    }
-    void createSocket_(const char * ip = "127.0.0.1",uint16_t port =8080)
-    {
-        acceptSocket_ = std::make_unique<Socket>(ip,port);
+    explicit Acceptor() :m_acceptSocket(),m_idlefd(::open("/dev/null", O_RDONLY | O_CLOEXEC)) {
 
     }
-    void listen();//初始化listen
+    void Listen();//初始化listen
 
 
-    void handleRead();
+    void HandleRead();
 
-    int fd_() const {
-        return acceptSocket_->fd();
+    int Fd() const {
+        return m_acceptSocket.Fd();
     }
-    void setCallback(ConnCallback && cb){
+    void SetCallback(ConnCallback && cb){
             p = std::move(cb);
     }
 private:
     //C++ 中根据对象顺序进行初始化
-    std::unique_ptr<Socket> acceptSocket_;
-    int idlefd_; // 处理套接字的
+    Socket m_acceptSocket;
+    int m_idlefd; // 处理套接字的
     ConnCallback  p;
 };// TCP 如果连接上之后进行回调通知使用者，内部类
 #endif //MYWEB_ACCEPTOR_H

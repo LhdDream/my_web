@@ -3,32 +3,41 @@
 //
 #include "httpserver.h"
 
-httpserver::httpserver() :acceptor_(std::make_unique<Acceptor>()), Epoll_(std::make_shared<poll>()), users_(std::make_unique<channel_set>(Epoll_)) {
-    acceptor_->setCallback( [&] (int fd) {
-        users_->add(fd);
+//#pragma clang diagnostic push
+//#pragma clang diagnostic ignored "-Wmissing-noreturn"
+httpserver::httpserver() :
+m_acceptor{},
+m_Epoll(std::make_shared<poll>())
+, m_users(m_Epoll)
+{
+    m_acceptor.SetCallback( [&] (int fd) {
+        m_Epoll->Add_Channel({fd,Readable()});
     });
+
 }
 
-void httpserver::start() {
-    acceptor_->acceptSocket_->setresueport(true);
-    acceptor_->acceptSocket_->bindaddress();
-    acceptor_->listen();
-    Epoll_->add_channel({acceptor_->fd_(),Basic()});
-    EpollEventResult event_(4096);
+void httpserver::Start() {
+    m_acceptor.m_acceptSocket.CreateFd();
+    m_acceptor.m_acceptSocket.SetResueport(true);
+    m_acceptor.m_acceptSocket.BindAddress();
+    m_acceptor.Listen();
 
+    m_Epoll->Add_Channel({m_acceptor.Fd(),Readable() });
+    EpollEventResult event_;
     while(true){
-        auto user_number = Epoll_->Wait(event_);
+        auto user_number = m_Epoll->Wait(event_);
         for(int i = 0 ; i < user_number; i++)
         {
             auto && it = event_[i];
-            if(it.event_fd() == acceptor_->fd_()){
-                acceptor_->handleRead();
-            }else if ( it.pointer()->events & EpollEventType::KReadble) {
-                users_->doRead(it.event_fd());
-            } else if (it.pointer()->events & EpollEventType::KWriteable) {
-                users_->doWrite(it.event_fd());
-            }else if(it.pointer()->events & EpollEventType::KClose){
-                users_->remove(it.event_fd(), reinterpret_cast<EpollEventType &>(it.pointer()->events));
+            if(it.EventFd() == m_acceptor.Fd()){
+                m_acceptor.HandleRead();
+                m_Epoll->Update_Channel({it.EventFd(),Readable()});
+            }else if ( it.Pointer()->events & EpollEventType::KReadble) {
+                m_users.DoRead(it.EventFd());
+            } else if (it.Pointer()->events & EpollEventType::KWriteable) {
+                m_users.DoWrite(it.EventFd());
+            }else if(it.Pointer()->events & EpollEventType::KClose){
+                m_users.Remove(it.EventFd(), reinterpret_cast<EpollEventType &>(it.Pointer()->events));
             }
             //这里无须检测EPOLLRDHUP事件,close之后会直接从epoll中删除
         }
@@ -36,3 +45,5 @@ void httpserver::start() {
     //如果没有事件则去处理一下超时事件
 }
 
+
+//#pragma clang diagnostic pop
