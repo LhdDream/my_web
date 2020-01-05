@@ -16,19 +16,21 @@ enum  EpollEventType   {
     KWriteable = ::EPOLLOUT,
     KOneShot = ::EPOLLONESHOT,
     KET = ::EPOLLET,
-    KClose = EPOLLRDHUP
+    Klisten = EPOLLEXCLUSIVE,
+    KClose = ::EPOLLRDHUP
 }; // 使用enum class 来防止命名污染
 //如果使用enum class 不会隐式int /float 类型，禁止
 //底层使用long
 //
 
 //对于强类型进行位操作,需要重载 |
-constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET | EpollEventType::KReadble  | EpollEventType::KClose  ); }
-constexpr  EpollEventType Oneshot() {return EpollEventType(EpollEventType::KOneShot);}
+constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET | EpollEventType::KReadble   ); }
 
-constexpr EpollEventType Readable() { return EpollEventType(Basic() | Oneshot()  ); }
+constexpr EpollEventType Listen_() { return EpollEventType(EpollEventType::KET | EpollEventType::KReadble | EpollEventType::Klisten );}
 
-constexpr EpollEventType Writeable() { return EpollEventType(EpollEventType::KWriteable | Basic()); }
+constexpr EpollEventType Readable() { return EpollEventType(Basic() | EpollEventType::KOneShot  ); }
+
+constexpr EpollEventType Writeable() { return EpollEventType(EpollEventType::KWriteable | Basic() |  EpollEventType::KOneShot); }
 
 
 //这个文件对于epoll的事件进行再次封装

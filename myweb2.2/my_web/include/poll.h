@@ -18,9 +18,11 @@ class Socket;
 
 class poll {
 public:
-    explicit poll() :m_epollfd(::epoll_create1(EPOLL_CLOEXEC )){
-    };
+    explicit poll() = default;
     ~poll() { ::close(m_epollfd);}
+    void Create_fd() {
+        m_epollfd = ::epoll_create1(EPOLL_CLOEXEC);
+    }
     int Add_Channel(Epoll_event &&ev) const {
         return epoll_ctl(m_epollfd, EPOLL_CTL_ADD, ev.EventFd(), ev.Pointer());
     }
