@@ -38,12 +38,12 @@ private:
     EpollEventType m_Type; //epoll 的事件
 };
 
-static thread_local  std::unordered_map<int, std::unique_ptr<User>> m_table;
+
 //整个channel的集合
 class User_set {
 
 public:
-    explicit User_set(std::shared_ptr<poll> epoll) : m_epoll(std::move(epoll)),
+    explicit User_set( poll& epoll) : m_epoll(epoll),
                                                         m_respon{},
                                                         m_parse{} {
     }
@@ -53,14 +53,14 @@ public:
     void DoRead(int id);
 
     void DoWrite(int id);
-     static std::unique_ptr<User> & getUser(int id) {
+    std::unique_ptr<User> & getUser(int id) {
         if(m_table.find(id) == m_table.end()){
             m_table.emplace(std::make_pair(id,std::make_unique<User>(id)));
         }
         return m_table[id];
     }
 private:
-    std::shared_ptr<poll> m_epoll;
+    poll& m_epoll;
     Http_Response m_respon; // 回应
     HTTPMessageParser m_parse; //解析
     //唯一的
@@ -68,7 +68,7 @@ private:
     //将所有的channel连接起来
     //定時器操作放在epoll之中，處理socket事件，同時也可以把定時器輪尋時間
     //一起執行
-    //std::unordered_map<int, std::unique_ptr<User>> m_table;
+    std::unordered_map<int, std::unique_ptr<User>> m_table;
 };
 
 

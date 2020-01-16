@@ -19,7 +19,7 @@ public:
 
 private:
     Acceptor m_acceptor; // 独占式的
-    std::shared_ptr<poll> m_Epoll;
+    poll m_Epoll;
     User_set m_users; // 所有用户
 };
 
