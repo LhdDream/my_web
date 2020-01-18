@@ -17,7 +17,4 @@
 - 利用状态机器去解析http请求，提高效率
 - 性能并不好，需要继续修改完善
 
-Webbench
----
-![image](https://github.com/LhdDream/my_web/blob/master/myweb/picture/web_test.png)
    
