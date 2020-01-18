@@ -7,7 +7,7 @@
 #include <vector>
 #include <thread>
 #include <utility>
-#include "../include/httpserver.h"
+#include "../include/HttpServer.h"
 
 thread_local httpserver Server;
 class Proxy {

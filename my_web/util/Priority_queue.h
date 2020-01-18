@@ -7,8 +7,9 @@
 //
 //使用一个hash map 和一个vector来进行实现
 #include <utility>
-#include <vector>
 #include <unordered_map>
+#include <vector>
+
 
 class Priority_queue {
 public:
