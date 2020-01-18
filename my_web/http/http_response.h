@@ -5,16 +5,15 @@
 #ifndef MYWEB_HTTP_RESPONSE_H
 #define MYWEB_HTTP_RESPONSE_H
 #include <cstdint>
+#include <climits>
 #include "currency.h"
 #include <fcntl.h>
-#include <unordered_map>
-#include <sys/stat.h>
 #include <functional>
 #include <sys/sendfile.h>
-#include <unistd.h>
-#include <climits>
 #include "../include/Socket.h"
-#include <thread>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <unordered_map>
 constexpr  std::string_view html = "text/html";
 constexpr  std::string_view avi = "video/x-msvideo";
 constexpr  std::string_view png = "image/png";
@@ -64,9 +63,9 @@ public:
         if(fd.Write( p.data(),p.size(),0 ) < 0 )
         {
             if(errno != EAGAIN && errno != EINTR){
-                return -1;
+                return -1;//出现错误关闭
             }else{
-                return -2;
+                return -2;//发送缓冲区已经满
             }
         }
         return 0;

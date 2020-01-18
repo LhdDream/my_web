@@ -8,7 +8,7 @@ HttpMessageHandler::RecvRequese( HTTPMessageParser &parse_,  Http_Response &resp
 
     int n;
     int readsize = 0;
-    for (n = 0; (n = m_sock.Read(m_Buffer, 4096, 0)) > 0;) {
+    for (n = 0; (n = m_sock.Read(m_Buffer, 1024, 0)) > 0;) {
         readsize += n;
     }
 
@@ -33,14 +33,19 @@ int HttpMessageHandler::SendResponse( Http_Response &respon_) {
        respon_.ActSendfile(m_conn->Getpath(), m_sock.Fd());
         //监听队列中删除掉内容
          Clear();
+         if(m_conn->Keep_Alive())
+         {
+             m_conn->Set_Keep_Alive(false);
+             return 1; // 说明为长连接
+         }
        //短连接没有必要删除
         //将msg中的内容进行删除
     } else {
         if (c == -1) {
-            return -1;
+            return -1;//错误
         } else {
                 return 2;  // 注册epollout 事件
         }
     }
-    return 0;
+    return 0;//短连接
 }
