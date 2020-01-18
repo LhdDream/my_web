@@ -4,11 +4,11 @@
 #ifndef MYWEB_EPOLL_EVENT_H
 #define MYWEB_EPOLL_EVENT_H
 //对于epoll的事件的类
-#include <sys/epoll.h>
-#include <list>
-#include <type_traits>
 #include <array>
 #include <memory>
+#include <sys/epoll.h>
+#include <type_traits>
+
 
 //对于epoll的事件处理的类
 enum  EpollEventType   {

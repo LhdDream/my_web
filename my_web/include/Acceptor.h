@@ -5,10 +5,12 @@
 #ifndef MYWEB_ACCEPTOR_H
 #define MYWEB_ACCEPTOR_H
 
-#include "Socket.h"
-#include "channel.h"
-#include <atomic>
+#include <fcntl.h>
 #include <functional>
+#include "Socket.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+
 
 
 class Acceptor // socket accpet 连接的接口

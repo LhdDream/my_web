@@ -4,15 +4,18 @@
 #ifndef MYWEB_BUFFER_H
 #define MYWEB_BUFFER_H
 //应用层必须使用 // http 请求
-#include <vector>
+
+#include <algorithm>
 #include <cstddef>
-#include <string>
-#include <algorithm>
 #include <cstring>
-#include <iostream>
-#include <sys/socket.h>
 #include "Epoll_event.h"
-#include <algorithm>
+#include <iostream>
+#include <string>
+#include <sys/socket.h>
+#include <vector>
+
+
+
 constexpr  const size_t  beginsize = 0;
 constexpr  const size_t  filesize =  8192;
 class Buffer {

@@ -1,13 +1,14 @@
 #ifndef MYWEB_SOCKET_H
 #define MYWEB_SOCKET_H
 
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <cstring>
 #include <arpa/inet.h>
-#include <unistd.h>
-#include <netinet/tcp.h>
 #include "Buffer.h"
+#include <cstring>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
 class Socket // 使用RAII 重新封装Socket 对象
 {
 public:
