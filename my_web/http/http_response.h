@@ -45,7 +45,7 @@ public:
         struct stat64 st{};
         if (stat64(httpMessage->Getpath().data(), &st) < 0) {
             httpMessage->SetStatusCode(Not_Found);
-            return -1;
+            return -2;
         }
         std::string_view temp =  httpMessage->Getpath();
         auto it = temp.find('.');

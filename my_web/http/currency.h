@@ -30,9 +30,9 @@ constexpr  std::string_view m_Ok = "OK";
 constexpr  std::string_view m_Not_Found = "Not Found";
 constexpr  std::string_view m_No = " ";
 static std::string_view  HTTP_STATUS_MAP (std::string_view code){
-           if(!code.compare(OK))
+           if(code.compare(OK) == 0)
                return m_Ok;
-           else if(!code.compare(Not_Found))
+           else if(code.compare(Not_Found) == 0)
                return m_Not_Found;
            else
                return m_No;
@@ -49,7 +49,7 @@ public:
     }
     //std::string & or std::string &&
     void SetHeader( std::string_view &&name, std::string_view &&value) {
-        if(!value.compare("keep-alive")){
+        if(value.compare("Keep-Alive") == 0){
             Set_Keep_Alive(true);
         }
            m_headers_name.emplace_back(name);
