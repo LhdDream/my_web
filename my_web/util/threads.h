@@ -16,7 +16,7 @@ public:
         thcont_.reserve(3);
         for(int i = 0 ; i < 3 ; i++)
         {
-            thcont_.emplace_back( +[] () {Server.Start();});
+            thcont_.emplace_back( [] () {Server.Start();});
         }
         Server.Start();
     }
