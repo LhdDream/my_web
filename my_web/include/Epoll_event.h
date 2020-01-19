@@ -52,7 +52,7 @@ private:
 
 //下面是对于整个epoll event 数组的一个简单封装
 class EpollEventResult {
-    friend class poll;
+    friend class Epoll;
 
 public:
    EpollEventResult() = default;

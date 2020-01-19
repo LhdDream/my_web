@@ -13,15 +13,17 @@
 #include "../util/timer.h"
 #include <thread>
 
-class httpserver  {
+class httpserver {
 public:
     httpserver();
+
+    ~httpserver() = default;
 
     void Start();
 
 private:
     Acceptor m_acceptor; // 独占式的
-    poll m_Epoll;
+    Epoll m_Epoll;
     User_set m_users; // 所有用户
     Timer m_timer;
 };

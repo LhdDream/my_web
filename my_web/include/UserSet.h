@@ -45,7 +45,7 @@ private:
 class User_set {
 
 public:
-    explicit User_set( poll& epoll) : m_epoll(epoll),
+    explicit User_set( Epoll& epoll) : m_epoll(epoll),
                                                         m_respon{},
                                                         m_parse{} {
     }
@@ -61,7 +61,7 @@ public:
         }
     }
 private:
-    poll& m_epoll;
+    Epoll& m_epoll;
     Http_Response m_respon; // 回应
     HTTPMessageParser m_parse; //解析
     //唯一的

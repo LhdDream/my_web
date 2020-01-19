@@ -13,6 +13,7 @@ m_Epoll()
     m_acceptor.SetCallback( [&] (int fd) {
         m_users.AddUser(fd);
         m_Epoll.Add_Channel({fd,Readable()});
+        m_timer.AddTimer(fd);
     });
     m_timer.SetCallback([&](int fd){
         m_users.Remove(fd);

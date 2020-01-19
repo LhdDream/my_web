@@ -16,10 +16,10 @@
 
 class Socket;
 
-class poll {
+class Epoll {
 public:
-    explicit poll() = default;
-    ~poll() { ::close(m_epollfd);}
+    explicit Epoll() = default;
+    ~Epoll() { ::close(m_epollfd);}
     void Create_fd() {
         m_epollfd = ::epoll_create1(EPOLL_CLOEXEC);
     }
