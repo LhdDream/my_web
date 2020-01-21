@@ -7,7 +7,7 @@ void Acceptor::Listen() {
     m_acceptSocket.Listen();
 }
 
-void  Acceptor::HandleRead() //套接字可读的状态
+void Acceptor::HandleRead() //套接字可读的状态
 {
     //ET使用accept来进行
     while (true) {
@@ -23,7 +23,7 @@ void  Acceptor::HandleRead() //套接字可读的状态
                 m_idlefd = m_acceptSocket.Accpet();
                 ::close(m_idlefd);
                 m_idlefd = ::open("/dev/null", O_RDONLY | O_CLOEXEC);
-            }  else
+            } else
                 break;
         }
     }

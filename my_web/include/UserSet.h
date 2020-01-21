@@ -7,7 +7,7 @@
 
 #include "Epoll.h"
 #include "Buffer.h"
-#include "../http/http_msg_handler.h"
+#include "../http/Http_Msg_Handler.h"
 #include "../util/timer.h"
 #include <memory>
 #include <unordered_map>
@@ -15,7 +15,7 @@
 #include <unordered_map>
 
 
-class poll;
+class Epoll;
 
 //相当于user 和channel
 class User {
@@ -26,7 +26,7 @@ public:
     explicit User(int sock_)
             : m_Socket(sock_),
               m_Handler(std::make_unique<HttpMessageHandler>(sock_)),
-              m_Type(Readable()){}
+              m_Type(Readable()) {}
 
     //如果声明析够函数,那么编译器不会主动声明移动构造函数
 
@@ -45,23 +45,25 @@ private:
 class User_set {
 
 public:
-    explicit User_set( Epoll& epoll) : m_epoll(epoll),
-                                                        m_respon{},
-                                                        m_parse{} {
+    explicit User_set(Epoll &epoll) : m_epoll(epoll),
+                                      m_respon{},
+                                      m_parse{} {
     }
 
     void Remove(int fd);
 
-    void DoRead(int id, Timer & timer);
+    void DoRead(int id, Timer &timer);
 
-    void DoWrite(int id, Timer & timer);
+    void DoWrite(int id, Timer &timer);
+
     void AddUser(int id) {
-        if(m_table.find(id) == m_table.end()){
-            m_table.emplace(std::make_pair(id,std::make_unique<User>(id)));
+        if (m_table.find(id) == m_table.end()) {
+            m_table.emplace(std::make_pair(id, std::make_unique<User>(id)));
         }
     }
+
 private:
-    Epoll& m_epoll;
+    Epoll &m_epoll;
     Http_Response m_respon; // 回应
     HTTPMessageParser m_parse; //解析
     //唯一的

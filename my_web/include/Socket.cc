@@ -3,7 +3,7 @@
 //
 #include "Socket.h"
 
-size_t Socket::BindAddress () {
+size_t Socket::BindAddress() {
     return ::bind(m_sockfd, (struct sockaddr *) &m_address, sizeof(struct sockaddr));
 }
 
@@ -11,7 +11,7 @@ size_t Socket::Listen() {
     return ::listen(m_sockfd, 4096);//默认backlog
 }
 
-void Socket::SetResueport(bool on)  {
+void Socket::SetResueport(bool on) {
     if (on) {
         int reuse = 1;
         ::setsockopt(m_sockfd, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(int));
@@ -29,27 +29,20 @@ size_t Socket::Accpet() {
     return fd;
 }
 
-void Socket::shutdownWrite() {
-    if (::shutdown(m_sockfd, SHUT_WR) < 0) {
-        return;
-    }
-}
 
-int Socket::Read(const std::unique_ptr<Buffer>& buffer, int length, int flags) const {
-    if(length > buffer->WriteAble())
-    {
+int Socket::Read(const std::unique_ptr<Buffer> &buffer, int length, int flags) const {
+    if (length > buffer->WriteAble()) {
         buffer->ReSize(length);
         length = buffer->WriteAble();
     }
 
-    int read_bytes = ::recv(m_sockfd, buffer->BeginWrite() ,length,flags) ;
-    if(read_bytes > 0 )
-    {
+    int read_bytes = ::recv(m_sockfd, buffer->BeginWrite(), length, flags);
+    if (read_bytes > 0) {
         buffer->WriteOffest_Move(read_bytes);
     }
     return read_bytes;
 }
 
 int Socket::Write(const void *buffer, int length, int flags) const {
-    return ::send(m_sockfd,buffer,length,flags);
+    return ::send(m_sockfd, buffer, length, flags);
 }

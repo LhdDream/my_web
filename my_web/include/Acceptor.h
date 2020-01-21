@@ -12,17 +12,18 @@
 #include <sys/stat.h>
 
 
-
 class Acceptor // socket accpet 连接的接口
 {
-    friend  class httpserver;
+    friend class httpserver;
+
 public:
     using ConnCallback =  std::function<void(int sockfd)>;
 
-    explicit Acceptor() :m_acceptSocket(),m_idlefd(::open("/dev/null", O_RDONLY | O_CLOEXEC)) {
+    explicit Acceptor() : m_acceptSocket(), m_idlefd(::open("/dev/null", O_RDONLY | O_CLOEXEC)) {
 
 
     }
+
     void Listen();//初始化listen
 
 
@@ -31,13 +32,15 @@ public:
     int Fd() const {
         return m_acceptSocket.Fd();
     }
-    void SetCallback(ConnCallback && cb){
-            p = std::move(cb);
+
+    void SetCallback(ConnCallback &&cb) {
+        p = std::move(cb);
     }
+
 private:
     //C++ 中根据对象顺序进行初始化
     Socket m_acceptSocket;
     int m_idlefd; // 处理套接字的
-    ConnCallback  p;
+    ConnCallback p;
 };// TCP 如果连接上之后进行回调通知使用者，内部类
 #endif //MYWEB_ACCEPTOR_H

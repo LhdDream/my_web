@@ -11,7 +11,7 @@
 
 
 //对于epoll的事件处理的类
-enum  EpollEventType   {
+enum EpollEventType {
     KReadble = ::EPOLLIN,
     KWriteable = ::EPOLLOUT,
     KET = ::EPOLLET,
@@ -22,13 +22,13 @@ enum  EpollEventType   {
 //
 
 //对于强类型进行位操作,需要重载 |
-constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET   ); }
+constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET); }
 
-constexpr EpollEventType Listen_() { return EpollEventType(EpollEventType::KET | EpollEventType::KReadble  );}
+constexpr EpollEventType Listen_() { return EpollEventType(EpollEventType::KET | EpollEventType::KReadble); }
 
-constexpr EpollEventType Readable() { return EpollEventType(Basic()  | EpollEventType::KReadble ); }
+constexpr EpollEventType Readable() { return EpollEventType(Basic() | EpollEventType::KReadble); }
 
-constexpr EpollEventType Writeable() { return EpollEventType(EpollEventType::KWriteable | Basic() ); }
+constexpr EpollEventType Writeable() { return EpollEventType(EpollEventType::KWriteable | Basic()); }
 
 
 //这个文件对于epoll的事件进行再次封装
@@ -43,9 +43,11 @@ public:
     epoll_event *Pointer() noexcept {
         return &m_event;
     }
+
     int EventFd() const {
         return m_event.data.fd;
     }
+
 private:
     epoll_event m_event;
 };
@@ -55,16 +57,18 @@ class EpollEventResult {
     friend class Epoll;
 
 public:
-   EpollEventResult() = default;
-    Epoll_event &operator[] (size_t i) {
+    EpollEventResult() = default;
+
+    Epoll_event &operator[](size_t i) {
         return m_store[i];
     }
+
 private:
     epoll_event *get() {
         return m_store.data()->Pointer();
     }
 
-    std::array<Epoll_event,10240> m_store;
+    std::array<Epoll_event, 10240> m_store;
 };
 
 

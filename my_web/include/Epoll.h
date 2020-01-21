@@ -19,10 +19,13 @@ class Socket;
 class Epoll {
 public:
     explicit Epoll() = default;
-    ~Epoll() { ::close(m_epollfd);}
+
+    ~Epoll() { ::close(m_epollfd); }
+
     void Create_fd() {
         m_epollfd = ::epoll_create1(EPOLL_CLOEXEC);
     }
+
     int Add_Channel(Epoll_event &&ev) const {
         return epoll_ctl(m_epollfd, EPOLL_CTL_ADD, ev.EventFd(), ev.Pointer());
     }
@@ -37,11 +40,12 @@ public:
 
     //尽可能的使用右值移动构造
     //设置一个epoll_wait
-    int  Wait(EpollEventResult &result) {
+    int Wait(EpollEventResult &result) {
         //设置epoll_Wait超时
-        int user_number = epoll_wait(m_epollfd, result.get(), result.m_store.size() ,  4);
+        int user_number = epoll_wait(m_epollfd, result.get(), result.m_store.size(), 4);
         return user_number;
     }
+
 private:
     int m_epollfd;
 };

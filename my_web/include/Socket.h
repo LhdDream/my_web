@@ -36,10 +36,11 @@ public:
 
     //if listen error to return
     void SetResueport(bool on); // 开启端口复用
-    void shutdownWrite();
 
-    int Read(const std::unique_ptr<Buffer>& buffer , int length  , int flags = 0) const ;
-    int Write(const void * buffer , int length , int flags = 0) const ;
+
+    int Read(const std::unique_ptr<Buffer> &buffer, int length, int flags = 0) const;
+
+    int Write(const void *buffer, int length, int flags = 0) const;
 
 private:
     size_t m_sockfd; //套接字
