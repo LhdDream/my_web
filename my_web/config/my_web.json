@@ -1,23 +1,19 @@
 {
   "server": {
     "port": 8080,
-    "keep_connection_time" :  0.8 ,
-    "threads" : 4,
+    "keep_connection_ms" :  800 ,
+    "threads" : 3,
     "ip"  : "127.0.0.1"
   },
   "sites":[
     {
       "wwwroot": "/home/kiosk/picture/www/picture",
-      "default_files": [
-        "index.html"
-      ],
+      "default_file": "index.html",
       "fastcgi": [
         {
-            "gateway": "127.0.0.1",
+            "ip": "127.0.0.1",
             "port": 9000,
-            "extends": [
-              "php"
-            ]
+            "extends": "php"
         }
       ]
     }
