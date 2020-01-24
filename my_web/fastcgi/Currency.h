@@ -8,8 +8,6 @@
 #include <memory>
 #include <cstring>
 
-
-using FcgiDataptt= std::unique_ptr < unsigned  char [] >;
 //
 constexpr  uint8_t  m_FcgiVersion = 1;  //fastcgi版本
 //fastcgi的状态
@@ -87,12 +85,11 @@ struct m_FcgiPre {
     int K_PaddingLength;
 };
 
+std::unique_ptr<m_FacgiHeader> MakeHeader(m_FCgiType type,int request_id , int content_length , int padding_length);
+std::unique_ptr<m_FcgiBeginRequestBody> MakeBeginRequest(m_FcgiRole role , bool Keep_Alive);
+std::unique_ptr<unsigned char []> MakeData(const char * name , size_t name_length ,const  char * value , size_t value_length);
+std::unique_ptr<unsigned char []> MakeData(std::string_view  name ,std::string_view value);
 
 
-auto MakeHeader(m_FCgiType type,int request_id , int content_length , int padding_length);
-auto MakeBeginRequest(m_FcgiRole role , bool Keep_Alive) ;
-auto MakeData(const char * name , int name_length ,const  char * value , int value_length);
-auto MakeData(const std::string& name , const std::string& value);
 
-auto  FcgiGetHeader(const void *src);
 #endif //MY_WEB_CURRENCY_H
