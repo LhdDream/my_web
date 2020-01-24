@@ -19,7 +19,7 @@ public:
 
     ~Socket() { close(m_sockfd); }
 
-    void CreateFd(const char *ip = "127.0.0.1", const uint16_t port = 8080) {
+    void CreateFd(const char *ip = "127.0.0.1", const int port = 8080) {
         m_sockfd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
         bzero(&m_address, sizeof(struct sockaddr_in));
         m_address.sin_family = AF_INET;
@@ -38,10 +38,11 @@ public:
     void SetResueport(bool on); // 开启端口复用
 
 
-    int Read(const std::unique_ptr<Buffer> &buffer, int length, int flags = 0) const;
+    int Read( Buffer &buffer, int length, int flags = 0) const;
 
     int Write(const void *buffer, int length, int flags = 0) const;
 
+    int  Connect();
 private:
     size_t m_sockfd; //套接字
     struct sockaddr_in m_address;

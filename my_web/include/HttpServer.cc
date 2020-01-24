@@ -20,7 +20,7 @@ httpserver::httpserver() :
 }
 
 void httpserver::Start() {
-    m_acceptor.m_acceptSocket.CreateFd();
+    m_acceptor.m_acceptSocket.CreateFd(Provider::Get().ServerIp().c_str(),Provider::Get().ServerPort());
     m_acceptor.m_acceptSocket.SetResueport(true);
     m_acceptor.m_acceptSocket.BindAddress();
     m_acceptor.Listen();
@@ -42,10 +42,9 @@ void httpserver::Start() {
                     m_users.Remove(it.EventFd());
                 }
             }
-            //这里无须检测EPOLLRDHUP事件,close之后会直接从epoll中删除
         }
         //处理超时事件
-        m_timer.RemoveTimer();
+         m_timer.RemoveTimer();
     }
     //如果没有事件则去处理一下超时事件
 }

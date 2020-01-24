@@ -30,19 +30,22 @@ size_t Socket::Accpet() {
 }
 
 
-int Socket::Read(const std::unique_ptr<Buffer> &buffer, int length, int flags) const {
-    if (length > buffer->WriteAble()) {
-        buffer->ReSize(length);
-        length = buffer->WriteAble();
+int Socket::Read(Buffer &buffer, int length, int flags) const {
+    if (length > buffer.WriteAble()) {
+        buffer.ReSize(length);
     }
 
-    int read_bytes = ::recv(m_sockfd, buffer->BeginWrite(), length, flags);
+    int read_bytes = ::recv(m_sockfd, buffer.BeginWrite(), length, flags);
     if (read_bytes > 0) {
-        buffer->WriteOffest_Move(read_bytes);
+        buffer.WriteOffest_Move(read_bytes);
     }
     return read_bytes;
 }
 
 int Socket::Write(const void *buffer, int length, int flags) const {
     return ::send(m_sockfd, buffer, length, flags);
+}
+
+int  Socket::Connect() {
+    return ::connect(m_sockfd, reinterpret_cast<const struct sockaddr *> (&m_address), sizeof(m_address));
 }

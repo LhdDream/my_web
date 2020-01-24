@@ -38,6 +38,12 @@ public:
         m_write_pos += len;
     }
 
+    void *BeginRead() {
+        return m_data.data() + m_read_pos;
+    }
+    void ReadOffest_Move(int len){
+        m_read_pos += len;
+    }
     std::vector<char> &Data() {
         return m_data;
     }
@@ -45,12 +51,24 @@ public:
     void Reset() {
         m_data.clear();
         m_write_pos = 0;
+        m_read_pos = 0;
     }
 
-
+    int Write(void * src ,int len) {
+        return Write(reinterpret_cast<const char * >(src) , len);
+    }
+    int Write(const char * src , int len){
+        if (len > WriteAble()) {
+            ReSize(len);
+        }
+        std::memcpy(m_data.data()+m_write_pos,src,len);
+        WriteOffest_Move(len);
+        return len;
+    }
 private:
     std::vector<char> m_data;
     size_t m_write_pos = 0; // 写指针
+    size_t m_read_pos = 0 ; // 读指针
 };
 
 #endif //MYWEB_BUFFER_H

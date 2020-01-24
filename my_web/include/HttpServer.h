@@ -7,6 +7,7 @@
 
 
 #include "Acceptor.h"
+#include "../config/provider.h"
 #include <csignal>
 #include "Epoll.h"
 #include "UserSet.h"

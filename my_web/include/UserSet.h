@@ -14,7 +14,7 @@
 #include <utility>
 #include <unordered_map>
 
-
+class FastCgiHandler;
 class Epoll;
 
 //相当于user 和channel
@@ -66,6 +66,7 @@ private:
     Epoll &m_epoll;
     Http_Response m_respon; // 回应
     HTTPMessageParser m_parse; //解析
+    FastCgiHandler  m_fastcgi; // cgi解析
     //唯一的
     //所有的fd和http_msg_handler 作为一个对象池
     //将所有的channel连接起来

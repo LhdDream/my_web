@@ -13,7 +13,7 @@ void User_set::Remove(int fd) {
 }
 void User_set::DoRead(int id, Timer & timer) {
     auto &&user = m_table[id];
-    auto it = user->m_Handler->RecvRequese( m_parse, m_respon);
+    auto it = user->m_Handler->RecvRequese( m_parse, m_respon,m_fastcgi);
     if (it == 2) {//发送不完
         user->m_Type = Writeable();
         //处理之前的事件并且处理EPOLLIN事件
@@ -34,7 +34,7 @@ void User_set::DoRead(int id, Timer & timer) {
 }
 
 void User_set::DoWrite(int id, Timer & timer) {
-    auto it = m_table[id]->m_Handler->SendResponse(m_respon);
+    auto it = m_table[id]->m_Handler->SendResponse(m_respon,m_fastcgi);
     if(it == 2){
         //发送缓冲区还在
         timer.AddTimer(id);
