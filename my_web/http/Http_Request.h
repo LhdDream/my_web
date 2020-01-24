@@ -45,21 +45,19 @@ public:
                 //解析行请求
             {
                 if (c == ' ') {
-                    if(isQuery == -1) {
+                    if (isQuery == -1) {
                         httpMessage->Setpath({buffer.data() + begin + 1, end - begin - 1});
-                    }
-                    else
-                    {
-                        httpMessage->Setpath({buffer.data() + begin + 1, isQuery});
+                    } else {
+                        httpMessage->Setpath({buffer.data() + begin + 1, isQuery - begin - 1});
+                        httpMessage->SetQuery({buffer.data() + isQuery - begin - 1, end - begin - 1});
                         isQuery = -1;
                     }
                     end = end + 1;
                     begin = end;
                     continue;
-                }else if(c == '?'){
-                    isQuery = end - begin - 1;
-                }
-                else if (c == '\r') {
+                } else if (c == '?') {
+                    isQuery = end ;
+                } else if (c == '\r') {
                     httpMessage->SetVersion({buffer.data() + begin, end - begin});
                     end = end + 2;
                     begin = end;

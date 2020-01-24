@@ -4,7 +4,7 @@
 #include "Http_Msg_Handler.h"
 
 int
-HttpMessageHandler::RecvRequese(HTTPMessageParser &parse_, Http_Response &respon_) {
+HttpMessageHandler::RecvRequese(HTTPMessageParser &parse_, Http_Response &respon_, FastCgiHandler & fastcgi) {
 
     int n;
     int readsize = 0;
@@ -13,7 +13,7 @@ HttpMessageHandler::RecvRequese(HTTPMessageParser &parse_, Http_Response &respon
     }
 
     if (readsize > 0) {
-        parse_.Parse(m_conn, m_Buffer->Data(), readsize);
+        parse_.Parse(m_conn, m_Buffer.Data(), readsize);
     } else {
         return -1;
     }
@@ -24,10 +24,10 @@ HttpMessageHandler::RecvRequese(HTTPMessageParser &parse_, Http_Response &respon
     } else if (n == 0) {
         return -1;
     }
-    return SendResponse(respon_);
+    return SendResponse(respon_ ,fastcgi);
 }
 
-int HttpMessageHandler::SendResponse(Http_Response &respon_) {
+int HttpMessageHandler::SendResponse(Http_Response &respon_, FastCgiHandler & fastcgi) {
     auto c = respon_.Response(m_conn, m_sock);
     if (c == 0) {
         respon_.ActSendfile(m_conn->Getpath(), m_sock.Fd());
@@ -40,8 +40,12 @@ int HttpMessageHandler::SendResponse(Http_Response &respon_) {
     } else {
         if (c == -1) {
             return -1;//错误
-        } else {
+        } else if(c == -2) {
             return 2;  // 注册epollout 事件
+        }
+        else if(c == 3){
+            fastcgi.SendFastCgi(m_conn);
+            fastcgi.ReadFromPHP(m_sock);
         }
     }
     return 0;//短连接

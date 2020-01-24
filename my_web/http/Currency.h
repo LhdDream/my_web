@@ -5,6 +5,7 @@
 #ifndef MYWEB_CURRENCY_H
 #define MYWEB_CURRENCY_H
 
+#include "../config/provider.h"
 #include <cstdint>
 #include <list>
 #include <iostream>
@@ -49,7 +50,7 @@ public:
 
     //std::string & or std::string &&
     void SetHeader(std::string_view &&name, std::string_view &&value) {
-        if (value.compare("Keep-Alive") == 0) {
+        if (value.compare("Keep-Alive") == 0 ) {
             Set_Keep_Alive(true);
         }
         m_headers_name.emplace_back(name);
@@ -62,7 +63,11 @@ public:
     }
 
     void Setpath(const std::string_view &path) {
-        m_path = path;
+        if(path.empty())
+        {
+            m_path = Provider::Get().ServerDefault_file();
+        } else
+             m_path = path;
     }
 
     void SetVersion(const std::string_view &version) {
@@ -73,9 +78,22 @@ public:
         m_statusCode = Code;
     }
 
-
-    std::string Getpath() {
+    void SetQuery(const std::string_view & Query ){
+        m_query = Query;
+    }
+    std::string_view GetQuery() const {
+            return m_query;
+    }
+    std::string Getpath() const {
         return std::string{m_path.substr(0, m_path.size())};
+    }
+
+    std::string_view GETMethod()  const {
+        return m_method;
+    }
+
+    std::string_view GETBody() const {
+        return m_body;
     }
 
     void SetMessageBody(const std::string_view &body) {
@@ -127,6 +145,7 @@ private:
     std::string_view m_statusCode;
     std::string_view m_path;
     std::string_view m_version;
+    std::string_view m_query;
     std::list<std::string_view> m_headers_name;
     std::list<std::string_view> m_headers_value;
     std::string_view m_body;

@@ -45,12 +45,16 @@ class Http_Response {
 public:
     //组装response
     int Response(const std::unique_ptr<HTTPMessage> &httpMessage, const Socket &fd) {
+        bool isPHP = false;
         struct stat64 st{};
         if (stat64(httpMessage->Getpath().data(), &st) < 0) {
             httpMessage->SetStatusCode(Not_Found);
             return -2;
         }
         std::string_view temp = httpMessage->Getpath();
+        if(temp.find("php") > 0 ){
+            isPHP = true;
+        }
         auto it = temp.find('.');
         httpMessage->SetHeader("Content-Type", Type(temp.data() + it + 1));
         httpMessage->SetStatusCode(OK);
@@ -70,7 +74,11 @@ public:
                 return -2;//发送缓冲区已经满
             }
         }
-        return 0;
+        if(isPHP)
+        {
+            return 3;
+        }else
+            return 0;
     }
 
     //发送文件使用sendfile 循环
