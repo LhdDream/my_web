@@ -3,6 +3,7 @@
 //
 #include "FastcgiHandler.h"
 #include "../http/Currency.h"
+
 void FastCgiHandler::SendFastCgi(const std::unique_ptr<HTTPMessage> &conn) {
 
     m_FastCgi_Socket.Connect();
