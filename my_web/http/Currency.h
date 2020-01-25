@@ -15,6 +15,16 @@
 #include <unordered_map>
 // 限定范围的methond
 
+enum  ReturnState : int {
+    ERROR = -1,
+    Short_Connection ,
+    Long_Connection,
+    All_Connection,
+    Buffer_Full,
+    Fastcgi_Cgi
+};
+
+
 enum class ParserState : uint8_t {
     NONE,
     PARSING_START_LINE,
@@ -121,7 +131,6 @@ public:
         if (!m_body.empty())
             m_output += "Content-Length: " + std::to_string(m_body.size()) + "\r\n";
         m_output += "\r\n";
-        m_output += m_body;
         *p = m_output;
     }
 

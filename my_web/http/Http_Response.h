@@ -52,7 +52,7 @@ public:
             return -2;
         }
         std::string_view temp = httpMessage->Getpath();
-        if(temp.find("php") > 0 ){
+        if(auto it = temp.find("php"); it > 0 && it < temp.size()) {
             isPHP = true;
         }
         auto it = temp.find('.');
@@ -67,18 +67,19 @@ public:
         std::string_view p;
 
         httpMessage->ToString(&p);
+
         if (fd.Write(p.data(), p.size(), 0) < 0) {
             if (errno != EAGAIN && errno != EINTR) {
-                return -1;//出现错误关闭
+                return ReturnState::ERROR;//出现错误关闭
             } else {
-                return -2;//发送缓冲区已经满
+                return ReturnState::Buffer_Full;//发送缓冲区已经满
             }
         }
         if(isPHP)
         {
-            return 3;
+            return ReturnState::Fastcgi_Cgi;
         }else
-            return 0;
+            return ReturnState ::All_Connection;
     }
 
     //发送文件使用sendfile 循环
