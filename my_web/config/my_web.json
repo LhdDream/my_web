@@ -3,7 +3,8 @@
     "port": 8080,
     "keep_connection_ms" :  800 ,
     "threads" : 3,
-    "ip"  : "127.0.0.1"
+    "ip"  : "127.0.0.1",
+    "keep_connection_number" : 1024
   },
   "sites":[
     {
@@ -11,9 +12,8 @@
       "default_file": "index.html",
       "fastcgi": [
         {
-            "ip": "127.0.0.1",
             "port": 9000,
-            "extends": "php"
+            "ip": "127.0.0.1"
         }
       ]
     }

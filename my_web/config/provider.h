@@ -46,16 +46,19 @@ public:
     int FastCgiPort() const {
         return m_FastCgi_Port;
     }
-
+    int KeepConnectionNumber() const {
+        return m_keep_connection_number;
+    }
 private:
     int m_port = 8080;
     int m_keep_connection_ms = 800;
+    int m_keep_connection_number = 2048 ; // 多少用户开启定时器淘汰措施
     unsigned int m_threads = 4;
     std::string m_ip = "127.0.0.1";
     std::string m_wwwroot = "";
     std::string m_default_file = "index.html";
     std::string m_FastCgi_ip = "127.0.0.1";
-    int m_FastCgi_Port = 9000;
+    unsigned int m_FastCgi_Port = 9000;
 };
 
 #endif
