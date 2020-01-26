@@ -79,7 +79,7 @@ char * FastCgiHandler::ReadFromPHP(int & size) {
     char * cont = nullptr;
     int contentLen = 0 ,ret =  0;
     FcgiHeader responderHeader{};
-    auto content = std::make_unique<char [] >(65535);
+    auto content = std::make_unique<char [] >(655350);
 
     char tmp[8];    //用来暂存padding字节的
     //先将头部8个字节度出来
