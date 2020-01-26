@@ -6,7 +6,7 @@
 #define MY_WEB_FASTCGIHANDLER_H
 
 #include "../config/provider.h"
-#include "Currency.h"
+#include  "Fastcgi.h"
 #include "../include/Socket.h"
 #include <map>
 
@@ -16,13 +16,27 @@ class HTTPMessage;
 class FastCgiHandler{
 public:
     explicit  FastCgiHandler() {
-        m_FastCgi_Socket.CreateFd(Provider::Get().FastCgiIP().c_str(),Provider::Get().FastCgiPort());
+
 
     }
     ~FastCgiHandler()  = default;
+
+
+
     void SendFastCgi(const std::unique_ptr<HTTPMessage> &conn);
-    void ReadFromPHP(Socket &  sockfd);
+    char * ReadFromPHP(int & size);
 private:
+    std::unique_ptr<FcgiHeader> MakeHeader(int type,int requestId,int contentLength,int paddingLength);
+    std::unique_ptr<FcgiBeginRequestBody> MakeBeginRequestBody(int role,bool keepConnection);
+    std::unique_ptr<unsigned  char []> MakeParam(int name_size , int value_size , const char * name ,const char * value);
+    std::unique_ptr<unsigned  char []> MakeParam(std::string name,std::string value);
+    bool SendEndRequestRecord();
+    void SendBeginRequestBody();
+    char * GetHtmlFromContent( char * content);
+    static char * FindHtmlStart( char * content);
+
+
+
     Socket m_FastCgi_Socket;
     Buffer m_buffer;
 };
