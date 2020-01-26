@@ -72,6 +72,8 @@ public:
         m_method = methond;
     }
 
+
+
     void Setpath(const std::string_view &path) {
         if(path.empty())
         {
@@ -91,19 +93,19 @@ public:
     void SetQuery(const std::string_view & Query ){
         m_query = Query;
     }
-    std::string_view GetQuery() const {
-            return m_query;
+    std::string GetQuery() const {
+            return std::string{m_query.substr(0,m_query.size())};
     }
     std::string Getpath() const {
         return std::string{m_path.substr(0, m_path.size())};
     }
 
-    std::string_view GETMethod()  const {
-        return m_method;
+    std::string GETMethod()  const {
+        return std::string{m_method.substr(0, m_method.size())};
     }
 
-    std::string_view GETBody() const {
-        return m_body;
+    std::string GETBody() const {
+        return std::string{m_body.substr(0,m_body.size())};
     }
 
     void SetMessageBody(const std::string_view &body) {
@@ -158,6 +160,10 @@ private:
     std::list<std::string_view> m_headers_name;
     std::list<std::string_view> m_headers_value;
     std::string_view m_body;
+
+
+
+
     std::string m_output;
 
 };

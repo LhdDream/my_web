@@ -11,7 +11,6 @@
 #include "Http_Response.h"
 #include "Http_Request.h"
 #include "../include/Socket.h"
-#include "../fastcgi/FastcgiHandler.h"
 #include <thread>
 
 
@@ -28,9 +27,9 @@ public:
             m_Buffer() {
     }
 
-    int RecvRequese(HTTPMessageParser &parse_, Http_Response &respon_, FastCgiHandler & fastcgi);
+    int RecvRequese(HTTPMessageParser &parse_, Http_Response &respon_);
 
-    int SendResponse(Http_Response &respon_, FastCgiHandler & fastcgi);
+    int SendResponse(Http_Response &respon_);
 
     void Clear() {
         m_Buffer.Reset();
