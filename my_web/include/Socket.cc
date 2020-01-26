@@ -47,5 +47,10 @@ int Socket::Write(const void *buffer, int length, int flags) const {
 }
 
 int  Socket::Connect() {
+    int opts = fcntl(m_sockfd,F_GETFL);
+
+    opts ^= O_NONBLOCK;
+
+    fcntl(m_sockfd,F_SETFL,opts);
     return ::connect(m_sockfd, reinterpret_cast<const struct sockaddr *> (&m_address), sizeof(m_address));
 }
