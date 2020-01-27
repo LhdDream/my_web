@@ -5,9 +5,9 @@
 #ifndef MY_WEB_FASTCGIHANDLER_H
 #define MY_WEB_FASTCGIHANDLER_H
 
-#include "../config/provider.h"
+#include "Provider.h"
 #include  "Fastcgi.h"
-#include "../include/Socket.h"
+#include "net/Socket.h"
 #include <map>
 
 class HTTPMessage;
