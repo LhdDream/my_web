@@ -1,8 +1,10 @@
 //
 // Created by kiosk on 2019/12/9.
 //
-#include <functional>
+
 #include <chrono>
+#include "../config/provider.h"
+#include <functional>
 #include "Priority_queue.h"
 
 #ifndef MYWEB_TIMER_H
@@ -19,21 +21,22 @@ public:
     ~Timer() = default;
 
     void AddTimer(size_t fd) {
-        m_queue.Push(fd, GetSteadyClockMs() + 800);
+        m_queue.Push(fd, GetSteadyClockMs() + Provider::Get().User_Keep_Connection());
         //现在时间
     }
 
     void RemoveTimer() {
         //判断有没有超时
-        if (m_queue.Empty()) {
+        //如果小于2048用户不启用
+        if (m_queue.GetSize() <= Provider::Get().KeepConnectionNumber()) {
             return;
         } else {
-                auto &&obj = m_queue.Top();
-                uint64_t now_time = GetSteadyClockMs();
-                if (obj.second < now_time) {
-                    m_Callback(obj.first);
-                    m_queue.Pop();
-                }
+            auto &&obj = m_queue.Top();
+            uint64_t now_time = GetSteadyClockMs();
+            if (obj.second < now_time) {
+                m_Callback(obj.first);
+                m_queue.Pop();
+            }
         }
     }
 

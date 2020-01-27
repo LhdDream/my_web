@@ -4,19 +4,22 @@
 
 #ifndef MYWEB_THREADS_H
 #define MYWEB_THREADS_H
+
 #include <vector>
 #include <thread>
 #include <utility>
 #include "../include/HttpServer.h"
-
+#include "../config/provider.h"
 thread_local httpserver Server;
+
 class Proxy {
 public:
     explicit Proxy() {
-        thcont_.reserve(3);
-        for(int i = 0 ; i < 3 ; i++)
-        {
-            thcont_.emplace_back( [] () {Server.Start();});
+        Provider::Get();
+        chdir(Provider::Get().ServerWwwRoot().c_str());
+        thcont_.reserve(Provider::Get().ThreadsNumber());
+        for (int i = 0; i < Provider::Get().ThreadsNumber(); i++) {
+            thcont_.emplace_back([]() { Server.Start(); });
         }
         Server.Start();
     }
@@ -28,6 +31,7 @@ public:
 
         return 0;
     }
+
 private:
     std::vector<std::thread> thcont_;
 };
