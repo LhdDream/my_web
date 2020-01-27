@@ -5,7 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(include http util fastcgi config)
 
-aux_source_directory(include SOURCE_INCLUDE)
+aux_source_directory(include/net SOURCE_NET)
+aux_source_directory(include/core SOURCE_CORE)
 aux_source_directory(http SOURCE_HTTP)
 aux_source_directory(util SOURCE_UTIL)
 aux_source_directory(fastcgi SOURCE_CGI)
@@ -16,7 +17,8 @@ add_definitions("--std=c++17")
 add_definitions("-g")
 add_definitions("-O3")
 
-add_executable(my_web main.cpp ${SOURCE_INCLUDE}
+add_executable(my_web main.cpp ${SOURCE_NET}
+        ${SOURCE_CORE}
         ${SOURCE_HTTP}
         ${SOURCE_UTIL}
         ${SOURCE_CGI}
