@@ -7,10 +7,10 @@
 //对于http的接受和发送的操作
 //同时也是每一个httpclient连接
 //在这里也是对于每一个用户的处理
-#include "../include/Buffer.h"
+#include "core/Buffer.h"
 #include "Http_Response.h"
 #include "Http_Request.h"
-#include "../include/Socket.h"
+#include "net/Socket.h"
 #include <thread>
 
 

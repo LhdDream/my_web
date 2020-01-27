@@ -5,7 +5,7 @@
 #ifndef MYWEB_CURRENCY_H
 #define MYWEB_CURRENCY_H
 
-#include "../config/provider.h"
+#include "Provider.h"
 #include <cstdint>
 #include <list>
 #include <iostream>

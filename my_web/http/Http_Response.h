@@ -5,17 +5,18 @@
 #ifndef MYWEB_HTTP_RESPONSE_H
 #define MYWEB_HTTP_RESPONSE_H
 
+#include "Currency.h"
+#include "net/Socket.h"
+#include "../fastcgi/FastcgiHandler.h"
 #include <cstdint>
 #include <climits>
-#include "Currency.h"
 #include <fcntl.h>
 #include <functional>
 #include <sys/sendfile.h>
-#include "../include/Socket.h"
 #include <sys/stat.h>
 #include <unistd.h>
 #include <unordered_map>
-#include "../fastcgi/FastcgiHandler.h"
+
 
 constexpr std::string_view html = "text/html";
 constexpr std::string_view avi = "video/x-msvideo";
