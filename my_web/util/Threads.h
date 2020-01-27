@@ -5,11 +5,12 @@
 #ifndef MYWEB_THREADS_H
 #define MYWEB_THREADS_H
 
+#include "core/HttpServer.h"
+#include "../config/Provider.h"
 #include <vector>
 #include <thread>
 #include <utility>
-#include "../include/HttpServer.h"
-#include "../config/provider.h"
+
 thread_local httpserver Server;
 
 class Proxy {
