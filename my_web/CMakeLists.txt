@@ -21,4 +21,4 @@ add_executable(my_web main.cpp ${SOURCE_INCLUDE}
         ${SOURCE_UTIL}
         ${SOURCE_CGI}
         ${SOURCE_CONFIG}
-        fastcgi/Fastcgi.h)
+        )
