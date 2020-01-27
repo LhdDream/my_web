@@ -89,7 +89,7 @@ char * FastCgiHandler::ReadFromPHP(int & size) {
         {
             //获取内容长度
             contentLen = (responderHeader.contentLengthB1 << 8) + (responderHeader.contentLengthB0);
-            bzero(content.get(),65535);
+            bzero(content.get(),655350);
             //读取获取的内容
             ret = recv(m_FastCgi_Socket.Fd(),content.get(),contentLen,0);
             assert(ret == contentLen);
@@ -104,7 +104,7 @@ char * FastCgiHandler::ReadFromPHP(int & size) {
         else if(responderHeader.type == FcgiType::k_Stderr)
         {
             contentLen = (responderHeader.contentLengthB1 << 8) + (responderHeader.contentLengthB0);
-            bzero(content.get(),65535);
+            bzero(content.get(),655350);
 
             ret = recv(m_FastCgi_Socket.Fd(),content.get(),contentLen,0);
             assert(ret == contentLen);
