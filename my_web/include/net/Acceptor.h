@@ -5,9 +5,9 @@
 #ifndef MYWEB_ACCEPTOR_H
 #define MYWEB_ACCEPTOR_H
 
+#include "Socket.h"
 #include <fcntl.h>
 #include <functional>
-#include "Socket.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 

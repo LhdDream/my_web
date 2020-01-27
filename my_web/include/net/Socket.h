@@ -1,8 +1,8 @@
 #ifndef MYWEB_SOCKET_H
 #define MYWEB_SOCKET_H
 
+#include "core/Buffer.h"
 #include <arpa/inet.h>
-#include "Buffer.h"
 #include <cstring>
 #include <netinet/in.h>
 #include <netinet/tcp.h>

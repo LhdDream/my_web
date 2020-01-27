@@ -5,10 +5,10 @@
 #ifndef MYWEB_CHANNEL_H
 #define MYWEB_CHANNEL_H
 
-#include "Epoll.h"
-#include "Buffer.h"
-#include "../http/Http_Msg_Handler.h"
-#include "../util/timer.h"
+#include "net/Epoll.h"
+#include "core/Buffer.h"
+#include "../../http/Http_Msg_Handler.h"
+#include "../../util/Timer.h"
 #include <memory>
 #include <unordered_map>
 #include <utility>
