@@ -17,7 +17,7 @@ add_definitions("--std=c++17")
 add_definitions("-g")
 add_definitions("-O3")
 
-add_executable(my_web main.cpp ${SOURCE_NET}
+add_executable(my_web main.cc ${SOURCE_NET}
         ${SOURCE_CORE}
         ${SOURCE_HTTP}
         ${SOURCE_UTIL}
