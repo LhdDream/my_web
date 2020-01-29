@@ -43,11 +43,20 @@
 
 `ab -n 500000 -c 1 http:127.0.0.1:<端口号>/`
 
+
 完成时间(越少越好):
+
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab1.png)
+
 
 每秒完成请求数(越多越好):
 
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab2.png)
+
 每个请求花费的时间（越少越好）：
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab3.png)
 
 百分比请求完成时间（越少越好）：
 
@@ -67,9 +76,15 @@
 
 完成时间(越少越好):
 
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab4.png)
+
 每秒完成请求数(越多越好):
 
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab5.png)
+
 每个请求花费的时间（越少越好）：
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab6.png)
 
 百分比请求完成时间（越少越好）：
 
@@ -89,14 +104,40 @@
 单客户端测试
 
 `Nginx结果`
-`My_Web结果`
-10个客户端测试
-`Nginx结果`
-`My_Web结果`
-3000个客户端测试
-`Nginx结果`
+
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web1a.png)
+
+
 `My_Web结果`
 
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web2a.png)
+
+10个客户端测试
+
+`Nginx结果`
+
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web1b.png)
+
+
+`My_Web结果`
+
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web2b.png)
+
+3000个客户端测试
+
+
+`Nginx结果`
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web1c.png)
+
+
+`My_Web结果`
+
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web2c.png)
 
 # 安装和运行
 
