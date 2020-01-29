@@ -45,9 +45,13 @@
 
 完成时间(越少越好):
 
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab1.png)
+
 每秒完成请求数(越多越好):
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab2.png)
 
 每个请求花费的时间（越少越好）：
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab3.png)
 
 百分比请求完成时间（越少越好）：
 
@@ -66,10 +70,13 @@
 `
 
 完成时间(越少越好):
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab4.png)
 
 每秒完成请求数(越多越好):
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab5.png)
 
 每个请求花费的时间（越少越好）：
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/ab6.png)
 
 百分比请求完成时间（越少越好）：
 
