@@ -92,12 +92,17 @@
 ![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web1a.png)
 `My_Web结果`
 ![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web2a.png)
+
 10个客户端测试
+
 `Nginx结果`
 ![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web1b.png)
 `My_Web结果`
 ![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web2b.png)
+
 3000个客户端测试
+
+
 `Nginx结果`
 ![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web1c.png)
 `My_Web结果`
