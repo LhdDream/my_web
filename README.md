@@ -4,7 +4,7 @@
 
 | Part Ⅰ   | Part Ⅱ     | Part Ⅲ   | Part Ⅳ   | Part V   |
 | -------- | ---------- | -------- | -------- | -------- |
-| 并发模型 | 改进和测试 | 项目历史 | 项目目的 | 自我反思 |
+|   [并发模型](https://github.com/LhdDream/my_web/blob/master/my_web/doc/Concurrent_Model.md)| [改进和测试](https://github.com/LhdDream/my_web/blob/master/my_web/doc/Improved_Testing.md) | [项目历史](https://github.com/LhdDream/my_web/blob/master/my_web/doc/History.md) | [项目目的](https://github.com/LhdDream/my_web/blob/master/my_web/doc/Purpose.md) | [自我反思](https://github.com/LhdDream/my_web/blob/master/my_web/doc/Reflection.md) |
 
 # 特性:
 
@@ -63,9 +63,9 @@
 
 | 测试项目      | 90%(ms) | 99%(ms) | 100%(ms) |
 | ------------- | ------- | ------- | -------- |
-| nginx/1.16.1  | 0       | 0       | 40       |
+| Nginx/1.16.1  | 0       | 0       | 40       |
 | Apache/2.4.41 | 0       | 0       | 213      |
-| My_web        | 0       | 0       | 10       |
+| My_Web        | 0       | 0       | 10       |
 
 
 # 多客户端测试
@@ -90,9 +90,9 @@
 
 | 测试项目      | 90%(ms) | 99%(ms) | 100%(ms) |
 | ------------- | ------- | ------- | -------- |
-| nginx/1.16.1  | 30      | 39      | 1247     |
+| Nginx/1.16.1  | 30      | 39      | 1247     |
 | Apache/2.4.41 | 33      | 244     | 1475     |
-| My_web        | 29      | 37      | 1045     |
+| My_Web        | 29      | 37      | 1045     |
 
 # Webbenchv1.5
 
