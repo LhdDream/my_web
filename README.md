@@ -2,9 +2,9 @@
 
 本项目是运行在Linux平台上的Web服务器,它由C++17编写,目前支持处理HTTP/1.1的静态GET请求以及FastCGI请求,支持HTTP长连接.
 
-| Part Ⅰ   | Part Ⅱ     | Part Ⅲ   | Part Ⅳ   | Part V   |
-| -------- | ---------- | -------- | -------- | -------- |
-|   [并发模型](https://github.com/LhdDream/my_web/blob/master/my_web/doc/Concurrent_Model.md)| [改进和测试](https://github.com/LhdDream/my_web/blob/master/my_web/doc/Improved_Testing.md) | [项目历史](https://github.com/LhdDream/my_web/blob/master/my_web/doc/History.md) | [项目目的](https://github.com/LhdDream/my_web/blob/master/my_web/doc/Purpose.md) | [自我反思](https://github.com/LhdDream/my_web/blob/master/my_web/doc/Reflection.md) |
+| Part Ⅰ   | Part Ⅱ     | Part Ⅲ   | Part Ⅳ   |
+| -------- | ---------- | -------- | --------  |
+|   [并发模型](https://github.com/LhdDream/my_web/blob/master/my_web/doc/Concurrent_Model.md)|   [项目历史](https://github.com/LhdDream/my_web/blob/master/my_web/doc/History.md) | [项目目的](https://github.com/LhdDream/my_web/blob/master/my_web/doc/Purpose.md) | [自我反思](https://github.com/LhdDream/my_web/blob/master/my_web/doc/Reflection.md) |
 
 # 特性:
 
