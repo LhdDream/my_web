@@ -16,10 +16,7 @@ enum EpollEventType {
     KWriteable = ::EPOLLOUT,
     KET = ::EPOLLET,
     KClose = ::EPOLLRDHUP
-}; // 使用enum class 来防止命名污染
-//如果使用enum class 不会隐式int /float 类型，禁止
-//底层使用long
-//
+}; 
 
 //对于强类型进行位操作,需要重载 |
 constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET); }
