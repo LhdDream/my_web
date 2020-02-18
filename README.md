@@ -27,7 +27,8 @@
 
   - CPU: Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz
   -  内存: 12GiB
-  -  网卡:	RealTek RTL-8169 Gigabit Ethernet driver 1000M
+  -  网卡: RealTek RTL-8169 Gigabit Ethernet driver 1000M
+  -  磁盘: TOSHIBA MQ01ABF050(5400转/秒)
   - 操作系统: Manjaro Linux
 
   ### 测试工具
@@ -38,7 +39,7 @@
 ### Ab2.3
 
 单客户端测试
- 
+
  测试命令:
 
 `ab -n 500000 -c 1 http:127.0.0.1:<端口号>/`
