@@ -7,9 +7,9 @@ void Acceptor::Listen() {
     m_acceptSocket.Listen();
 }
 
-void Acceptor::HandleRead() //套接字可读的状态
+void Acceptor::HandleRead()  //套接字可读的状态
 {
-    //ET使用accept来进行
+    // ET使用accept来进行
     while (true) {
         int connfd = m_acceptSocket.Accept();
         if (connfd > 0) {

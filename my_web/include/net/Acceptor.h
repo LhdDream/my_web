@@ -5,27 +5,25 @@
 #ifndef MYWEB_ACCEPTOR_H
 #define MYWEB_ACCEPTOR_H
 
-#include "Socket.h"
 #include <fcntl.h>
-#include <functional>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
+#include <functional>
 
-class Acceptor // socket accpet 连接的接口
+#include "Socket.h"
+
+class Acceptor  // socket accpet 连接的接口
 {
     friend class httpserver;
 
 public:
-    using ConnCallback =  std::function<void(int sockfd)>;
+    using ConnCallback = std::function<void(int sockfd)>;
 
     explicit Acceptor() : m_acceptSocket(), m_idlefd(::open("/dev/null", O_RDONLY | O_CLOEXEC)) {
-
-
     }
 
-    void Listen();//初始化listen
-
+    void Listen();  //初始化listen
 
     void HandleRead();
 
@@ -33,14 +31,14 @@ public:
         return m_acceptSocket.Fd();
     }
 
-    void SetCallback(ConnCallback &&cb) {
+    void SetCallback(ConnCallback&& cb) {
         p = std::move(cb);
     }
 
 private:
-    //C++ 中根据对象顺序进行初始化
+    // C++ 中根据对象顺序进行初始化
     Socket m_acceptSocket;
-    int m_idlefd; // 处理套接字的
+    int m_idlefd;  // 处理套接字的
     ConnCallback p;
-};// TCP 如果连接上之后进行回调通知使用者，内部类
-#endif //MYWEB_ACCEPTOR_H
+};      // TCP 如果连接上之后进行回调通知使用者，内部类
+#endif  // MYWEB_ACCEPTOR_H

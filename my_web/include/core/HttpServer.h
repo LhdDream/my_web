@@ -5,15 +5,14 @@
 #ifndef MYWEB_HTTPSERVER_H
 #define MYWEB_HTTPSERVER_H
 
-#include "net/Acceptor.h"
-#include "net/Epoll.h"
-#include "UserSet.h"
-#include "../../config/Provider.h"
-#include "../../util/Timer.h"
 #include <csignal>
 #include <thread>
 
-
+#include "../../config/Provider.h"
+#include "../../util/Timer.h"
+#include "UserSet.h"
+#include "net/Acceptor.h"
+#include "net/Epoll.h"
 
 class httpserver {
 public:
@@ -24,10 +23,10 @@ public:
     void Start();
 
 private:
-    Acceptor m_acceptor; // 独占式的
+    Acceptor m_acceptor;  // 独占式的
     Epoll m_epoll;
-    User_set m_users; // 所有用户
+    User_set m_users;  // 所有用户
     Timer m_timer;
 };
 
-#endif //MYWEB_HTTPSERVER_H
+#endif  // MYWEB_HTTPSERVER_H
