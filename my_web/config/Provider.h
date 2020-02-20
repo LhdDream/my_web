@@ -18,7 +18,7 @@ protected:
 public:
     int ServerPort() const { return m_port; }
 
-    int ThreadsNumber() const { return m_threads; }
+    unsigned int ThreadsNumber() const { return m_threads; }
 
     int User_Keep_Connection() const { return m_keep_connection_ms; }
 
@@ -43,7 +43,7 @@ public:
         return m_FastCgi_ip;
     }
 
-     int  FastCgiPort() const {
+     unsigned int  FastCgiPort() const {
         return m_FastCgi_Port;
     }
     int KeepConnectionNumber() const {
@@ -58,7 +58,7 @@ private:
     std::string m_wwwroot = "";
     std::string m_default_file = "index.html";
     std::string m_FastCgi_ip = "127.0.0.1";
-    int m_FastCgi_Port = 9000;
+    unsigned int m_FastCgi_Port = 9000;
 };
 
 #endif
