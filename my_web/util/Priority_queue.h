@@ -71,7 +71,7 @@ private:
 
     void Heap_Down(size_t index) {
         while (index < m_heap.size()) {
-            auto &&child = Lchild(index);
+            auto &&child = Leftchild(index);
             //超出堆的范围
             if (child >= m_heap.size()) {
                 break;
@@ -100,7 +100,7 @@ private:
         return (index - 1) / 2;
     }
 
-    inline size_t Lchild(size_t index) const {
+    inline size_t Leftchild(size_t index) const {
         return index * 2 + 1;
     }
 

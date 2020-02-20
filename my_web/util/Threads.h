@@ -18,23 +18,21 @@ public:
     explicit Proxy() {
         Provider::Get();
         chdir(Provider::Get().ServerWwwRoot().c_str());
-        thcont_.reserve(Provider::Get().ThreadsNumber());
+        m_thread.reserve(Provider::Get().ThreadsNumber());
         for (int i = 0; i < Provider::Get().ThreadsNumber(); i++) {
-            thcont_.emplace_back([]() { Server.Start(); });
+            m_thread.emplace_back([]() { Server.Start(); });
         }
         Server.Start();
     }
 
-    int wait() {
-        for (auto &i: thcont_) {
+    void  Wait() {
+        for (auto &i: m_thread) {
             i.join();
         }
-
-        return 0;
     }
 
 private:
-    std::vector<std::thread> thcont_;
+    std::vector<std::thread> m_thread;
 };
 
 #endif //MYWEB_THREADS_H
