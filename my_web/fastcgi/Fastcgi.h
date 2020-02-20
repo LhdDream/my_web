@@ -21,7 +21,8 @@ struct FcgiHeader {
     unsigned char reserved;
 };
 
-enum FcgiType {
+enum FcgiType
+{
     k_BeginRequest = 1,
     k_AbortRequest = 2,
     k_EndRequest = 3,
@@ -41,22 +42,20 @@ struct FcgiPreread {
     int paddingLength;
 };
 
-enum FcgiProtocolStatus : uint8_t {
+enum FcgiProtocolStatus : uint8_t
+{
     k_RequestComplete = 0,
     k_CantMultiplexConnection = 1,
     k_Overloaded = 2,
     k_UnknownRole = 3,
 };
 
-
-
-enum FcgiRole : uint16_t {
+enum FcgiRole : uint16_t
+{
     k_Responder = 1,
     k_Authorizer = 2,
     k_Filter = 3,
 };
-
-
 
 struct FcgiBeginRequestBody {
     unsigned char roleB1;
@@ -85,5 +84,4 @@ struct FcgiParamsBody {
     unsigned char valueLengthB0;
 };
 
-
-#endif //MY_WEB_FASTCGI_H
+#endif  // MY_WEB_FASTCGI_H
