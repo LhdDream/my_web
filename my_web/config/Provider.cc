@@ -24,7 +24,7 @@ Provider::Provider() {
         m_wwwroot = i["wwwroot"].GetString();
         m_default_file = i["default_file"].GetString();
         for (const auto &p : i["fastcgi"].GetArray()) {
-            m_FastCgi_Port = p["port"].GetInt();
+            m_FastCgi_Port = p["port"].GetUint();
             m_FastCgi_ip = p["ip"].GetString();
         }
     }
