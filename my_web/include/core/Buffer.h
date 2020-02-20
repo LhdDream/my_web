@@ -34,14 +34,14 @@ public:
         return m_data.data() + m_write_pos;
     }
 
-    void WriteOffest_Move(int len) {
+    void WriteOffset_Move(int len) {
         m_write_pos += len;
     }
 
     void *BeginRead() {
         return m_data.data() + m_read_pos;
     }
-    void ReadOffest_Move(int len){
+    void ReadOffset_Move(int len){
         m_read_pos += len;
     }
     std::vector<char> &Data() {
@@ -62,7 +62,7 @@ public:
             ReSize(len);
         }
         std::memcpy(m_data.data()+m_write_pos,src,len);
-        WriteOffest_Move(len);
+        WriteOffset_Move(len);
         return len;
     }
 private:

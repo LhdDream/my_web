@@ -46,7 +46,7 @@ class User_set {
 
 public:
     explicit User_set(Epoll &epoll) : m_epoll(epoll),
-                                      m_respon{},
+                                      m_response{},
                                       m_parse{} {
     }
 
@@ -64,7 +64,7 @@ public:
 
 private:
     Epoll &m_epoll;
-    Http_Response m_respon; // 回应
+    Http_Response m_response; // 回应
     HTTPMessageParser m_parse; //解析
     //唯一的
     //所有的fd和http_msg_handler 作为一个对象池

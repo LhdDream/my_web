@@ -8,10 +8,10 @@
 
 httpserver::httpserver() :
         m_acceptor{},
-        m_Epoll(), m_users(m_Epoll) {
+        m_epoll(), m_users(m_epoll) {
     m_acceptor.SetCallback([&](int fd) {
         m_users.AddUser(fd);
-        m_Epoll.Add_Channel({fd, Readable()});
+        m_epoll.Add_Channel({fd, Readable()});
         m_timer.AddTimer(fd);
     });
     m_timer.SetCallback([&](int fd) {
@@ -24,11 +24,11 @@ void httpserver::Start() {
     m_acceptor.m_acceptSocket.SetResueport(true);
     m_acceptor.m_acceptSocket.BindAddress();
     m_acceptor.Listen();
-    m_Epoll.Create_fd();
-    m_Epoll.Add_Channel({m_acceptor.Fd(), Listen_()});
+    m_epoll.Create_fd();
+    m_epoll.Add_Channel({m_acceptor.Fd(), Listen_()});
     EpollEventResult event_;
     while (true) {
-        auto user_number = m_Epoll.Wait(event_);
+        auto user_number = m_epoll.Wait(event_);
         for (int i = 0; i < user_number; i++) {
             auto &&it = event_[i];
             if (it.EventFd() == m_acceptor.Fd()) {

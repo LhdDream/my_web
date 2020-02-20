@@ -25,7 +25,7 @@ public:
 
 private:
     Acceptor m_acceptor; // 独占式的
-    Epoll m_Epoll;
+    Epoll m_epoll;
     User_set m_users; // 所有用户
     Timer m_timer;
 };
