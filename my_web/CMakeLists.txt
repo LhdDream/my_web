@@ -3,7 +3,7 @@ project(my_web)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories(include http util fastcgi config )
+include_directories(include http util fastcgi config)
 
 aux_source_directory(include/net SOURCE_NET)
 aux_source_directory(include/core SOURCE_CORE)
