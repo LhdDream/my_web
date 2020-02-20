@@ -6,30 +6,29 @@
 #define MY_WEB_PRIORITY_QUEUE_H
 //
 //使用一个hash map 和一个vector来进行实现
-#include <utility>
 #include <unordered_map>
+#include <utility>
 #include <vector>
-
 
 class Priority_queue {
 public:
-    using pair  = std::pair<size_t, uint64_t>;
+    using pair = std::pair<size_t, uint64_t>;
 
     Priority_queue() = default;
 
-    Priority_queue &operator=(const Priority_queue &other) = delete;
+    Priority_queue& operator=(const Priority_queue& other) = delete;
 
     bool Contains(size_t key) const {
         return m_pointer.find(key) != m_pointer.end();
     }
 
-   size_t GetSize () const {
+    size_t GetSize() const {
         return m_heap.size();
     }
-    const pair &Top() const {
+
+    const pair& Top() const {
         return m_heap.front();
     }
-
 
     void Push(size_t key, uint64_t value) {
         if (Contains(key)) {
@@ -44,7 +43,6 @@ public:
             m_heap.emplace_back(key, value);
             Heap_Up(index);
         }
-
     }
 
     void Pop() {
@@ -55,13 +53,14 @@ public:
         m_pointer[m_heap.front().first] = index;
         Heap_Down(index);
     }
+
 private:
     //根据时间排序
     void Heap_Up(size_t index) {
         while (index != m_root) {
-            auto &&parent = Parent(index);
-            auto &&value = m_heap.at(index).second;
-            auto &&parent_value = m_heap.at(parent).second;
+            auto&& parent = Parent(index);
+            auto&& value = m_heap.at(index).second;
+            auto&& parent_value = m_heap.at(parent).second;
             if (parent_value > value)
                 break;
             Swap(index, parent);
@@ -71,7 +70,7 @@ private:
 
     void Heap_Down(size_t index) {
         while (index < m_heap.size()) {
-            auto &&child = Leftchild(index);
+            auto&& child = Leftchild(index);
             //超出堆的范围
             if (child >= m_heap.size()) {
                 break;
@@ -89,8 +88,8 @@ private:
 
     //堆中元素的交换
     void Swap(size_t first, size_t second) {
-        auto &&pair_first = m_heap.at(first);
-        auto &&pair_second = m_heap.at(second);
+        auto&& pair_first = m_heap.at(first);
+        auto&& pair_second = m_heap.at(second);
         m_pointer[pair_first.first] = second;
         m_pointer[pair_second.first] = first;
         std::swap(m_heap[first], m_heap[second]);
@@ -106,7 +105,7 @@ private:
 
     std::vector<pair> m_heap;
     std::unordered_map<size_t, size_t> m_pointer;
-    static constexpr size_t m_root = 0;// 堆的根为0
+    static constexpr size_t m_root = 0;  // 堆的根为0
 };
 
-#endif //MY_WEB_PRIORITY_QUEUE_H
+#endif  // MY_WEB_PRIORITY_QUEUE_H

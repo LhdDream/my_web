@@ -11,26 +11,21 @@
 
 class Logger::Impl {
 public:
-
     Impl();
 
     ~Impl();
 
+    std::ostringstream& info();
 
-    std::ostringstream &info();
-
-
-    static void init(const std::string &filename, bool append);
+    static void init(const std::string& filename, bool append);
 
     void flush();
 
-    std::ostringstream &getStream();
+    std::ostringstream& getStream();
 
     void prefixTimestamp();
 
 private:
-
-
     static std::string m_timestampSeparator;
 
     static std::ofstream m_fout;
@@ -40,11 +35,9 @@ private:
     std::ostringstream m_oss;
 };
 
-
 std::string Logger::Impl::m_timestampSeparator = ": ";
 
 std::ofstream Logger::Impl::m_fout;
-
 
 // Default streams
 
@@ -60,13 +53,12 @@ Logger::Impl::~Impl() {
     Logger::Impl::m_mutex.unlock();
 }
 
-
-std::ostringstream &Logger::Impl::getStream() {
+std::ostringstream& Logger::Impl::getStream() {
     Impl::prefixTimestamp();
-    m_oss << "Debug<>" << " ";
+    m_oss << "Debug<>"
+          << " ";
     return m_oss;
 }
-
 
 void Logger::Impl::prefixTimestamp() {
     std::string timeStr;
@@ -94,7 +86,7 @@ void Logger::Impl::flush() {
     stream->flush();
 }
 
-void Logger::Impl::init(const std::string &filename, bool append) {
+void Logger::Impl::init(const std::string& filename, bool append) {
     if (!filename.empty()) {
         Impl::m_fout.open(filename, append ? std::ofstream::out | std::ofstream::app : std::ofstream::out);
         if (!Impl::m_fout.is_open()) {
@@ -103,22 +95,19 @@ void Logger::Impl::init(const std::string &filename, bool append) {
     }
 }
 
-std::ostringstream &Logger::Impl::info() {
+std::ostringstream& Logger::Impl::info() {
     return getStream();
 }
 
-Logger::Logger()
-        : m_impl(new Logger::Impl) {
+Logger::Logger() : m_impl(new Logger::Impl) {
 }
 
-void Logger::init(const std::string &filename, bool append) {
+void Logger::init(const std::string& filename, bool append) {
     Impl::init(filename, append);
 }
 
-
-std::ostringstream &Logger::info() {
+std::ostringstream& Logger::info() {
     return m_impl->info();
 }
 
 Logger::~Logger() = default;
-

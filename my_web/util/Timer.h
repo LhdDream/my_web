@@ -1,11 +1,11 @@
 //
 // Created by kiosk on 2019/12/9.
 //
-#include "../config/Provider.h"
-#include "Priority_queue.h"
 #include <chrono>
 #include <functional>
 
+#include "../config/Provider.h"
+#include "Priority_queue.h"
 
 #ifndef MYWEB_TIMER_H
 #define MYWEB_TIMER_H
@@ -31,7 +31,7 @@ public:
         if (m_queue.GetSize() <= Provider::Get().KeepConnectionNumber()) {
             return;
         } else {
-            auto &&obj = m_queue.Top();
+            auto&& obj = m_queue.Top();
             uint64_t now_time = GetSteadyClockMs();
             if (obj.second < now_time) {
                 m_Callback(obj.first);
@@ -40,7 +40,7 @@ public:
         }
     }
 
-    void SetCallback(Callback &&c) {
+    void SetCallback(Callback&& c) {
         m_Callback = std::move(c);
     }
 
@@ -55,4 +55,4 @@ private:
     Priority_queue m_queue;
 };
 
-#endif //MYWEB_TIMER_H
+#endif  // MYWEB_TIMER_H
