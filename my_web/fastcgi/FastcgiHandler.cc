@@ -32,7 +32,7 @@ void FastCgiHandler::SendFastCgi(const std::unique_ptr<HTTPMessage> &conn) {
     auto bytes = m_buffer.Write(head.get(), sizeof(*head));
     bytes += m_buffer.Write(body.get(),length);
     m_FastCgi_Socket.Write(m_buffer.BeginRead(),bytes);
-    m_buffer.ReadOffest_Move(bytes);
+    m_buffer.ReadOffset_Move(bytes);
     bytes = 0;
 
     val = conn->GETMethod();
@@ -42,7 +42,7 @@ void FastCgiHandler::SendFastCgi(const std::unique_ptr<HTTPMessage> &conn) {
     bytes +=  m_buffer.Write(head.get(), sizeof(*head));
     bytes += m_buffer.Write(body.get(),length);
     m_FastCgi_Socket.Write(m_buffer.BeginRead(),bytes);
-    m_buffer.ReadOffest_Move(bytes);
+    m_buffer.ReadOffset_Move(bytes);
     bytes = 0;
 
    val = conn->GETBody().empty() ? "0" : std::to_string(conn->GETBody().size());
@@ -52,7 +52,7 @@ void FastCgiHandler::SendFastCgi(const std::unique_ptr<HTTPMessage> &conn) {
     bytes +=  m_buffer.Write(head.get(), sizeof(*head));
     bytes += m_buffer.Write(body.get(),length);
     m_FastCgi_Socket.Write(m_buffer.BeginRead(),bytes);
-    m_buffer.ReadOffest_Move(bytes);
+    m_buffer.ReadOffset_Move(bytes);
     bytes = 0;
 
     val = conn->GETMethod() == "GET" ? "text/html" :  "application/x-www-form-urlencoded";
@@ -62,14 +62,14 @@ void FastCgiHandler::SendFastCgi(const std::unique_ptr<HTTPMessage> &conn) {
     bytes +=  m_buffer.Write(head.get(), sizeof(*head));
     bytes += m_buffer.Write(body.get(),length);
     m_FastCgi_Socket.Write(m_buffer.BeginRead(),bytes);
-    m_buffer.ReadOffest_Move(bytes);
+    m_buffer.ReadOffset_Move(bytes);
     bytes = 0;
 
     SendEndRequestRecord();
     if(!conn->GETBody().empty()){
         bytes += m_buffer.Write(conn->GETBody().data(),conn->GETBody().size());
         m_FastCgi_Socket.Write(m_buffer.BeginRead(),bytes);
-        m_buffer.ReadOffest_Move(bytes);
+        m_buffer.ReadOffset_Move(bytes);
     }
 }
 
@@ -169,7 +169,7 @@ bool FastCgiHandler::SendEndRequestRecord() {
 
     m_buffer.Write(Header.get(), sizeof(*Header));
     int it = m_FastCgi_Socket.Write(m_buffer.BeginRead(), sizeof(*Header));
-    m_buffer.ReadOffest_Move(it);
+    m_buffer.ReadOffset_Move(it);
     return true;
 }
 
@@ -179,7 +179,7 @@ void FastCgiHandler::SendBeginRequestBody() {
     auto it = m_buffer.Write(header.get(), sizeof(*header));
     it += m_buffer.Write(Begin.get(), sizeof(*Begin));
     auto flag = m_FastCgi_Socket.Write(m_buffer.BeginRead(), it);
-    m_buffer.ReadOffest_Move(flag);
+    m_buffer.ReadOffset_Move(flag);
 }
 
 char * FastCgiHandler::GetHtmlFromContent( char * content ) {
