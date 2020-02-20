@@ -9,7 +9,7 @@
 
 class HTTPMessageParser {
 public:
-    void Parse(const std::unique_ptr<HTTPMessage> &httpMessage, const std::vector<char> &buffer, int readsize) {
+    void Parse(const std::unique_ptr<HTTPMessage>& httpMessage, const std::vector<char>& buffer, int readsize) {
         ParserState state = ParserState::PARSING_START_LINE;
         //解析头一行
         size_t begin = 0;
@@ -17,13 +17,13 @@ public:
         size_t headerkeybegin = 0;
         size_t headerkeyend = 0;
         size_t bodyStartIndex = -1;
-        size_t isQuery = -1; // ?
+        size_t isQuery = -1;  // ?
 
         bool skipNext = false;
 
-        for (auto &&c :buffer) {
+        for (auto&& c : buffer) {
             bodyStartIndex++;
-            if (skipNext) // 跳过下一行
+            if (skipNext)  // 跳过下一行
             {
                 skipNext = false;
                 continue;
@@ -42,7 +42,7 @@ public:
                     continue;
                 }
             } else if (state == ParserState::START_LINE_REQUEST)
-                //解析行请求
+            //解析行请求
             {
                 if (c == ' ') {
                     if (isQuery == -1) {
@@ -56,13 +56,13 @@ public:
                     begin = end;
                     continue;
                 } else if (c == '?') {
-                    isQuery = end ;
+                    isQuery = end;
                 } else if (c == '\r') {
                     httpMessage->SetVersion({buffer.data() + begin, end - begin});
                     end = end + 2;
                     begin = end;
                     state = ParserState::HEADER_KEY;
-                    skipNext = true; // 跳过行数
+                    skipNext = true;  // 跳过行数
                     continue;
                 }
             } else if (state == ParserState::HEADER_KEY && c == ':') {
@@ -84,8 +84,8 @@ public:
                 skipNext = true;
                 continue;
             }
-                //判断结束条件
-            else if (state == ParserState::HEADER_KEY && c == '\r') // 标志已经解析完成
+            //判断结束条件
+            else if (state == ParserState::HEADER_KEY && c == '\r')  // 标志已经解析完成
             {
                 end = end + 2;
                 begin = end;
@@ -98,4 +98,4 @@ public:
     }
 };
 
-#endif //MYWEB_HTTP_REQUEST_H
+#endif  // MYWEB_HTTP_REQUEST_H

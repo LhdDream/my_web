@@ -5,27 +5,29 @@
 #ifndef MYWEB_CURRENCY_H
 #define MYWEB_CURRENCY_H
 
-#include "Provider.h"
 #include <cstdint>
-#include <list>
 #include <iostream>
+#include <list>
+#include <sstream>
 #include <string>
 #include <string_view>
-#include <sstream>
 #include <unordered_map>
+
+#include "Provider.h"
 // 限定范围的methond
 
-enum  ReturnState : int {
+enum ReturnState : int
+{
     ERROR = -1,
-    Short_Connection ,
+    Short_Connection,
     Long_Connection,
     All_Connection,
     Buffer_Full,
     Fastcgi_Cgi
 };
 
-
-enum class ParserState : uint8_t {
+enum class ParserState : uint8_t
+{
     NONE,
     PARSING_START_LINE,
     START_LINE_REQUEST,
@@ -50,69 +52,65 @@ static std::string_view HTTP_STATUS_MAP(std::string_view code) {
         return m_No;
 };
 
-
 class HTTPMessage {
 public:
-    explicit HTTPMessage() : m_keep_alive(false),
-                             m_method("NONE"),
-                             m_path(), m_version("HTTP/1.1") {
+    explicit HTTPMessage() : m_keep_alive(false), m_method("NONE"), m_path(), m_version("HTTP/1.1") {
     }
 
-    //std::string & or std::string &&
-    void SetHeader(std::string_view &&name, std::string_view &&value) {
-        if (value.compare("Keep-Alive") == 0 ) {
+    // std::string & or std::string &&
+    void SetHeader(std::string_view&& name, std::string_view&& value) {
+        if (value.compare("Keep-Alive") == 0) {
             Set_Keep_Alive(true);
         }
         m_headers_name.emplace_back(name);
         m_headers_value.emplace_back(value);
-        //emplace 使用完美转发
+        // emplace 使用完美转发
     }
 
-    void SetMethond(const std::string_view &methond) {
+    void SetMethond(const std::string_view& methond) {
         m_method = methond;
     }
 
-
-
-    void Setpath(const std::string_view &path) {
-        if(path.empty())
-        {
+    void Setpath(const std::string_view& path) {
+        if (path.empty()) {
             m_path = Provider::Get().ServerDefault_file();
         } else
-             m_path = path;
+            m_path = path;
     }
 
-    void SetVersion(const std::string_view &version) {
+    void SetVersion(const std::string_view& version) {
         m_version = version;
     }
 
-    void SetStatusCode(const std::string_view &Code) {
+    void SetStatusCode(const std::string_view& Code) {
         m_statusCode = Code;
     }
 
-    void SetQuery(const std::string_view & Query ){
+    void SetQuery(const std::string_view& Query) {
         m_query = Query;
     }
+
     std::string GetQuery() const {
-            return std::string{m_query.substr(0,m_query.size())};
+        return std::string{m_query.substr(0, m_query.size())};
     }
+
     std::string Getpath() const {
         return std::string{m_path.substr(0, m_path.size())};
     }
 
-    std::string GETMethod()  const {
+    std::string GETMethod() const {
         return std::string{m_method.substr(0, m_method.size())};
     }
 
     std::string GETBody() const {
-        return std::string{m_body.substr(0,m_body.size())};
+        return std::string{m_body.substr(0, m_body.size())};
     }
 
-    void SetMessageBody(const std::string_view &body) {
+    void SetMessageBody(const std::string_view& body) {
         m_body = body;
     }
 
-    void ToString(std::string_view *p) {
+    void ToString(std::string_view* p) {
 
         if (m_method == "GET" || m_method == "POST") {
             m_output += "HTTP/1.1";
@@ -123,7 +121,7 @@ public:
         }
         m_output += "\r\n";
         auto value = m_headers_value.begin();
-        for (auto &c : m_headers_name) {
+        for (auto& c : m_headers_name) {
             m_output += c;
             m_output += ": ";
             m_output += *value;
@@ -161,11 +159,7 @@ private:
     std::list<std::string_view> m_headers_value;
     std::string_view m_body;
 
-
-
-
     std::string m_output;
-
 };
 
-#endif //MYWEB_CURRENCY_H
+#endif  // MYWEB_CURRENCY_H

@@ -3,8 +3,7 @@
 //
 #include "Http_Msg_Handler.h"
 
-int
-HttpMessageHandler::RecvRequest(HTTPMessageParser &parse_, Http_Response &respon_) {
+int HttpMessageHandler::RecvRequest(HTTPMessageParser& parse_, Http_Response& respon_) {
 
     int n;
     int readsize = 0;
@@ -19,7 +18,7 @@ HttpMessageHandler::RecvRequest(HTTPMessageParser &parse_, Http_Response &respon
     }
     if (n == -1) {
         if (errno != EAGAIN && errno != EWOULDBLOCK) {
-            return ReturnState::ERROR; // 从相应的点中删除
+            return ReturnState::ERROR;  // 从相应的点中删除
         }
     } else if (n == 0) {
         return ReturnState::ERROR;
@@ -27,7 +26,7 @@ HttpMessageHandler::RecvRequest(HTTPMessageParser &parse_, Http_Response &respon
     return SendResponse(respon_);
 }
 
-int HttpMessageHandler::SendResponse(Http_Response &respon_) {
+int HttpMessageHandler::SendResponse(Http_Response& respon_) {
     auto c = respon_.Response(m_conn, m_sock);
     if (c == ReturnState::All_Connection || c == ReturnState::Fastcgi_Cgi) {
         if (c == ReturnState::All_Connection) {
@@ -37,14 +36,14 @@ int HttpMessageHandler::SendResponse(Http_Response &respon_) {
         Clear();
         if (m_conn->Keep_Alive()) {
             m_conn->Set_Keep_Alive(false);
-            return ReturnState::Long_Connection; // 说明为长连接
+            return ReturnState::Long_Connection;  // 说明为长连接
         }
     } else {
         if (c == ReturnState::ERROR) {
-            return ReturnState::ERROR;//错误
+            return ReturnState::ERROR;  //错误
         } else if (c == ReturnState::Buffer_Full) {
             return ReturnState::Buffer_Full;  // 注册epollout 事件
         }
     }
-    return ReturnState::Short_Connection;//短连接
+    return ReturnState::Short_Connection;  //短连接
 }

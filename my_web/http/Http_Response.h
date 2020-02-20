@@ -5,18 +5,19 @@
 #ifndef MYWEB_HTTP_RESPONSE_H
 #define MYWEB_HTTP_RESPONSE_H
 
-#include "Currency.h"
-#include "net/Socket.h"
-#include "../fastcgi/FastcgiHandler.h"
-#include <cstdint>
-#include <climits>
 #include <fcntl.h>
-#include <functional>
 #include <sys/sendfile.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include <climits>
+#include <cstdint>
+#include <functional>
 #include <unordered_map>
 
+#include "../fastcgi/FastcgiHandler.h"
+#include "Currency.h"
+#include "net/Socket.h"
 
 constexpr std::string_view html = "text/html";
 constexpr std::string_view avi = "video/x-msvideo";
@@ -25,8 +26,8 @@ constexpr std::string_view txt = "text/plain";
 constexpr std::string_view mp3 = "audio/mp3";
 constexpr std::string_view pdf = "application/pdf";
 
-inline static std::string_view Type(const std::string_view &mime) {
-    if (!mime.compare("html") ) {
+inline static std::string_view Type(const std::string_view& mime) {
+    if (!mime.compare("html")) {
         return html;
     } else if (!mime.compare("avi")) {
         return avi;
@@ -39,31 +40,29 @@ inline static std::string_view Type(const std::string_view &mime) {
     } else if (!mime.compare("pdf")) {
         return pdf;
     }
-
 }
-
 
 class Http_Response {
 public:
     //组装response
-    int Response(const std::unique_ptr<HTTPMessage> &httpMessage, const Socket &fd) {
-        char * fastcgi = nullptr;
-        int fastcgi_size = 0 ;
+    int Response(const std::unique_ptr<HTTPMessage>& httpMessage, const Socket& fd) {
+        char* fastcgi = nullptr;
+        int fastcgi_size = 0;
         bool isPHP = false;
-        struct stat64 st{};
+        struct stat64 st {};
         if (stat64(httpMessage->Getpath().data(), &st) < 0) {
             httpMessage->SetStatusCode(Not_Found);
             return ReturnState::ERROR;
         }
         std::string_view temp = httpMessage->Getpath();
-        if(auto it_ = temp.find("php"); it_ > 0 && it_ < temp.size()) {
+        if (auto it_ = temp.find("php"); it_ > 0 && it_ < temp.size()) {
             isPHP = true;
             m_FastCgi.SendFastCgi(httpMessage);
-            fastcgi  = m_FastCgi.ReadFromPHP(fastcgi_size);
-            httpMessage->SetHeader("Content-Type","text/html");
+            fastcgi = m_FastCgi.ReadFromPHP(fastcgi_size);
+            httpMessage->SetHeader("Content-Type", "text/html");
             httpMessage->SetStatusCode(OK);
-            httpMessage->SetHeader("Content-Length",std::to_string(fastcgi_size));
-        }else {
+            httpMessage->SetHeader("Content-Length", std::to_string(fastcgi_size));
+        } else {
             auto it = temp.find('.');
             httpMessage->SetHeader("Content-Type", Type(temp.data() + it + 1));
             httpMessage->SetStatusCode(OK);
@@ -80,23 +79,22 @@ public:
 
         if (fd.Write(p.data(), p.size(), 0) < 0) {
             if (errno != EAGAIN && errno != EINTR) {
-                return ReturnState::ERROR;//出现错误关闭
+                return ReturnState::ERROR;  //出现错误关闭
             } else {
-                return ReturnState::Buffer_Full;//发送缓冲区已经满
+                return ReturnState::Buffer_Full;  //发送缓冲区已经满
             }
         }
-        if(isPHP)
-        {
-            if(fd.Write(fastcgi,fastcgi_size,0) < 0){
+        if (isPHP) {
+            if (fd.Write(fastcgi, fastcgi_size, 0) < 0) {
                 if (errno != EAGAIN && errno != EINTR) {
-                    return ReturnState::ERROR;//出现错误关闭
+                    return ReturnState::ERROR;  //出现错误关闭
                 } else {
-                    return ReturnState::Buffer_Full;//发送缓冲区已经满
+                    return ReturnState::Buffer_Full;  //发送缓冲区已经满
                 }
             }
             return ReturnState::Fastcgi_Cgi;
-        }else
-            return ReturnState ::All_Connection;
+        } else
+            return ReturnState::All_Connection;
     }
 
     //发送文件使用sendfile 循环
@@ -125,7 +123,7 @@ public:
 
 private:
     size_t m_filesize = 0;
-    FastCgiHandler m_FastCgi{} ;
+    FastCgiHandler m_FastCgi{};
 };
 
-#endif //MYWEB_HTTP_RESPONSE_H
+#endif  // MYWEB_HTTP_RESPONSE_H
