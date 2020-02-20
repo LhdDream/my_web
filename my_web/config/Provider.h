@@ -58,7 +58,7 @@ private:
     std::string m_wwwroot = "";
     std::string m_default_file = "index.html";
     std::string m_FastCgi_ip = "127.0.0.1";
-    unsigned int m_FastCgi_Port = 9000;
+    int m_FastCgi_Port = 9000;
 };
 
 #endif
