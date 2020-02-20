@@ -3,7 +3,7 @@
 int main()
 {
     signal(SIGPIPE,SIG_IGN);
-    Proxy l;
-    l.wait();
+    Proxy m_proxy;
+    m_proxy.Wait();
     return 0;
 }
