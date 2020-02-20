@@ -27,7 +27,7 @@ public:
             m_Buffer() {
     }
 
-    int RecvRequese(HTTPMessageParser &parse_, Http_Response &respon_);
+    int RecvRequest(HTTPMessageParser &parse_, Http_Response &respon_);
 
     int SendResponse(Http_Response &respon_);
 

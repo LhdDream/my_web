@@ -4,7 +4,7 @@
 #include "Http_Msg_Handler.h"
 
 int
-HttpMessageHandler::RecvRequese(HTTPMessageParser &parse_, Http_Response &respon_) {
+HttpMessageHandler::RecvRequest(HTTPMessageParser &parse_, Http_Response &respon_) {
 
     int n;
     int readsize = 0;
@@ -45,7 +45,6 @@ int HttpMessageHandler::SendResponse(Http_Response &respon_) {
         } else if (c == ReturnState::Buffer_Full) {
             return ReturnState::Buffer_Full;  // 注册epollout 事件
         }
-
     }
     return ReturnState::Short_Connection;//短连接
 }
