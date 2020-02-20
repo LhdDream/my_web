@@ -21,11 +21,11 @@ httpserver::httpserver() :
 
 void httpserver::Start() {
     m_acceptor.m_acceptSocket.CreateFd(Provider::Get().ServerIp().c_str(),Provider::Get().ServerPort());
-    m_acceptor.m_acceptSocket.SetResueport(true);
+    m_acceptor.m_acceptSocket.SetReuseport(true);
     m_acceptor.m_acceptSocket.BindAddress();
     m_acceptor.Listen();
     m_epoll.Create_fd();
-    m_epoll.Add_Channel({m_acceptor.Fd(), Listen_()});
+    m_epoll.Add_Channel({m_acceptor.Fd(), Listen()});
     EpollEventResult event_;
     while (true) {
         auto user_number = m_epoll.Wait(event_);
@@ -34,7 +34,7 @@ void httpserver::Start() {
             if (it.EventFd() == m_acceptor.Fd()) {
                 m_acceptor.HandleRead();
             } else {
-                if (it.Pointer()->events & EpollEventType::KReadble) {
+                if (it.Pointer()->events & EpollEventType::KReadable) {
                     m_users.DoRead(it.EventFd(), m_timer);
                 } else if (it.Pointer()->events & EpollEventType::KWriteable) {
                     m_users.DoWrite(it.EventFd(), m_timer);

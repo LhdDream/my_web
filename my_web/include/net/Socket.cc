@@ -11,7 +11,7 @@ size_t Socket::Listen() {
     return ::listen(m_sockfd, 4096);//默认backlog
 }
 
-void Socket::SetResueport(bool on) {
+void Socket::SetReuseport(bool on) {
     if (on) {
         int reuse = 1;
         ::setsockopt(m_sockfd, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(int));
@@ -22,7 +22,7 @@ void Socket::SetResueport(bool on) {
     }
 }
 
-size_t Socket::Accpet() {
+size_t Socket::Accept() {
     struct sockaddr_in client{};
     socklen_t client_addrlength = sizeof(client);
     int fd = ::accept4(m_sockfd, (struct sockaddr *) &client, &client_addrlength, SOCK_NONBLOCK | SOCK_CLOEXEC);
@@ -37,7 +37,7 @@ int Socket::Read(Buffer &buffer, int length, int flags) const {
 
     int read_bytes = ::recv(m_sockfd, buffer.BeginWrite(), length, flags);
     if (read_bytes > 0) {
-        buffer.WriteOffest_Move(read_bytes);
+        buffer.WriteOffset_Move(read_bytes);
     }
     return read_bytes;
 }

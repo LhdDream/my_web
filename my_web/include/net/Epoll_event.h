@@ -12,7 +12,7 @@
 
 //对于epoll的事件处理的类
 enum EpollEventType {
-    KReadble = ::EPOLLIN,
+    KReadable = ::EPOLLIN,
     KWriteable = ::EPOLLOUT,
     KET = ::EPOLLET,
     KClose = ::EPOLLRDHUP
@@ -21,9 +21,9 @@ enum EpollEventType {
 //对于强类型进行位操作,需要重载 |
 constexpr EpollEventType Basic() { return EpollEventType(EpollEventType::KET); }
 
-constexpr EpollEventType Listen_() { return EpollEventType(EpollEventType::KET | EpollEventType::KReadble); }
+constexpr EpollEventType Listen() { return EpollEventType(EpollEventType::KET | EpollEventType::KReadable); }
 
-constexpr EpollEventType Readable() { return EpollEventType(Basic() | EpollEventType::KReadble); }
+constexpr EpollEventType Readable() { return EpollEventType(Basic() | EpollEventType::KReadable); }
 
 constexpr EpollEventType Writeable() { return EpollEventType(EpollEventType::KWriteable | Basic()); }
 

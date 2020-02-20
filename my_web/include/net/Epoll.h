@@ -11,8 +11,7 @@
 #include <memory>
 #include <sys/epoll.h>
 #include <vector>
-//epoll 反应堆模型
-//epoll 中的事件可读将IO事件分发出去进行事件处理
+
 
 class Socket;
 

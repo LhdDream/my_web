@@ -33,10 +33,10 @@ public:
 
     size_t Listen();
 
-    size_t Accpet();
+    size_t Accept();
 
     //if listen error to return
-    void SetResueport(bool on); // 开启端口复用
+    void SetReuseport(bool on); // 开启端口复用
 
 
     int Read( Buffer &buffer, int length, int flags = 0) const;

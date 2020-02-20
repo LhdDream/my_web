@@ -11,7 +11,7 @@ void Acceptor::HandleRead() //套接字可读的状态
 {
     //ET使用accept来进行
     while (true) {
-        int connfd = m_acceptSocket.Accpet();
+        int connfd = m_acceptSocket.Accept();
         if (connfd > 0) {
             p(connfd);
         }
@@ -20,7 +20,7 @@ void Acceptor::HandleRead() //套接字可读的状态
             //来打开这里来进行处理
             if (errno == EMFILE) {
                 ::close(m_idlefd);
-                m_idlefd = m_acceptSocket.Accpet();
+                m_idlefd = m_acceptSocket.Accept();
                 ::close(m_idlefd);
                 m_idlefd = ::open("/dev/null", O_RDONLY | O_CLOEXEC);
             } else
