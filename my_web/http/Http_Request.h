@@ -6,7 +6,7 @@
 #define MYWEB_HTTP_REQUEST_H
 
 #include "Currency.h"
-
+#include <vector>
 class HTTPMessageParser {
 public:
     void Parse(const std::unique_ptr<HTTPMessage>& httpMessage, const std::vector<char>& buffer, int readsize) {
