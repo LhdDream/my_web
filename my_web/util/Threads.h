@@ -13,6 +13,7 @@ thread_local httpserver Server;
 class Proxy {
 public:
     explicit Proxy() {
+        signal(SIGINT, Wait);
         Provider::Get();
         chdir(Provider::Get().ServerWwwRoot().c_str());
         m_thread.reserve(Provider::Get().ThreadsNumber());
@@ -22,14 +23,15 @@ public:
         Server.Start();
     }
 
-    void Wait() {
+    static void Wait(int signo) {
+        Provider::Get().Quit();
         for (auto& i : m_thread) {
             i.join();
         }
     }
 
 private:
-    std::vector<std::thread> m_thread;
+    static std::vector<std::thread> m_thread;
 };
-
+std::vector<std::thread> Proxy::m_thread;
 #endif  // MYWEB_THREADS_H
