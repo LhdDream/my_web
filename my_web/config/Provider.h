@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <thread>
+#include <atomic>
 
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
@@ -40,7 +41,7 @@ public:
         return m_default_file;
     };
 
-    static Provider& Get() {
+    inline static Provider& Get() {
         static Provider cp;
         return cp;
     }
@@ -56,7 +57,12 @@ public:
     int KeepConnectionNumber() const {
         return m_keep_connection_number;
     }
-
+    inline bool GetQuit() const {
+        return m_quit;
+    }
+    void Quit() {
+        m_quit = true;
+    }
 private:
     int m_port = 8080;
     int m_keep_connection_ms = 800;
@@ -67,6 +73,8 @@ private:
     std::string m_default_file = "index.html";
     std::string m_FastCgi_ip = "127.0.0.1";
     unsigned int m_FastCgi_Port = 9000;
+
+    bool m_quit = false; // 标志是不是回收
 };
 
 #endif
