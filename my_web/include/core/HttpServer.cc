@@ -23,7 +23,7 @@ void httpserver::Start() {
     m_epoll.Create_fd();
     m_epoll.Add_Channel({m_acceptor.Fd(), Listen()});
     EpollEventResult event_;
-    while (true) {
+    while (!Provider::Get().GetQuit()) {
         auto user_number = m_epoll.Wait(event_);
         for (int i = 0; i < user_number; i++) {
             auto&& it = event_[i];
