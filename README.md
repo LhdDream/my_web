@@ -138,8 +138,37 @@
 
 `My_Web结果`
 
-
 ![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/Web2c.png)
+
+
+
+## 内存泄漏测试(valgrind-3.15.0)
+
+单线程测试命令
+
+`valgrind   --leak-check=full --show-reachable=no  ./my_web`
+
+`ab  -r  -n 100000 -c 1  http://127.0.0.1:8080/index.html`
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/val1.png)
+
+`ab  -r  -n 100000 -c 520  http://127.0.0.1:8080/index.html`
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/val2.png)
+
+多线程测试命令
+
+`valgrind   --leak-check=full --show-reachable=no  ./my_web`
+
+`ab  -r  -n 100000 -c 1  http://127.0.0.1:8080/index.html`
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/val3.png)
+
+`ab  -r  -n 100000 -c 520  http://127.0.0.1:8080/index.html`
+
+![image](https://github.com/LhdDream/my_web/blob/master/my_web/img/val4.png)
+
+在单线程和多线程的情况下，表现良好，无明显内存泄漏。
 
 # 安装和运行
 
