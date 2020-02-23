@@ -35,7 +35,19 @@
   ### 测试工具
 
 
-使用工具: `ab2.3`和`Webbench1.5`
+- 使用工具: `ab2.3`和`Webbench1.5`
+
+- Nginx配置: 
+  
+```
+  worker_processes : 4 ( 和my_web线程数量相同 )
+  listen 6060 reuseport ;(开启reuseport选项)
+  tcp_nodelay on;
+  sendfile on;
+  work_connections : 65535;
+  
+```
+
 
 ### Ab2.3
 
