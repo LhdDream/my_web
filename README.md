@@ -18,7 +18,7 @@
 - Linux Kernel 2.6+新特性(`ReusePort`)
 - 为减少内存泄漏的可能,使用`智能指针`等RAII机制
 - 使用多线程,epoll`边沿触发`的多路复用技术,非阻塞IO
-- C++部分特性(`thread_local ` , `std::string_vew`...)
+- C++部分特性(`thread_local ` , `std::string_view`...)
 - 配置简单.使用`JSON`格式单配置文件,通过`rapidjson` 来进行解析,拥有初始配置文档,不需要修改大量配置文件.
 - ...
 
