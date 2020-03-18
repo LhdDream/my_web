@@ -61,7 +61,7 @@ private:
             auto&& parent = Parent(index);
             auto&& value = m_heap.at(index).second;
             auto&& parent_value = m_heap.at(parent).second;
-            if (parent_value > value)
+            if (parent_value < value)
                 break;
             Swap(index, parent);
             index = parent;
@@ -77,9 +77,9 @@ private:
             }
             //找不到相应的孩子
             if (child + 1 < m_heap.size()) {
-                child = (m_heap.at(child + 1).second > m_heap.at(child).second) ? child + 1 : child;
+                child = (m_heap.at(child + 1).second < m_heap.at(child).second) ? child + 1 : child;
             }
-            if (m_heap.at(index).second > m_heap.at(child).second)
+            if (m_heap.at(index).second < m_heap.at(child).second)
                 break;
             Swap(index, child);
             index = child;
