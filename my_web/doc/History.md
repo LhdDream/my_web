@@ -32,7 +32,7 @@
 
 第二版是看过muduo之后,对其中内容的实践学习,希望加深自己的体会:
 
-- 所有的裸指针修改为指针指针
+- 所有的裸指针修改为智能指针
 - 使用vector作为缓冲区
 - 使用one loop per thread ,每一个线程一个epoll ,由主线程进行连接的分发，给IO线程进行相应的操作
 - 将pthread和pthread_mutex_lock等换为 std::thread,std::mutex等
